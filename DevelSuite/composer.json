@@ -1,0 +1,22 @@
+{
+    "name": "develman/develsuite",
+    "type": "library",
+    "description": "DevelSuite, MVC-Framework for PHPHP 5.3",
+    "version": "1.0.0",
+    "license": "UNKNOWN",
+    "authors": [
+        {
+            "name": "Georg Henkel",
+            "email": "info@develman.de",      
+            "homepage": "http://www.develman.de"
+        }
+    ],
+    "require": {
+    	"php": ">=5.3.0",
+    	"swiftmailer/swiftmailer": "4.1.*",
+    	"monolog/monolog": "1.0.*"
+    },
+    "autoload": {
+    	"psr-0": {"DevelSuite": "src/"}
+    }
+}

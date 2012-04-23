@@ -1,0 +1,14 @@
+{
+    "hash": "a540a47eee2fcb65575cbc9dc7851583",
+    "packages": [
+        {
+            "package": "monolog/monolog",
+            "version": "1.0.2"
+        },
+        {
+            "package": "swiftmailer/swiftmailer",
+            "version": "4.1.6"
+        }
+    ],
+    "aliases": []
+}
