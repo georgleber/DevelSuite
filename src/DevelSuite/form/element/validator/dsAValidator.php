@@ -6,15 +6,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\core\form\element\validator;
+namespace DevelSuite\form\element\validator;
 
-use DevelSuite\core\expression\dsAExpression;
-use DevelSuite\core\form\element\dsAElement;
+use DevelSuite\expression\dsAExpression;
+use DevelSuite\form\element\dsAElement;
 
 /**
  * Abstract superclass for all form element validators.
  *
- * @package DevelSuite\core\form\element\validator
+ * @package DevelSuite\form\element\validator
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */

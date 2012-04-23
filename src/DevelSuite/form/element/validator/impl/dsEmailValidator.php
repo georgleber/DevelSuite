@@ -1,40 +1,40 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2011 Georg Henkel <info@develman.de>
+ * Copyright (C) 2012 Georg Henkel <info@develman.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\core\form\element\validator\impl;
+namespace DevelSuite\form\element\validator\impl;
 
-use DevelSuite\core\form\element\impl\dsCheckbox;
+use DevelSuite\form\element\impl\dsCheckbox;
 
-use DevelSuite\core\form\element\impl\dsRadioButton;
+use DevelSuite\form\element\impl\dsRadioButton;
 
-use DevelSuite\core\form\element\impl\dsCheckboxGroup;
+use DevelSuite\form\element\impl\dsCheckboxGroup;
 
-use DevelSuite\core\form\element\impl\dsSelect;
+use DevelSuite\form\element\impl\dsSelect;
 
-use DevelSuite\core\form\element\impl\dsRadioButtonGroup;
+use DevelSuite\form\element\impl\dsRadioButtonGroup;
 
-use DevelSuite\core\form\element\dsCompositeElement;
+use DevelSuite\form\element\dsCompositeElement;
 
-use DevelSuite\core\util\dsStringTools;
+use DevelSuite\util\dsStringTools;
 
-use DevelSuite\core\i18n\dsResourceBundle;
-use DevelSuite\core\form\element\validator\dsAValidator;
+use DevelSuite\i18n\dsResourceBundle;
+use DevelSuite\form\element\validator\dsAValidator;
 
 /**
  * Validator for email elements.
  *
- * @package DevelSuite\core\form\element\validator\impl
+ * @package DevelSuite\form\element\validator\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 class dsEmailValidator extends dsAValidator {
 	/* (non-PHPdoc)
-	 * @see DevelSuite\core\form\element\validator.dsAValidator::init()
+	 * @see DevelSuite\form\element\validator.dsAValidator::init()
 	 */
 	protected function init() {
 		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__) . DS . "validation");
@@ -44,7 +44,7 @@ class dsEmailValidator extends dsAValidator {
 	}
 
 	/* (non-PHPdoc)
-	 * @see DevelSuite\core\form\element\validator.dsAValidator::validate()
+	 * @see DevelSuite\form\element\validator.dsAValidator::validate()
 	 */
 	public function validateElement() {
 		$result = TRUE;

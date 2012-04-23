@@ -1,35 +1,35 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2011 Georg Henkel <info@develman.de>
+ * Copyright (C) 2012 Georg Henkel <info@develman.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\core\form;
+namespace DevelSuite\form;
 
-use DevelSuite\core\form\element\impl\dsFileInput;
+use DevelSuite\form\element\impl\dsFileInput;
 
-use DevelSuite\core\form\element\impl\dsCaptcha;
+use DevelSuite\form\element\impl\dsCaptcha;
 
-use DevelSuite\core\form\element\dsCompositeElement;
+use DevelSuite\form\element\dsCompositeElement;
 
-use DevelSuite\core\i18n\dsResourceBundle;
+use DevelSuite\i18n\dsResourceBundle;
 
-use DevelSuite\core\form\element\impl\dsHiddenInput;
+use DevelSuite\form\element\impl\dsHiddenInput;
 
-use DevelSuite\core\http\dsRequest;
-use DevelSuite\core\form\element\validator\impl\dsRequiredValidator;
-use DevelSuite\core\form\element\dsButtonNameConstants;
-use DevelSuite\core\form\element\dsAButtonElement;
-use DevelSuite\core\form\element\dsAElement;
+use DevelSuite\http\dsRequest;
+use DevelSuite\form\element\validator\impl\dsRequiredValidator;
+use DevelSuite\form\element\dsButtonNameConstants;
+use DevelSuite\form\element\dsAButtonElement;
+use DevelSuite\form\element\dsAElement;
 
 /**
  * This class is the entry point for new website form.
  * It holds all elements and buttons, which are needed in
  * the form and runs the validation of the form fields.
  *
- * @package DevelSuite\core\form
+ * @package DevelSuite\form
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */

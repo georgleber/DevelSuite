@@ -1,23 +1,23 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2011 Georg Henkel <info@develman.de>
+ * Copyright (C) 2012 Georg Henkel <info@develman.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\core\form\element\impl;
+namespace DevelSuite\form\element\impl;
 
-use DevelSuite\core\form\element\dsButtonValueConstants;
+use DevelSuite\form\element\dsButtonValueConstants;
 
-use DevelSuite\core\form\element\dsButtonNameConstants;
+use DevelSuite\form\element\dsButtonNameConstants;
 
-use DevelSuite\core\form\element\dsAButtonElement;
+use DevelSuite\form\element\dsAButtonElement;
 
 /**
  * A reset button.
  *
- * @package DevelSuite\core\form\element\impl
+ * @package DevelSuite\form\element\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
@@ -33,7 +33,7 @@ class dsResetButton extends dsAButtonElement {
 	}
 
 	/* (non-PHPdoc)
-	 * @see DevelSuite\core\form\element.dsAButtonElement::getHTML()
+	 * @see DevelSuite\form\element.dsAButtonElement::getHTML()
 	 */
 	public function getHTML() {
 		// generate HTML

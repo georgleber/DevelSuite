@@ -1,20 +1,20 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2011 Georg Henkel <info@develman.de>
+ * Copyright (C) 2012 Georg Henkel <info@develman.de>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\core\form\element\impl;
+namespace DevelSuite\form\element\impl;
 
-use DevelSuite\core\form\element\dsAElement;
-use DevelSuite\core\form\element\dsCompositeElement;
+use DevelSuite\form\element\dsAElement;
+use DevelSuite\form\element\dsCompositeElement;
 
 /**
  * Represents a group of radio button elements.
  *
- * @package DevelSuite\core\form\element\impl
+ * @package DevelSuite\form\element\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
@@ -22,7 +22,7 @@ class dsRadioButtonGroup extends dsCompositeElement {
 	private $checkCount = 0;
 
 	/* (non-PHPdoc)
-	 * @see DevelSuite\core\form\element.dsCompositeElement::addChild()
+	 * @see DevelSuite\form\element.dsCompositeElement::addChild()
 	 */
 	public function addChild(dsAElement $child) {
 		if ($child instanceof dsRadioButton) {
@@ -67,7 +67,7 @@ class dsRadioButtonGroup extends dsCompositeElement {
 	}
 
 	/* (non-PHPdoc)
-	 * @see DevelSuite\core\form\element.dsAElement::getHTML()
+	 * @see DevelSuite\form\element.dsAElement::getHTML()
 	 */
 	public function getHTML() {
 		// generate HTML
