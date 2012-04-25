@@ -9,10 +9,10 @@
 namespace DevelSuite\controller;
 
 use DevelSuite\dsApp;
-
 use DevelSuite\config\dsConfig;
 use DevelSuite\controller\filter\dsIFilter;
 use DevelSuite\controller\filter\dsFilterChain;
+use DevelSuite\exception\dsErrorCodeException;
 use DevelSuite\routing\dsRouter;
 use DevelSuite\util\dsStringTools;
 
@@ -80,13 +80,15 @@ class dsFrontController {
 			}
 			$pageCtrl = new dsPageController();
 			$pageCtrl->dispatch();
-		} catch(dsDispatchException $de) {
-
+		} catch(dsErrorCodeException $e) {
+			echo "exception occured " . $e;
 			# FIXME:
 			# throw a DispatchException, if the controller could not be found
 			# then show up a 404 Error Page
 			# else if the request could not be processed by the controller
 			# throw another excpetion in order to show up a message
+		} catch (\Exception $e) {
+			echo "exception occured " . $e;
 		}
 
 		// run post filter chain

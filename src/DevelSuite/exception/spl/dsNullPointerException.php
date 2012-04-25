@@ -9,7 +9,8 @@
 namespace DevelSuite\exception\spl;
 
 /**
- * FIXME
+ * Thrown when an application attempts to use null
+ * in a case where an object is required.
  *
  * @package DevelSuite\exception
  * @author  Georg Henkel <info@develman.de>

@@ -8,13 +8,8 @@
  */
 namespace DevelSuite\view;
 
-use DevelSuite\controller\dsPageController;
-
 use DevelSuite\dsApp;
-
-use DevelSuite\exception\impl\dsDispatchException;
-
-use DevelSuite\view\helper\dsIViewHelper;
+use DevelSuite\exception\impl\dsRenderingException;
 
 /**
  * Abstract super class for Views
@@ -30,15 +25,7 @@ abstract class dsAView {
 	 */
 	private $values = array();
 
-	/**
-	 * Load a ViewHelper
-	 *
-	 * @param string $helperName
-	 * 		Name of the ViewHelper
-	 */
-	public function getHelper($helperName) {
-		return dsApp::getViewHelperCache()->lookup($helperName);
-	}
+	private $viewHelperCache = array();
 
 	/**
 	 * Assign values to the view
@@ -67,4 +54,30 @@ abstract class dsAView {
 	 * Renders the view
 	 */
 	abstract public function render();
+
+	/**
+	 * Is used to call an action of a ViewHelper.
+	 *
+	 * @param string $method
+	 * 		(Short-)Name of the ViewHelper
+	 * @param array $arguments
+	 * 		First argument is the action the rest are the
+	 * 		arguments needed by the action
+	 */
+	public function __call($method, $arguments) {
+		$viewHelper = dsApp::getViewHelperCache()->lookup($method);
+
+		// first argument is action name
+		$action = $arguments[0];
+		$params = array_slice($arguments, 1);
+
+		$result = NULL;
+		if (method_exists($viewHelper, $action) && is_callable(array($viewHelper, $action))) {
+			$result = call_user_func_array(array($viewHelper, $action), $params);
+		} else {
+			throw new dsRenderingException(dsRenderingException::ACTION_NOT_CALLABLE, array($action,  get_class($viewHelper)));
+		}
+
+		return $result;
+	}
 }

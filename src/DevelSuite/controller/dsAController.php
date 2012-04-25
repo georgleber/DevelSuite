@@ -8,16 +8,11 @@
  */
 namespace DevelSuite\controller;
 
-use DevelSuite\routing\dsARoute;
-
-use DevelSuite\controller\dsPageController;
-use DevelSuite\routing\dsRoute;
-
-use DevelSuite\view\dsAView;
-
 use DevelSuite\dsApp;
+use DevelSuite\controller\dsPageController;
 use DevelSuite\exception\impl\dsDispatchException;
-use DevelSuite\template\dsITemplate;
+use DevelSuite\routing\route\dsARoute;
+use DevelSuite\view\dsAView;
 
 /**
  * Abstract super class for all (Document-)Controller.
@@ -27,6 +22,10 @@ use DevelSuite\template\dsITemplate;
  * @version 1.0
  */
 abstract class dsAController {
+	/**
+	 * Corresponding route of this controller
+	 * @var dsARoute
+	 */
 	private $route;
 
 	/**
@@ -68,21 +67,19 @@ abstract class dsAController {
 	 *
 	 * @param string $action
 	 * 			The action that should be called
-	 * @param array $parameters
-	 * 			The needed parameters of this action
 	 * @return dsAView $view
 	 * 			The view, which will be created by the action
 	 * @throws dsDispatchException
 	 */
 	private function callAction($action) {
-		if (method_exists($this, $action)) {
+		if (method_exists($this, $action) && is_callable(array($this, $action))) {
 			$actionResult = call_user_func_array(array($this, $action), $this->route->getParameters());
 		} else {
-			throw new dsDispatchException(dsDispatchException::ACTION_NOT_CALLABLE);
+			throw new dsDispatchException(dsDispatchException::ACTION_NOT_CALLABLE, array($action));
 		}
 
 		if ($actionResult == NULL || !($actionResult instanceof dsAView)) {
-			throw new dsDispatchException(dsDispatchException::ACTION_HAS_WRONG_RESULT);
+			throw new dsDispatchException(dsDispatchException::WRONG_ACTIONRESULT, array(get_class($actionResult)));
 		}
 
 		return $actionResult;
@@ -98,5 +95,32 @@ abstract class dsAController {
 	 */
 	public function load($target, array $params = array()) {
 		$this->pageCtrl->load($target, $params);
+	}
+
+	/**
+	 * Redirects to a special route.
+	 *
+	 * @param string $routeName
+	 * 		Name of the route
+	 * @param array $parameters
+	 *		Parameter for the redirect
+	 * @param $immediately
+	 * 		TRUE if the repsonse should directly redirected to the route
+	 */
+	public function redirect($routeName, array $parameters = array(), $immediately = FALSE) {
+		$url = dsApp::getRouter()->generateUrl($routeName, $parameters);
+		dsApp::getResponse()->redirectURL($url, $immediately);
+	}
+
+	/**
+	 * Redirects directly
+	 *
+	 * @param string $routeName
+	 * 		Name of the route
+	 * @param array $parameters
+	 *		Parameter for the redirect
+	 */
+	public function redirectImmediately($routeName, array $parameters = array()) {
+		$this->redirect($routeName, $parameters, TRUE);
 	}
 }

@@ -11,7 +11,7 @@ namespace DevelSuite\exception\spl;
 use DevelSuite\exception\spl\dsIOException;
 
 /**
- * FIXME
+ * Signals that an attempt handle a file failed.
  *
  * @package DevelSuite\exception
  * @author  Georg Henkel <info@develman.de>

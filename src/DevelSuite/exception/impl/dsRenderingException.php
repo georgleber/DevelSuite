@@ -12,21 +12,22 @@ use DevelSuite\exception\dsErrorCode;
 use DevelSuite\exception\dsErrorCodeException;
 
 /**
- * Signals that an exception during dispatchign of the
- * request has occured.
+ * Signals that an exception during layouting / rendering
+ * has occured.
  *
  * @package DevelSuite\exception
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsDispatchException extends dsErrorCodeException {
-	const ID = "DispatchException";
+class dsRenderingException extends dsErrorCodeException {
+	const ID = "RenderingException";
 
-	const CONTROLLER_INVALID  	= 100;
-	const ACTION_NOT_CALLABLE 	= 200;
-	const WRONG_ACTIONRESULT  	= 300;
-	const ROUTE_NOT_FOUND		= 400;
-	const NAMED_ROUTE_NOT_FOUND = 500;
+	const LAYOUT_NOT_FOUND  		= 100;
+	const TEMPLATE_NOT_FOUND		= 200;
+	const VIEWHELPER_NOT_REGISTERED	= 300;
+	const VIEWHELPER_NOT_FOUND 		= 400;
+	const VIEWHELPER_INVALID		= 500;
+	const ACTION_NOT_CALLABLE  		= 600;
 
 	/**
 	 * Constructor

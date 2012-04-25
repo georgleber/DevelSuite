@@ -9,14 +9,25 @@
 namespace DevelSuite\exception;
 
 /**
- * FIXME
+ * Interface for all ErrorCodes
  *
  * @package DevelSuite\exception
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 interface dsIErrorCode {
+	/**
+	 * Path of the ini-file
+	 */
 	public function getFilePath();
-	public function getSection();
+
+	/**
+	 * Name of the ini-bundle of the error message
+	 */
+	public function getBundleName();
+
+	/**
+	 * Key for this error message
+	 */
 	public function getKey();
 }

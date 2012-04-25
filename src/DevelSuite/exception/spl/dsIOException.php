@@ -9,7 +9,7 @@
 namespace DevelSuite\exception\spl;
 
 /**
- * FIXME
+ * Signals that an I/O exception of some sort has occurred.
  *
  * @package DevelSuite\exception
  * @author  Georg Henkel <info@develman.de>

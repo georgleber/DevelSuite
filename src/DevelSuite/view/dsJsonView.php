@@ -33,6 +33,6 @@ class dsJsonView extends dsAView {
 	 * @see DevelSuite\view.dsAView::render()
 	 */
 	public function render() {
-		echo json_encode($this->data);
+		$encode = json_encode($this->data);
 	}
 }

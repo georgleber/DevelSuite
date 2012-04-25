@@ -5,8 +5,8 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
- * Parts of this file are taken from CakePHP. 
+ *
+ * Parts of this file are taken from CakePHP.
  * See the CAKE_LICENSE file.
  */
 namespace DevelSuite\routing\route;
@@ -113,8 +113,7 @@ class dsRoute extends dsARoute {
 		}
 
 		array_shift($route);
-		$count = count($this->keys);
-		for ($i = 0; $i <= $count; $i++) {
+		for ($i = 0, $count = count($this->keys); $i <= $count; $i++) {
 			unset($route[$i]);
 		}
 

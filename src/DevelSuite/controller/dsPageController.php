@@ -8,17 +8,17 @@
  */
 namespace DevelSuite\controller;
 
-use DevelSuite\routing\dsARoute;
-use DevelSuite\routing\dsInternalRoute;
-use DevelSuite\view\dsAView;
 use DevelSuite\dsApp;
 use DevelSuite\config\dsConfig;
 use DevelSuite\exception\impl\dsDispatchException;
+use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\http\dsRequest;
 use DevelSuite\http\dsResponse;
-use DevelSuite\routing\dsRoute;
+use DevelSuite\routing\route\dsARoute;
+use DevelSuite\routing\route\dsInternalRoute;
 use DevelSuite\routing\dsRouter;
 use DevelSuite\util\dsStringTools;
+use DevelSuite\view\dsAView;
 
 /**
  * PageController handles the loading of the layout and the
@@ -236,14 +236,14 @@ class dsPageController {
 		if (!isset($this->layout)) {
 			$this->layout = APP_PATH . DS . "layout" . DS . "layout.tpl.php";
 		}
-		
+
 		// try to load layout and include it
 		if (file_exists($this->layout)) {
 			include($this->layout);
 			$content = ob_get_clean();
 			dsApp::getResponse()->setContent($content);
 		} else {
-			throw new dsDispatchException(dsDispatchException::LAYOUT_NOT_FOUND);
+			throw new dsRenderingException(dsRenderingException::LAYOUT_NOT_FOUND);
 		}
 	}
 
@@ -270,7 +270,7 @@ class dsPageController {
 		if ($controller instanceof dsAController) {
 			return $controller;
 		} else {
-			throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID);
+			throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID, array($route->getController()));
 		}
 	}
 
@@ -289,39 +289,38 @@ class dsPageController {
 		}
 
 		// check if the action exists and if it is callable
-		if (!method_exists($controller, $action) && !is_callable(array($controller, $action))) {
-			throw new dsDispatchException(dsDispatchException::ACTION_UNDEFINED);
+		if (!method_exists($controller, $action)) {
+			$action = "indexAction";
+		} else if (!is_callable(array($controller, $action))) {
+			throw new dsDispatchException(dsDispatchException::ACTION_NOT_CALLABLE, array($action));
 		}
 
 		return $action;
 	}
 
 	/**
-	 * Redirects internally.
+	 * Is used to call an action of a ViewHelper.
 	 *
-	 * @param string $controller
-	 * 		Name of hte controller
-	 * @param string $action
-	 * 		Name of the used action (if NULL, indexAction is used)
-	 * @param array $additional_params
-	 *		Additional parameter for the redirect
+	 * @param string $method
+	 * 		(Short-)Name of the ViewHelper
+	 * @param array $arguments
+	 * 		First argument is the action the rest are the
+	 * 		arguments needed by the action
 	 */
-	public function redirect($controller, $module = NULL, $action = NULL, array $additionalParams = array(), $immediately = FALSE) {
-		# $url = dsApp::getRouter()->generateUrl($controller, $module, $action, $additionalParams);
-		# dsApp::getResponse()->redirectURL($url, $immediately);
-	}
+	public function __call($method, $arguments) {
+		$viewHelper = dsApp::getViewHelperCache()->lookup($method);
 
-	/**
-	 * Redirects directly and internally.
-	 *
-	 * @param string $controller
-	 * 		Name of hte controller
-	 * @param string $action
-	 * 		Name of the used action (if NULL, indexAction is used)
-	 * @param array $additional_params
-	 *		Additional parameter for the redirect
-	 */
-	public function redirectImmediately($controller, $module = NULL, $action = NULL, array $additionalParams = array()) {
-		self::redirect($controller, $module, $action, $additionalParams, TRUE);
+		// first argument is action name
+		$action = $arguments[0];
+		$params = array_slice($arguments, 1);
+
+		$result = NULL;
+		if (method_exists($viewHelper, $action) && is_callable(array($viewHelper, $action))) {
+			$result = call_user_func_array(array($viewHelper, $action), $params);
+		} else {
+			throw new dsRenderingException(dsRenderingException::ACTION_NOT_CALLABLE, array($action, get_class($viewHelper)));
+		}
+
+		return $result;
 	}
 }

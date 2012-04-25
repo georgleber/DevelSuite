@@ -29,21 +29,12 @@ class dsResponse {
 	private $cookies = array();
 	private $headersOnly;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
-		$protocol = dsConfig::read("app.http.protocol");
-		if(isset($protocol)) {
-			$this->protocol = $protocol;
-		}
-
-		$contentType = dsConfig::read("app.http.contenttype");
-		if(isset($contentType)) {
-			$this->contentType = $contentType;
-		}
-
-		$charset = dsConfig::read("app.http.charset");
-		if(isset($charset)) {
-			$this->charset = $charset;
-		}
+		$this->protocol = dsConfig::read("app.http.protocol", "HTTP/1.1");
+		$this->charset = dsConfig::read("app.http.charset", "UTF-8");
 	}
 
 	/**

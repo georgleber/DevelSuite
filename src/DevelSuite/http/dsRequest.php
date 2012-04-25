@@ -21,38 +21,51 @@ use DevelSuite\util\dsStringTools;
  * @version 1.0
  */
 class dsRequest implements \ArrayAccess {
-	/** TRUE, if request is a AJAX request */
-	private $isAjaxRequest = FALSE;
-
-	/** reference to the $_COOKIE data */
+	/**
+	 * reference to the $_COOKIE data
+	 * @var array
+	 */
 	private $cookie;
 
-	/** reference to the $_FILE data */
+	/**
+	 * reference to the $_FILE data
+	 * @var array
+	 */
 	private $file;
 
-	/** containing data of $_SERVER array */
-	private $header;
-
-	/** containing data of a HTTP Authentication */
-	private $auth;
-
-	/** method of this request */
-	private $requestMethod = "GET";
-
-	/** name of the module */
-	private $moduleName;
-
-	/** name of the controller */
-	private $controllerName;
-
-	/** name of the action */
-	private $actionName;
-
-	/** parameters */
-	private $parameters;
+	/**
+	 * containing data of $_SERVER array
+	 * @var array
+	 */
+	private $header = array();
 
 	/**
-	 * prevent creation of this object
+	 * containing data of a HTTP Authentication
+	 * @var array
+	 */
+	private $auth = array();
+
+	/**
+	 * method of this request
+	 * @var string
+	 */
+	private $requestMethod = "GET";
+
+	/**
+	 * Parameters of the request
+	 * @var array
+	 */
+	private $parameters = array();
+
+	/**
+	 * TRUE, if request is a AJAX request
+	 * @var bool
+	 */
+	private $isAjaxRequest = FALSE;
+
+
+	/**
+	 * Constructor
 	 */
 	public function __construct() {
 		// save $_SERVER vars to header array
@@ -94,7 +107,7 @@ class dsRequest implements \ArrayAccess {
 	}
 
 	/**
-	 * Sanitizes variables GET, POST and COOKIE in case of magic quotes is set to on
+	 * Sanitizes parameters in case of magic quotes is set to on
 	 */
 	private function sanitizeMagicQuotes(array $params) {
 		if(function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
@@ -110,57 +123,6 @@ class dsRequest implements \ArrayAccess {
 	}
 
 	/**
-	 * Set the name of the module
-	 *
-	 * @param string $moduleName
-	 * 		name of the module
-	 */
-	public function setModuleName($moduleName) {
-		$this->moduleName = $moduleName;
-	}
-
-	/**
-	 * @return name of the module
-	 */
-	public function getModuleName() {
-		return $this->moduleName;
-	}
-
-	/**
-	 * Set the name of the controller
-	 *
-	 * @param string $controllerName
-	 * 		name of the controller
-	 */
-	public function setControllerName($controllerName) {
-		$this->controllerName = $controllerName;
-	}
-
-	/**
-	 * @return name of the controller
-	 */
-	public function getControllerName() {
-		return $this->controllerName;
-	}
-
-	/**
-	 * Set the name of the action
-	 *
-	 * @param string $actionName
-	 * 			name of the action
-	 */
-	public function setActionName($actionName) {
-		$this->actionName = $actionName;
-	}
-
-	/**
-	 * @return name of the action
-	 */
-	public function getActionName() {
-		return $this->actionName;
-	}
-
-	/**
 	 * @return HTTP Authentication data
 	 */
 	public function getAuthData() {
@@ -173,7 +135,7 @@ class dsRequest implements \ArrayAccess {
 	public function isAjaxRequest() {
 		return $this->isAjaxRequest;
 	}
-	
+
 	/**
 	 * Returns the method of this request
 	 */

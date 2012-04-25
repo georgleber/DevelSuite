@@ -8,7 +8,9 @@
  */
 namespace DevelSuite\view\cache;
 
-use DevelSuite\exception\impl\dsDispatchException;
+use DevelSuite\config\dsConfig;
+
+use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\view\helper\dsIViewHelper;
 
 /**
@@ -20,7 +22,7 @@ use DevelSuite\view\helper\dsIViewHelper;
  */
 class dsViewHelperCache {
 	/**
-	 * Cache for all ViewHelper definitions
+	 * Array for all ViewHelper
 	 * @var array
 	 */
 	private $viewHelper = array();
@@ -32,21 +34,19 @@ class dsViewHelperCache {
 	private $classCache = array();
 
 	/**
-	 * Add a ViewHelper definition to the cache
+	 * Add a ViewHelper to the helper array
 	 *
 	 * @param string $className
 	 * 		Name of the class
-	 * @param string $namespace
-	 * 		Namespace of that class
 	 * @param string $shortName
 	 * 		Short name to lookup in cache
 	 */
-	public function addViewHelper($className, $namespace = NULL, $shortName = NULL) {
+	public function addViewHelper($className, $shortName = NULL) {
 		if (!isset($shortName)) {
 			$shortName = $className;
 		}
 
-		$this->viewHelper[$shortName] = array($namespace, $className);
+		$this->viewHelper[$shortName] = $className;
 	}
 
 	/**
@@ -54,28 +54,33 @@ class dsViewHelperCache {
 	 * save it into the class cache.
 	 *
 	 * @param string $helperName
+	 *			name of the viewhelper
 	 * @throws dsDispatchException
 	 */
 	public function lookup($helperName) {
 		if (!array_key_exists($helperName, $this->viewHelper)) {
-			throw new dsDispatchException(dsDispatchException::VIEWHELPER_NOT_KNOWN);
+			throw new dsRenderingException(dsRenderingException::VIEWHELPER_NOT_REGISTERED, array($helperName));
 		}
 
 		if (!array_key_exists($helperName, $this->classCache)) {
 			$viewHelper = $this->viewHelper[$helperName];
+			$appClass = "\\view\\helper\\" . $viewHelper;
+			$frameworkClass = "\\DevelSuite\\view\\helper\\" . $viewHelper;
 
-			if ($viewHelper[0] != NULL) {
-				$this->classCache[$helperName] = new $viewHelper[0] . DIRECTORY_SEPARATOR . $viewHelper[0];
-			} else {
-				$class = "DevelSuite\\view\\helper\\" . $viewHelper[1];
-				$viewHelperClass = new $class();
-
-				if ($viewHelperClass instanceof dsIViewHelper) {
-					$this->classCache[$helperName] = $viewHelperClass;
-				} else {
-					// FIXME!
-					throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID);
+			// load class from application path if exists otherwise from framework
+			$helperClazz = $appClass;
+			if (!class_exists($helperClazz, FALSE)) {
+				$helperClazz = $frameworkClass;
+				if (!class_exists($helperClazz)) {
+					throw new dsRenderingException(dsRenderingException::VIEWHELPER_NOT_FOUND, array($helperClazz));
 				}
+			}
+
+			$viewHelperClass = new $helperClazz();
+			if ($viewHelperClass instanceof dsIViewHelper) {
+				$this->classCache[$helperName] = $viewHelperClass;
+			} else {
+				throw new dsRenderingException(dsRenderingException::VIEWHELPER_INVALID, array(get_class($viewHelperClass)));
 			}
 		}
 

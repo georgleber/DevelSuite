@@ -9,8 +9,8 @@
 namespace DevelSuite\routing;
 
 use DevelSuite\dsApp;
-use DevelSuite\exception\impl\dsRoutingException;
-use DevelSuite\routing\dsRoute;
+use DevelSuite\exception\impl\dsDispatchException;
+use DevelSuite\routing\route\dsRoute;
 
 /**
  * The router handles all incoming request and
@@ -60,8 +60,8 @@ class dsRouter {
 	}
 
 	/**
-	 * Matches the current request against a mapped route. 
-	 * 
+	 * Matches the current request against a mapped route.
+	 *
 	 * @return dsRoute route if found otherwise FALSE
 	 */
 	public function matchRequest() {
@@ -91,7 +91,7 @@ class dsRouter {
 		}
 
 		if ($route == NULL) {
-			throw new dsRoutingException(dsRoutingException::ROUTE_NOT_FOUND);
+			throw new dsDispatchException(dsDispatchException::ROUTE_NOT_FOUND, array($requestUri));
 		}
 
 		return $route;
@@ -109,7 +109,7 @@ class dsRouter {
 	 */
 	public static function generateUrl($name, array $params = array()) {
 		if (!isset(self::$namedRoutes[$name])) {
-			throw new dsRoutingException(dsRoutingException::ROUTE_NOT_FOUND);
+			throw new dsDispatchException(dsDispatchException::NAMED_ROUTE_NOT_FOUND, array($name));
 		}
 
 

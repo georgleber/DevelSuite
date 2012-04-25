@@ -15,9 +15,9 @@ use DevelSuite\template\flexigrid\dsFlexiButton;
 
 /**
  * FIXME
- * 
- * View that renders a pre-defined template with a pre-build 
- * FlexiGrid table. 
+ *
+ * View that renders a pre-defined template with a pre-build
+ * FlexiGrid table.
  *
  * @package DevelSuite\view
  * @author  Georg Henkel <info@develman.de>
@@ -77,7 +77,7 @@ class dsFlexiGrid extends dsHtmlView {
 		if ($needID) {
 			$button->doNeedID();
 		}
-		
+
 		if ($needMultipleIDs) {
 			$button->doNeedMultipleIDs();
 		}
@@ -91,7 +91,7 @@ class dsFlexiGrid extends dsHtmlView {
 
 	public function removeColumn($columnName) {
 		$position = -1;
-		for ($i = 0; $i < count($this->columnModel); $i++) {
+		for ($i = 0, $cntColModel = count($this->columnModel); $i < $cntColModel; $i++) {
 			if ($this->columnModel[$i]["id"] == strtolower($columnName)) {
 				$position = $i;
 				break;

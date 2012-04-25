@@ -34,7 +34,8 @@ class dsConfig {
 			self::$values[$key] = $value;
 		} else {
 			$keys = explode('.', $key, 3);
-			switch (count($keys)) {
+			$count = count($keys);
+			switch ($count) {
 				case 1:
 					self::$values[$keys[0]] = $value;
 					break;
@@ -71,7 +72,8 @@ class dsConfig {
 			return $fallback;
 		}
 
-		switch (count($keys)) {
+		$count = count($keys);
+		switch ($count) {
 			case 2:
 				if (isset(self::$values[$key][$keys[1]])) {
 					return self::$values[$key][$keys[1]];

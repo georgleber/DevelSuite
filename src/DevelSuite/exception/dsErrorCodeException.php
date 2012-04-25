@@ -12,29 +12,50 @@ use DevelSuite\exception\dsIErrorCode;
 use DevelSuite\i18n\dsResourceBundle;
 
 /**
- * FIXME
+ * ErrorCodeExceptions allow to define a error message for
+ * the exceptions which is referenced by a constant.
  *
  * @package DevelSuite\exception
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 class dsErrorCodeException extends \Exception {
+	/**
+	 * Code of error message to throw
+	 * @var dsIErrorCode
+	 */
 	private $errorCode;
+
+	/**
+	 * Arguments used in the error message
+	 * @var array
+	 */
 	private $messageArgs;
 
-	public function __construct(dsIErrorCode $errorCode, $args = NULL, $code = 0) {
+	/**
+	 * Constructor
+	 *
+	 * @param dsIErrorCode $errorCode
+	 * 			Error code for the message
+	 * @param array $args
+	 * 			Arguments which can be set in the error message
+	 * @param Exception $previousException
+	 * 			Cause of this exception
+	 */
+	public function __construct(dsIErrorCode $errorCode, array $args = array(), $prevException = NULL) {
 		$this->errorCode = $errorCode;
 		$this->messageArgs = $args;
 
-		$iniArr = dsResourceBundle::getBundle($this->errorCode->getFilePath());
-		$msg = sprintf($iniArr[$this->errorCode->getSection()][$this->errorCode->getKey()], $args);
+		// load message from the bundle
+		$iniArr = dsResourceBundle::getBundle($this->errorCode->getFilePath(), $this->errorCode->getBundleName());
+		$msg = vsprintf($iniArr[$this->errorCode->getKey()], $args);
 
-		parent::__construct($msg);
+		parent::__construct($msg, NULL, $prevException);
 	}
 
-	public function getErrorCode() {
-		return $this->errorCode;
-	}
+	/**
+	 * Return the arguments of the error message
+	 */
 	public function getMessageArguments() {
 		return $this->messageArgs;
 	}

@@ -11,7 +11,7 @@ namespace DevelSuite\view;
 use DevelSuite\dsApp;
 use DevelSuite\controller\dsAController;
 use DevelSuite\controller\dsPageController;
-use DevelSuite\exception\impl\dsDispatchException;
+use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\view\dsAView;
 
 /**
@@ -75,7 +75,7 @@ class dsHtmlView extends dsAView {
 		if(file_exists($file)) {
 			include($file);
 		} else {
-			throw new dsDispatchException(dsDispatchException::TEMPLATE_NOT_FOUND);
+			throw new dsRenderingException(dsRenderingException::TEMPLATE_NOT_FOUND, array($file));
 		}
 	}
 

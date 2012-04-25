@@ -80,7 +80,7 @@ class dsPager {
 
 	public function getPrev() {
 		if ($this->getPage() != $this->getFirstPage()) {
-			for($i = 0; $i < count($this->pagingArray); $i++) {
+			for($i = 0, $arrCount = count($this->pagingArray); $i < $arrCount; $i++) {
 				if($this->pagingArray[$i] == $this->getPage()) {
 					break;
 				}
@@ -114,7 +114,7 @@ class dsPager {
 
 	public function getNext() {
 		if ($this->getPage() != $this->getLastPage()) {
-			for($i = 0; $i < count($this->pagingArray); $i++) {
+			for($i = 0, $arrCount = count($this->pagingArray); $i < $arrCount; $i++) {
 				if($this->pagingArray[$i] == $this->getPage()) {
 					break;
 				}

@@ -6,13 +6,13 @@
 			url: '<?php echo $this->url; ?>',
 			dataType: 'json',
 			colModel: [ 
-				<?php for ($i = 0; $i < count($this->colModel); $i++): ?>
+				<?php for ($i = 0, $cntColModel = count($this->colModel); $i < $cntColModel; $i++): ?>
 					{   display: '<?php echo $this->colModel[$i]["display"]; ?>',  
 						name: '<?php echo $this->colModel[$i]["name"]; ?>', 
 						width: <?php echo $this->colModel[$i]["width"]; ?>, 
 						sortable: <?php echo $this->colModel[$i]["sortable"]; ?>, 
 						align: 'center' 
-					}<?php if($i != (count($this->colModel)-1)) { echo ","; } ?> 
+					}<?php if($i != $cntColModel - 1) { echo ","; } ?> 
 				<?php endfor; ?>
 			],
 			buttons: [ 
@@ -27,7 +27,7 @@
 					endforeach; ?>
 			],
 			searchitems: [
-				<?php for ($i = 0; $i < count($this->searchItems); $i++): ?>
+				<?php for ($i = 0, $cntSearchtems = count($this->searchItems); $i < $cntSearchtems; $i++): ?>
 					{	 display: '<?php echo $this->searchItems[$i]["display"]; ?>',  
 						 name: '<?php echo $this->searchItems[$i]["name"]; ?>'
 						<?php if (isset($this->searchItems[$i]["isdefault"])) { echo ", isdefault: true"; } ?>
