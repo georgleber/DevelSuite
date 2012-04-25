@@ -41,7 +41,7 @@ class dsInternalRoute extends dsARoute {
 			list($ctrl, $action) = explode("::", $target);
 		} else {
 			$ctrl = $target;
-			$action = "default";
+			$action = "index";
 		}
 
 		// extract controller and module

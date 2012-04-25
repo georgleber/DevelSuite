@@ -54,9 +54,9 @@ abstract class dsAController {
 	}
 
 	/**
-	 * Abtract method must be available in every controller to call the default action
+	 * Abtract method must be available in every controller to call the index action
 	 */
-	abstract public function defaultAction();
+	abstract public function indexAction();
 
 	/**
 	 * Replacement of the constructor in order to configure the controller before calling an action

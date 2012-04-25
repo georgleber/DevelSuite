@@ -1,9 +1,9 @@
 {
-    "name": "develman/develsuite",
+    "name": "Develman/DevelSuite",
     "type": "library",
     "description": "DevelSuite - Web Development Framework for PHP 5.3",
     "version": "1.0.0",
-    "license": "UNKNOWN",
+    "license": "MIT",
     "authors": [
         {
             "name": "Georg Henkel",

@@ -285,7 +285,7 @@ class dsPageController {
 		if (dsStringTools::isFilled($route->getAction())) {
 			$action = $route->getAction() . "Action";
 		} else {
-			$action = "defaultAction";
+			$action = "indexAction";
 		}
 
 		// check if the action exists and if it is callable
