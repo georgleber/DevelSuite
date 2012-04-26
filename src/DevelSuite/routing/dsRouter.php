@@ -5,8 +5,13 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ * 
+ * Parts of this file are taken from dannyvankootens PHP-Router.
+ * See the PHP-ROUTER_LICENSE file.
  */
 namespace DevelSuite\routing;
+
+use DevelSuite\util\dsStringTools;
 
 use DevelSuite\dsApp;
 use DevelSuite\exception\impl\dsDispatchException;
@@ -52,7 +57,7 @@ class dsRouter {
 			$route->setMethods($methods);
 		}
 
-		if ($name != NULL) {
+		if (dsStringTools::isFilled($name)) {
 			self::$namedRoutes[$name] = $route;
 		}
 
@@ -108,18 +113,17 @@ class dsRouter {
 	 * @return string URL of the named route
 	 */
 	public static function generateUrl($name, array $params = array()) {
-		if (!isset(self::$namedRoutes[$name])) {
+		$route = self::$namedRoutes[$name];
+		if ($route == NULL) {
 			throw new dsDispatchException(dsDispatchException::NAMED_ROUTE_NOT_FOUND, array($name));
 		}
 
-
-		$route = self::$namedRoutes[$name];
 		$url = $route->getPattern();
 
 		// replace route url with given parameters
 		if ($params && preg_match_all("/:(\w+)/", $url, $matches)) {
 			// loop trough parameter names, store matching value in $params array
-			foreach ($matches as $i => $key) {
+			foreach ($matches[1] as $i => $key) {
 				if (isset($params[$key])) {
 					$url = preg_replace("/:(\w+)/", $params[$key], $url, 1);
 				}

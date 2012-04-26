@@ -20,13 +20,25 @@ use DevelSuite\dsApp;
 class dsLinkViewHelper implements dsIViewHelper {
 	/**
 	 * Generate an internal link
-	 *
-	 * @param string $name
+	 * 
+	 * @param string $routeName
 	 * 		Name of the route
+	 * @param string $linkText
+	 * 		Name of the link
+	 * @param array $attributes
+	 * 		Attributes for this link (e.g. styles, class, id, ...)
 	 * @param array $params
-	 * 		Parameters needed in the action
+	 * 		Parameters, which are needed for the route
 	 */
-	public function generateUrl($name, array $params = array()) {
-		return dsApp::getRouter()->generateUrl($name, $params);
+	public function generateUrl($routeName, $linkText, array $attributes = array(), array $params = array()) {
+		$url = dsApp::getRouter()->generateUrl($routeName, $params);
+		
+		$link = "<a ";
+		foreach ($attributes as $attr => $value) {
+			$link .= $attr . "='" . $value . "' ";
+		}
+		$link .= "href='" . $url . "'>" . $linkText . "</a>";
+		
+		return $link;
 	}
 }

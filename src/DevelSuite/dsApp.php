@@ -39,10 +39,6 @@ class dsApp {
 	}
 
 	private static function initConfiguration($config) {
-		self::$viewHelperCache = new dsViewHelperCache();
-		self::$viewHelperCache->addViewHelper("dsDateViewHelper", "date");
-		self::$viewHelperCache->addViewHelper("dsLinkViewHelper", "link");
-
 		if (!defined('APP_PATH')) {
 			echo "FEHLER: APP_PATH not set";
 			exit;
@@ -62,10 +58,10 @@ class dsApp {
 	private static function initRouting($routing) {
 		// bind standard controller for startpage
 		dsRouter::bind("/", array("controller" => "home"), array(), "home");
-		
+
 		// bind all defined routes
 		require_once($routing);
-		
+
 		// unspecific route for all other not defined routes
 		dsRouter::bind("/:controller/:action", array("action" => ""));
 	}
@@ -87,6 +83,10 @@ class dsApp {
 	}
 
 	public static function getViewHelperCache() {
+		if (self::$viewHelperCache == NULL) {
+			self::$viewHelperCache = new dsViewHelperCache();
+		}
+
 		return self::$viewHelperCache;
 	}
 

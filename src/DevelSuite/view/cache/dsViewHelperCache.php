@@ -14,7 +14,7 @@ use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\view\helper\dsIViewHelper;
 
 /**
- * Cache for lazy loading ViewHelpers
+ * Cache for lazy loading ViewHelpers.
  *
  * @package DevelSuite\view\cache
  * @author  Georg Henkel <info@develman.de>
@@ -22,55 +22,38 @@ use DevelSuite\view\helper\dsIViewHelper;
  */
 class dsViewHelperCache {
 	/**
-	 * Array for all ViewHelper
-	 * @var array
-	 */
-	private $viewHelper = array();
-
-	/**
 	 * Cache for the initialized ViewHelper classes
 	 * @var array
 	 */
 	private $classCache = array();
 
 	/**
-	 * Add a ViewHelper to the helper array
-	 *
-	 * @param string $className
-	 * 		Name of the class
-	 * @param string $shortName
-	 * 		Short name to lookup in cache
-	 */
-	public function addViewHelper($className, $shortName = NULL) {
-		if (!isset($shortName)) {
-			$shortName = $className;
-		}
-
-		$this->viewHelper[$shortName] = $className;
-	}
-
-	/**
 	 * Lookup a ViewHelper in the cache and if not initialized already, initialize and
-	 * save it into the class cache.
+	 * save it into the class cache. The lookup will first check the view helper directory (APP_PATH/view/helper) for
+	 * the requested ViewHelper. If no is found it will check the path in framework
+	 * (DevelSuite/view/helper) for the requested ViewHelper.
+	 * The name of a ViewHelper is specified as follows:
+	 * <ul>
+	 * 	<li>starting with a uppercase letter</li>
+	 *  <li>ending with ViewHelper</li>
+	 * </ul>
+	 *
+	 * For example:
+	 * You want to lookup the LinkViewHelper, the $helperName just needs to be link.
+	 * The exactly class name will be generate from it.
+	 * First try: view\helper\LinkViewHelper
+	 * if it does not extist: DevelSuite\view\helper\dsLinkViewHelper
 	 *
 	 * @param string $helperName
-	 *			name of the viewhelper
+	 *			Name of the viewhelper
 	 * @throws dsDispatchException
 	 */
 	public function lookup($helperName) {
-		if (!array_key_exists($helperName, $this->viewHelper)) {
-			throw new dsRenderingException(dsRenderingException::VIEWHELPER_NOT_REGISTERED, array($helperName));
-		}
-
 		if (!array_key_exists($helperName, $this->classCache)) {
-			$viewHelper = $this->viewHelper[$helperName];
-			$appClass = "\\view\\helper\\" . $viewHelper;
-			$frameworkClass = "\\DevelSuite\\view\\helper\\" . $viewHelper;
-
 			// load class from application path if exists otherwise from framework
-			$helperClazz = $appClass;
-			if (!class_exists($helperClazz, FALSE)) {
-				$helperClazz = $frameworkClass;
+			$helperClazz = "\\view\\helper\\" . ucfirst($helperName) . "ViewHelper";
+			if (!class_exists($helperClazz)) {
+				$helperClazz ="\\DevelSuite\\view\\helper\\ds" .  ucfirst($helperName) . "ViewHelper";
 				if (!class_exists($helperClazz)) {
 					throw new dsRenderingException(dsRenderingException::VIEWHELPER_NOT_FOUND, array($helperClazz));
 				}
