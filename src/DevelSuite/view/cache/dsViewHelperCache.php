@@ -9,7 +9,6 @@
 namespace DevelSuite\view\cache;
 
 use DevelSuite\config\dsConfig;
-
 use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\view\helper\dsIViewHelper;
 

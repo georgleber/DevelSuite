@@ -1,5 +1,5 @@
 {
-    "hash": "a540a47eee2fcb65575cbc9dc7851583",
+    "hash": "a9eb7d0b484daad3de7cdc6caaac14c8",
     "packages": [
         {
             "package": "monolog/monolog",
@@ -7,8 +7,11 @@
         },
         {
             "package": "swiftmailer/swiftmailer",
-            "version": "4.1.6"
+            "version": "dev-master",
+            "source-reference": "57789082d1d53529dcf8cd3ca132d9787a59afee",
+            "alias": "4.1.9999999.9999999-dev"
         }
     ],
+    "packages-dev": null,
     "aliases": []
 }

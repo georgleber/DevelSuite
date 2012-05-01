@@ -8,6 +8,16 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\eventbus\impl\dsEventBus;
+
+use Monolog\Handler\SyslogHandler;
+
+use Monolog\Processor\WebProcessor;
+
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\routing\dsRoute;
 
 use DevelSuite\routing\dsRouter;
@@ -31,6 +41,8 @@ class dsApp {
 	private static $route;
 	private static $router;
 	private static $viewHelperCache;
+	private static $logger;
+	private static $eventbus;
 
 	public static function init($config, $routing) {
 		self::initConfiguration($config);
@@ -42,6 +54,14 @@ class dsApp {
 		if (!defined('APP_PATH')) {
 			echo "FEHLER: APP_PATH not set";
 			exit;
+		}
+
+		if (!defined('DS')) {
+			define("DS", DIRECTORY_SEPARATOR);
+		}
+
+		if (!defined('LOG_PATH')) {
+			define('LOG_PATH', dirname(APP_PATH) . '/tmp/log/');
 		}
 
 		// configuration
@@ -104,6 +124,24 @@ class dsApp {
 		}
 
 		return self::$route;
+	}
+
+	public static function getLogger() {
+		if (self::$logger == NULL) {
+			self::$logger = new Logger("ControllerLogger");
+			self::$logger->pushHandler(new StreamHandler(dirname(APP_PATH) . '/tmp/log/develsuite.log', Logger::DEBUG));
+			self::$logger->pushProcessor(new WebProcessor());
+		}
+
+		return self::$logger;
+	}
+	
+	public static function getEventBus() {
+		if (self::$eventbus == NULL) {
+			self::$eventbus = new dsEventBus();
+		}
+		
+		return self::$eventbus;
 	}
 
 	private static function setupIniValues($locale) {

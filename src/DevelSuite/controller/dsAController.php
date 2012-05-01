@@ -9,10 +9,14 @@
 namespace DevelSuite\controller;
 
 use DevelSuite\dsApp;
-use DevelSuite\controller\dsPageController;
+use DevelSuite\controller\dsFrontController;
 use DevelSuite\exception\impl\dsDispatchException;
 use DevelSuite\routing\route\dsARoute;
 use DevelSuite\view\dsAView;
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Processor\WebProcessor;
 
 /**
  * Abstract super class for all (Document-)Controller.
@@ -29,10 +33,16 @@ abstract class dsAController {
 	private $route;
 
 	/**
-	 * The PageController
-	 * @var dsPageController
+	 * TheFrontController
+	 * @var dsFrontController
 	 */
-	protected $pageCtrl;
+	protected $frontCtrl;
+
+	/**
+	 * The responsible logger
+	 * @var Logger
+	 */
+	protected $log;
 
 	/**
 	 * Process the requested action.
@@ -44,9 +54,13 @@ abstract class dsAController {
 	 * @param array $parameters
 	 * 			The needed parametes of the action
 	 */
-	public function processRequest(dsPageController $pageCtrl, dsARoute $route, $action) {
+	public function processRequest(dsFrontController $frontCtrl, dsARoute $route, $action) {
 		$this->route = $route;
-		$this->pageCtrl = $pageCtrl;
+		$this->frontCtrl = $frontCtrl;
+
+		$this->log = new Logger("Controller");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . 'server.log'));
+		$this->log->pushProcessor(new WebProcessor());
 
 		$this->init();
 		return $this->callAction($action);
@@ -94,7 +108,7 @@ abstract class dsAController {
 	 * 		Parameter needed to call action
 	 */
 	public function load($target, array $params = array()) {
-		$this->pageCtrl->load($target, $params);
+		$this->frontCtrl->load($target, $params);
 	}
 
 	/**

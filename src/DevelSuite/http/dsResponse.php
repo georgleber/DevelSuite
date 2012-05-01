@@ -198,6 +198,7 @@ class dsResponse {
 		$this->sendHeaders();
 
 		if(!$this->headersOnly) {
+			$this->content = ob_get_clean();
 			echo $this->content;
 		}
 	}
