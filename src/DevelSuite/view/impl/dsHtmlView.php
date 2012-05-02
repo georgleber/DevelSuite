@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\view;
+namespace DevelSuite\view\impl;
 
 use DevelSuite\dsApp;
 use DevelSuite\controller\dsAController;
@@ -17,7 +17,7 @@ use DevelSuite\view\dsAView;
 /**
  * View for rendering content as HTML.
  *
- * @package DevelSuite\view
+ * @package DevelSuite\view\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */

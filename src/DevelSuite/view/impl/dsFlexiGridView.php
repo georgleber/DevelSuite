@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\view;
+namespace DevelSuite\view\impl;
 
 use DevelSuite\config\dsConfig;
 use DevelSuite\exception\spl\dsFileNotFoundException;
@@ -19,7 +19,7 @@ use DevelSuite\template\flexigrid\dsFlexiButton;
  * View that renders a pre-defined template with a pre-build
  * FlexiGrid table.
  *
- * @package DevelSuite\view
+ * @package DevelSuite\view\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */

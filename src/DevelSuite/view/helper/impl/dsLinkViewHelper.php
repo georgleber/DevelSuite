@@ -6,14 +6,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\view\helper;
+namespace DevelSuite\view\helper\impl;
 
 use DevelSuite\dsApp;
+use DevelSuite\view\helper\dsIViewHelper;
 
 /**
  * ViewHelper to handle linking.
  *
- * @package DevelSuite\view\helper
+ * @package DevelSuite\view\helper\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */

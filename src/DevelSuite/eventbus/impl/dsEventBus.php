@@ -70,7 +70,11 @@ class dsEventBus implements dsIEventbus {
 	 * (non-PHPdoc)
 	 * @see DevelSuite\eventbus.dsIEventbus::publish()
 	 */
-	public function publish(dsEvent $event) {
+	public function publish($eventName, dsEvent $event = NULL) {
+		if ($event == NULL) {
+			$event = new dsEvent($eventName, get_class($this));
+		}
+		
 		if (array_key_exists($event->getName(), $this->subscriberMap)) {
 			foreach ($this->subscriberMap[$event->getName()] as $subscriber) {
 				$subscriber->onEvent($event);

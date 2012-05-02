@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\view\cache;
+namespace DevelSuite\view\helper\cache;
 
 use DevelSuite\config\dsConfig;
 use DevelSuite\exception\impl\dsRenderingException;
@@ -52,7 +52,7 @@ class dsViewHelperCache {
 			// load class from application path if exists otherwise from framework
 			$helperClazz = "\\view\\helper\\" . ucfirst($helperName) . "ViewHelper";
 			if (!class_exists($helperClazz)) {
-				$helperClazz ="\\DevelSuite\\view\\helper\\ds" .  ucfirst($helperName) . "ViewHelper";
+				$helperClazz ="\\DevelSuite\\view\\helper\\impl\\ds" .  ucfirst($helperName) . "ViewHelper";
 				if (!class_exists($helperClazz)) {
 					throw new dsRenderingException(dsRenderingException::VIEWHELPER_NOT_FOUND, array($helperClazz));
 				}

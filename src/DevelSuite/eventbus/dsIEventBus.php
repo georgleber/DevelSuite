@@ -41,8 +41,10 @@ interface dsIEventBus {
 	/**
 	 * Publish an event.
 	 *
+	 * @param string $eventName
+	 * 		Name of the event
 	 * @param dsEvent $event
 	 * 		The event to publish
 	 */
-	public function publish(dsEvent $event);
+	public function publish($eventName, dsEvent $event = NULL);
 }

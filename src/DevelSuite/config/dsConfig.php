@@ -18,16 +18,15 @@ namespace DevelSuite\config;
 class dsConfig {
 	/**
 	 * Speichert alle Einstellungen
-	 *
-	 * @var array values
+	 * @var array
 	 */
 	private static $values = array();
 
 	/**
 	 * FIXME
-	 * 
-	 * @param unknown_type $key
-	 * @param unknown_type $value
+	 *
+	 * @param string $key
+	 * @param mixed $value
 	 */
 	public static function write($key, $value) {
 		if(strpos($key, '.') === FALSE) {
@@ -51,7 +50,7 @@ class dsConfig {
 
 	/**
 	 * FIXME
-	 * 
+	 *
 	 * @param string $key
 	 */
 	public static function read($key = NULL, $fallback = NULL) {
@@ -94,9 +93,9 @@ class dsConfig {
 	}
 
 	/**
-	 * FIXME
-	 * 
-	 * @param unknown_type $var
+	 * Deletes a config entry
+	 *
+	 * @param string $var
 	 */
 	public static function delete($key = NULL) {
 		if (strpos($key, '.') === FALSE) {
