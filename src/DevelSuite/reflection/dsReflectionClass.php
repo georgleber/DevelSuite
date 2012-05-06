@@ -8,6 +8,7 @@
  */
 namespace DevelSuite\reflection;
 
+use DevelSuite\reflection\dsReflectionMethod;
 use DevelSuite\reflection\annotations\parser\dsAnnotationParser;
 use DevelSuite\reflection\annotations\parser\dsIAnnotationParser;
 
@@ -74,6 +75,18 @@ class dsReflectionClass extends \ReflectionClass implements dsIReflection {
 
 	/**
 	 * (non-PHPdoc)
+	 * @see DevelSuite\reflection.dsIReflection::getAnnotation()
+	 */
+	public function hasAnnotation($annotationName) {
+		if (empty($this->annotations)) {
+			$this->getAnnotations();
+		}
+
+		return array_key_exists($annotationName, $this->annotations);
+	}
+
+	/**
+	 * (non-PHPdoc)
 	 * @see DevelSuite\reflection.dsIReflection::setAnnotationParser()
 	 */
 	public function setAnnotationParser(dsIAnnotationParser $parser) {
@@ -89,8 +102,28 @@ class dsReflectionClass extends \ReflectionClass implements dsIReflection {
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see ReflectionClass::getMethod()
+	 *
+	 * Enter description here ...
+	 * @param string $annotationName
+	 * 		Name of the searched annotation
+	 */
+	public function getAnnotatedMethods($annotationName) {
+		$annotatedMethods = array();
+
+		$methods = $this->getMethods(\ReflectionMethod::IS_PUBLIC);
+		foreach ($methods as $method) {
+			if ($method->hasAnnotation($annotationName)) {
+				$annotatedMethods[] = $method;
+			}
+		}
+
+		return  $annotatedMethods;
+	}
+
+	/**
+	 * Gets a ReflectionMethod
+	 *
+	 * @return dsReflectionMethod The method or NULL
 	 */
 	public function getMethod($name) {
 		if (parent::getMethod($name) == NULL) {
@@ -101,8 +134,9 @@ class dsReflectionClass extends \ReflectionClass implements dsIReflection {
 	}
 
 	/**
-	 * (non-PHPdoc)
-	 * @see ReflectionClass::getMethods()
+	 * Gets a list of methods
+	 *
+	 * @return array An array of dsReflectionMethods
 	 */
 	public function getMethods($filter = NULL) {
 		$methods = array();

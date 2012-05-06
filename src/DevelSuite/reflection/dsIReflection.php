@@ -33,7 +33,7 @@ interface dsIReflection {
 	 * @return array All found annotations
 	 */
 	public function getAnnotations();
-	
+
 	/**
 	 * Get an annotation of this method
 	 *
@@ -43,4 +43,13 @@ interface dsIReflection {
 	 * @return dsAnnotation If exists the found annotation or NULL
 	 */
 	public function getAnnotation($annotationName);
+
+	/**
+	 * Checks if annotation is set
+	 *
+	 * @param string $annotationName
+	 * 		Name of the annotation
+	 * @return bool TRUE if annotation is set
+	 */
+	public function hasAnnotation($annotationName);
 }

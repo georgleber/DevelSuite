@@ -83,4 +83,16 @@ class dsReflectionMethod extends \ReflectionMethod implements dsIReflection {
 
 		return $this->annotations[$name];
 	}
+
+	/**
+	 * (non-PHPdoc)
+	 * @see DevelSuite\reflection.dsIReflection::hasAnnotation()
+	 */
+	public function hasAnnotation($annotationName) {
+		if (empty($this->annotations)) {
+			$this->getAnnotations();
+		}
+		
+		return array_key_exists($annotationName, $this->annotations);
+	}
 }

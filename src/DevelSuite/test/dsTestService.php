@@ -10,9 +10,6 @@ class dsTestService {
 	/**
 	 * Bla
 	 *
-	 * @Test
-	 * @Length('min'=1,'max'=2)
-	 *
 	 * @param string $dsn
 	 * 		DSN
 	 * @param string $user
@@ -20,20 +17,20 @@ class dsTestService {
 	 * @param string $password
 	 * 		DB Password
 	 */
-	public function __construct($name, $dsn, $user, $password) {
-		echo "got data: <br/>NAME = " . $name . ", DSN = " . $dsn . ", USER = " . $user . ", PASSWORD = " . $password . "<br/>";
+	public function __construct() {
+		echo "instantiated ;) <br/>";
 	}
 
 	/**
-	 * a test method
-	 *
-	 * Inject
+	 * @Inject
 	 *
 	 * @param string $test
 	 * 		A test value
 	 */
-	public function setTest($test) {
-		echo "got test data test = " . $test . "<br/>";
+	public function setTest(TestObj $test) {
+		echo "got test data test = ";
+		print_r($test);
+		echo "<br/>";
 	}
 	
 	public function sayHello() {

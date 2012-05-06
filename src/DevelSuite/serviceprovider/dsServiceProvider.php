@@ -8,6 +8,11 @@
  */
 namespace DevelSuite\serviceprovider;
 
+use DevelSuite\serviceprovider\annotation\Inject;
+
+use DevelSuite\config\dsConfig;
+use DevelSuite\reflection\dsReflectionClass;
+
 /**
  * FIXME
  *
@@ -15,15 +20,9 @@ namespace DevelSuite\serviceprovider;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-use DevelSuite\config\dsConfig;
-
 class dsServiceProvider {
 	private $parameterMap;
 	private $classMap;
-
-	public function __construct() {
-
-	}
 
 	public function registerParameter($alias, $value) {
 		$this->parameterMap[$alias] = $value;
@@ -43,41 +42,7 @@ class dsServiceProvider {
 		if (array_key_exists($alias, $this->classMap)) {
 			if ($this->classMap[$alias]["injected"] == FALSE) {
 				$class = $this->classMap[$alias]["class"];
-
-				// load class via reflection and parse methods for @Inject
-				$reflClass = new \ReflectionClass($class);
-				$injectionData = new dsInjectionData();
-				$injectionData->parseClass($reflClass);
-
-				
-				// replace arguments against defined parameters / configured values
-				$constArgs = $injectionData->getConstructorArguments();
-				for ($i = 0, $cnt = count($constArgs); $i < $cnt; $i++) {
-					$key = $constArgs[$i];
-					if (isset($this->parameterMap[$key])) {
-						$constArgs[$i] = $this->parameterMap[$key];
-						continue;
-					}
-				}
-
-				
-				// create class
-				$instance = $reflClass->newInstanceArgs($constArgs);
-
-				// inject setter methods
-				$callMethods = $injectionData->getCallMethods();
-				foreach ($callMethods as $method => $arguments) {
-					for ($i = 0, $cnt = count($arguments); $i < $cnt; $i++) {
-						$key = $arguments[$i];
-						if (isset($this->parameterMap[$key])) {
-							$arguments[$i] = $this->parameterMap[$key];
-							continue;
-						}
-					}
-						
-					call_user_func_array(array($instance, $method), $arguments);
-				}
-
+				$instance = $this->loadClass($class);
 
 				$this->classMap[$alias]["instance"] = $instance;
 				$this->classMap[$alias]["injected"] = TRUE;
@@ -89,57 +54,51 @@ class dsServiceProvider {
 		return $instance;
 	}
 
-	function processPHPDoc(\ReflectionMethod $reflect)
-	{
+	private function loadClass($className) {
+		// load class via reflection and parse methods for @Inject
+		$reflClass = new dsReflectionClass($className);
 
-		$docComment = ltrim($docComment, "\r\n");
-		$parsedDocComment = $docComment;
-
-		$zerlegt = explode("\n", $parsedDocComment); # str_replace("\r", '', $HTTP_GET_VARS['user_input']));
-
-		echo "parsedDocComment:";
-		print_r($zerlegt);
-		echo "<br/>";
-
-		while (($newlinePos = strpos($parsedDocComment, "\n")) !== FALSE) {
-			echo "NEWLINEPOS: " . $newlinePos . "<br/>";
-
-			$parsedDocComment = substr($parsedDocComment, 0, $newlinePos);
-			echo "ParsedComm: " . $parsedDocComment . "<br/>";
+		// check for constructor injection
+		$constParams = array();
+		$constructor = $reflClass->getConstructor();
+		if ($constructor->getNumberOfParameters() > 0) {
+			// load parameters
+			$constParams = $this->determineInstances($method->getParameters());
 		}
+		// instantiate class
+		$instance = $reflClass->newInstanceArgs($constParams);
 
-		echo "STPOS: " . strpos($parsedDocComment, "\n") . "<br/>";
-
-		return NULL;
-		$lineNumber = 0;
-		while (($newlinePos = strpos($parsedDocComment, "\n")) !== false) {
-			echo "NEWLINEPOS: " . $newlinePos . "<br/>";
-			$lineNumber++;
-			$line = substr($parsedDocComment, 0, $newlinePos);
-
-			$matches = array();
-			if ((strpos($line, '@') === 0) && (preg_match('#^(@\w+.*?)(\n)(?:@|\r?\n|$)#s', $parsedDocComment, $matches))) {
-				$tagDocblockLine = $matches[1];
-				$matches2 = array();
-
-				if (!preg_match('#^@(\w+)(\s|$)#', $tagDocblockLine, $matches2)) {
-					break;
-				}
-				$matches3 = array();
-				if (!preg_match('#^@(\w+)\s+([\w|\\\]+)(?:\s+(\$\S+))?(?:\s+(.*))?#s', $tagDocblockLine, $matches3)) {
-					break;
-				}
-				if ($matches3[1] != 'param') {
-					if (strtolower($matches3[1]) == 'return') {
-						$phpDoc['return'] = array('type' => $matches3[2]);
-					}
-				} else {
-					$phpDoc['params'][] = array('name' => $matches3[3], 'type' => $matches3[2]);
-				}
-
-				$parsedDocComment = str_replace($matches[1] . $matches[2], '', $parsedDocComment);
+		// check only public methods
+		$reflMethods = $reflClass->getAnnotatedMethods(Inject::NAME);
+		foreach ($reflMethods as $method) {
+			if ($method->getNumberOfParameters() > 0) {
+				// load parameters
+				$parameters = $this->determineInstances($method->getParameters());
+				// invoke method
+				$method->invoke($instance, $parameters);
 			}
 		}
-		return $phpDoc;
+
+		return $instance;
+	}
+
+	private function determineInstances(array $parameters) {
+		$params = array();
+		foreach ($parameters as $parameter) {
+			$loadClass = $parameter->getClass();
+			if (array_key_exists($loadClass, $this->classMap)) {
+				if ($this->classMap[$alias]["injected"] == FALSE) {
+					$class = $this->classMap[$alias]["class"];
+					$instance = $this->loadClass($class);
+
+					$this->classMap[$alias]["instance"] = $instance;
+					$this->classMap[$alias]["injected"] = TRUE;
+				} else {
+					$instance = $this->classMap[$alias]["instance"];
+				}
+
+				$params = $instance;
+			}
+		}
 	}
 }

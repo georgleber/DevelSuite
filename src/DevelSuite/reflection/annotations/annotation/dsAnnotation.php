@@ -23,13 +23,6 @@ abstract class dsAnnotation {
 	protected $annotationName;
 
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->annotationName = get_called_class();
-	}
-
-	/**
 	 * Set the name of the annotation
 	 *
 	 * @param string $annotationName
@@ -42,9 +35,7 @@ abstract class dsAnnotation {
 	/**
 	 * @return string Name of the annotation
 	 */
-	public function getName() {
-		return $this->annotationName;
-	}
+	abstract public function getName();
 
 	/**
 	 * Initialize all attributes of the annotation

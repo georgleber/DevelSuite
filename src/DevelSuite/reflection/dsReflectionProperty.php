@@ -75,6 +75,18 @@ class dsReflectionProperty extends \ReflectionProperty implements dsIReflection 
 
 	/**
 	 * (non-PHPdoc)
+	 * @see DevelSuite\reflection.dsIReflection::hasAnnotation()
+	 */
+	public function hasAnnotation($annotationName) {
+		if (empty($this->annotations)) {
+			$this->getAnnotations();
+		}
+
+		array_key_exists($annotationName, $this->annotations);
+	}
+
+	/**
+	 * (non-PHPdoc)
 	 * @see DevelSuite\reflection.dsIReflection::setAnnotationParser()
 	 */
 	public function setAnnotationParser(dsIAnnotationParser $parser) {

@@ -8,6 +8,8 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\serviceprovider\dsServiceProvider;
+
 use DevelSuite\reflection\annotations\dsAnnotationRegistry;
 
 use DevelSuite\session\dsASessionHandler;
@@ -53,6 +55,7 @@ class dsApp {
 	private static $viewHelperCache;
 	private static $logger;
 	private static $eventbus;
+	private static $serviceProvider;
 
 	/**
 	 * Bootstrapping the application
@@ -61,7 +64,11 @@ class dsApp {
 		// system wide constants
 		self::initConstants();
 
+		// setup all annotations
 		self::initAnnotations();
+
+		// setup ServiceProvider and register services
+		self::initServiceProvider();
 
 		// configuration
 		self::initConfiguration();
@@ -120,7 +127,7 @@ class dsApp {
 	 * Initialize system and user annotations
 	 */
 	private static function initAnnotations() {
-		dsAnnotationRegistry::addNamespace("DevelSuite\\reflection\\annotations\\annotation");
+		dsAnnotationRegistry::addNamespace("DevelSuite\\serviceprovider\\annotation");
 		dsAnnotationRegistry::addNamespace("DevelSuite\\form\\annotation");
 
 		// load user annotations saved in annotations.php
@@ -131,12 +138,19 @@ class dsApp {
 			require_once ($configFile);
 		}
 
-		print_r($namespaces);
 		// the namespaces are saved in a array called $namespaces
 		foreach ($namespaces as $namespace) {
-			echo "NAMESPACE: " . $namespace . "<br/>";
 			dsAnnotationRegistry::addNamespace($namespace);
 		}
+	}
+
+	private static function initServiceProvider() {
+		$serviceProvider = new dsServiceProvider();
+		$serviceProvider->registerService("testObj", "DevelSuite.test.dsTestObj");
+		$serviceProvider->registerService("test", "DevelSuite.test.dsTestService");
+
+		self::$serviceProvider = $serviceProvider;
+
 	}
 
 	/**
@@ -163,8 +177,6 @@ class dsApp {
 		// FIXME:
 		// check LOG_PATH is writeable
 		$loggingConf = dsConfig::read("logging");
-		print_r($loggingConf);
-
 	}
 
 	/**
@@ -323,5 +335,9 @@ class dsApp {
 		}
 
 		return self::$eventbus;
+	}
+
+	public function getServiceProvider() {
+		return self::$serviceProvider;
 	}
 }
