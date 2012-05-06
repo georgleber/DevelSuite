@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\controller;
 
+use DevelSuite\exception\dsErrorCodeException;
+
 use DevelSuite\dsApp;
 use DevelSuite\config\dsConfig;
 use DevelSuite\eventbus\dsEvent;
@@ -98,7 +100,7 @@ class dsFrontController {
 	 */
 	public function dispatch() {
 		// notify all pre filter
-		dsApp::getEventBus()->publish(new dsEvent("system.dispatching.prefilter", get_class($this)));
+		dsApp::getEventBus()->publish("system.dispatching.prefilter");
 
 		if(!$this->compress()) {
 			ob_start();
@@ -117,19 +119,21 @@ class dsFrontController {
 			} else {
 				$this->render();
 			}
-		} catch(dsErrorCodeException $e) {
-			echo "exception occured " . $e;
+		} catch(dsDispatchException $e) {
+			echo "dispatch exception occured " . $e;
 			# FIXME:
 			# throw a DispatchException, if the controller could not be found
 			# then show up a 404 Error Page
 			# else if the request could not be processed by the controller
 			# throw another excpetion in order to show up a message
+		} catch (dsErrorCodeException $e) {
+			echo "error code exception occured " . $e;
 		} catch (\Exception $e) {
 			echo "exception occured " . $e;
 		}
 
 		// notify all post filter
-		dsApp::getEventBus()->publish(new dsEvent("system.dispatching.postfilter", get_class($this)));
+		dsApp::getEventBus()->publish("system.dispatching.postfilter");
 
 		// send response to client
 		dsApp::getResponse()->send();

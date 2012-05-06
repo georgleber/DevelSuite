@@ -8,41 +8,78 @@
  */
 namespace DevelSuite\http;
 
+use DevelSuite\util\dsStringTools;
+
 use DevelSuite\config\dsConfig;
 
 /**
- * FIXME
+ * Represents a HTTP Response handling the sending of all
+ * headers, cookies and data to the client.
  *
  * @package DevelSuite\http
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 class dsResponse {
+	/**
+	 * Protocol type (predefined: HTTP/1.1)
+	 * @var string
+	 */
 	private $protocol = "HTTP/1.1";
+
+	/**
+	 * Status code (predefined: 200)
+	 * @var string
+	 */
 	private $statusCode = "200";
+
+	/**
+	 * Status text (predefined: OK)
+	 * @var string
+	 */
 	private $statusText = "OK";
+
+	/**
+	 * Content type (predefined: text/html)
+	 * @var string
+	 */
 	private $contentType = "text/html";
+
+	/**
+	 * Charset (predefined: UTF-8)
+	 * @var string
+	 */
 	private $charset = "UTF-8";
 
+	/**
+	 * All headers which will be send out
+	 * @var array
+	 */
 	private $headers = array();
+
+	/**
+	 * Body content of the response
+	 * @var string
+	 */
 	private $content;
+
+	/**
+	 * All cookies which will be send out
+	 * @var array
+	 */
 	private $cookies = array();
+
+	/**
+	 * Flag for sending only headers or all
+	 * @var bool
+	 */
 	private $headersOnly;
 
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$this->protocol = dsConfig::read("app.http.protocol", "HTTP/1.1");
-		$this->charset = dsConfig::read("app.http.charset", "UTF-8");
-	}
-
-	/**
 	 * Holds HTTP response statuses
-	 *
 	 * @var array
 	 */
-	protected $_statusCodes = array(
+	protected $statusCodes = array(
 	100 => 'Continue',
 	101 => 'Switching Protocols',
 	200 => 'OK',
@@ -84,37 +121,78 @@ class dsResponse {
 	504 => 'Gateway Time-out'
 	);
 
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		$this->protocol = dsConfig::read("app.http.protocol", "HTTP/1.1");
+		$this->charset = dsConfig::read("app.http.charset", "UTF-8");
+	}
+
+	/**
+	 * Set the status code for this response
+	 *
+	 * @param string $code
+	 * 		The status code
+	 * @param string $text
+	 * 		The status text
+	 */
 	public function setStatusCode($code, $text) {
 		$this->statusCode = $code;
-		if(NULL !== $text) {
+		if(dsStringTools::isFilled($text)) {
 			$this->statusText = $text;
 		} else {
-			$this->statusText = $statusTexts[$code];
+			$this->statusText = $this->statusCodes[$code];
 		}
 	}
 
+	/**
+	 * If set to TRUE only headers will be sent out
+	 *
+	 * @param bool $headersOnly
+	 * 		If TRUE only headers will be sent
+	 */
 	public function setHeadersOnly($headersOnly) {
 		$this->headersOnly = $headersOnly;
 	}
 
+	/**
+	 * Check if only headers will be send
+	 *
+	 * @return bool
+	 */
 	public function headersOnly() {
 		return $this->headersOnly;
 	}
 
+	/**
+	 * Set a new content type
+	 *
+	 * @param string $contentType
+	 * 		The new content type
+	 */
 	public function setContentType($contentType) {
 		$this->contentType = $contentType;
 	}
 
+	/**
+	 * Returns the content type
+	 *
+	 * @return string
+	 */
 	public function getContentType() {
 		return $this->contentType;
 	}
 
 	/**
-	 * Sets a header.
+	 * Adds a header.
 	 *
-	 * @param string  $name     header name
-	 * @param string  $value    Value (if null, remove the header)
-	 * @param bool    $replace  Replace for the value
+	 * @param string $name
+	 * 		header name
+	 * @param string $value
+	 * 		Value (if null, remove the header)
+	 * @param bool $replace
+	 * 		Replace for the value
 	 *
 	 */
 	public function addHeader($name, $value = NULL) {
@@ -128,7 +206,8 @@ class dsResponse {
 	/**
 	 * Checks if response has given HTTP header.
 	 *
-	 * @param  string $name  HTTP header name
+	 * @param string $name
+	 * 		HTTP header name
 	 *
 	 * @return bool
 	 */
@@ -140,7 +219,7 @@ class dsResponse {
 	 * Add content of the page(s)
 	 *
 	 * @param $content
-	 * 			content displaying the page
+	 * 		content displaying the page
 	 */
 	public function setContent($content) {
 		$this->content = $content;
@@ -157,7 +236,7 @@ class dsResponse {
 	 * Replace current content with a new one
 	 *
 	 * @param string $newContent
-	 * 			replacing content
+	 * 		replacing content
 	 */
 	public function replaceContent($newContent) {
 		$this->content = $newContent;
@@ -208,7 +287,7 @@ class dsResponse {
 	 * directly without finishing the script.
 	 *
 	 * @param string $url
-	 * 		url to which will redirected
+	 * 		URL that is redirected to
 	 * @param bool $immediately
 	 * 		redirect immediately?
 	 */
@@ -236,9 +315,9 @@ class dsResponse {
 	 * Sets the correct headers to instruct the client to cache the response.
 	 *
 	 * @param string $since
-	 * 				A valid time since the response text has not been modified
+	 * 			A valid time since the response text has not been modified
 	 * @param string $time
-	 * 				A valid time for cache expiry
+	 * 			A valid time for cache expiry
 	 */
 	public function cache($since, $time = '+1 day') {
 		if (!is_integer($time)) {
@@ -256,19 +335,19 @@ class dsResponse {
 	 * Sets a cookie
 	 *
 	 * @param string $name
-	 * 				HTTP header name
+	 * 		HTTP header name
 	 * @param string $value
-	 * 				Value for the cookie
+	 * 		Value for the cookie
 	 * @param string $expire
-	 * 				Cookie expiration period
+	 * 		Cookie expiration period
 	 * @param string $path
-	 * 				Path
+	 * 		Path
 	 * @param string $domain
-	 * 				Domain name
+	 * 		Domain name
 	 * @param bool $secure
-	 * 				If secure
+	 * 		If secure
 	 * @param bool $httpOnly
-	 * 				If uses only HTTP
+	 * 		If uses only HTTP
 	 */
 	public function setCookie($name, $value, $expire = NULL, $path = '/', $domain = '', $secure = FALSE, $httpOnly = FALSE) {
 		if ($expire !== NULL) {
@@ -296,7 +375,7 @@ class dsResponse {
 	 * Deletes a cookie
 	 *
 	 * @param string $name
-	 * 			Name of the cookie
+	 * 		Name of the cookie
 	 */
 	public function deleteCookie($name, $path = '/', $domain = '', $secure = FALSE) {
 		setCookie($name, "", time() - 3600, $path, $domain, $secure);

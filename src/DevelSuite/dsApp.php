@@ -8,6 +8,10 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\session\dsASessionHandler;
+
+use DevelSuite\i18n\dsLocale;
+
 use DevelSuite\eventbus\impl\dsEventBus;
 
 use Monolog\Handler\SyslogHandler;
@@ -36,6 +40,10 @@ use DevelSuite\view\cache\dsViewHelperCache;
  * @version 1.0
  */
 class dsApp {
+	const ENV_DEVELOPMENT 	= "DEVELOPMENT";
+	const ENV_TEST 			= "TEST";
+	const ENV_PRODUCTION	= "PRODUCTION";
+
 	private static $request;
 	private static $response;
 	private static $route;
@@ -44,43 +52,189 @@ class dsApp {
 	private static $logger;
 	private static $eventbus;
 
-	public static function init($config, $routing) {
-		self::initConfiguration($config);
-		self::initRouting($routing);
-		// self::initLogging();
-	}
-
-	private static function initConfiguration($config) {
-		if (!defined('APP_PATH')) {
-			echo "FEHLER: APP_PATH not set";
-			exit;
-		}
-
-		if (!defined('DS')) {
-			define("DS", DIRECTORY_SEPARATOR);
-		}
-
-		if (!defined('LOG_PATH')) {
-			define('LOG_PATH', dirname(APP_PATH) . '/tmp/log/');
-		}
+	/**
+	 * Bootstrapping the application
+	 */
+	public static function init() {
+		// system wide constants
+		self::initConstants();
 
 		// configuration
-		require_once($config);
-		dsConfig::write('core.version', 'DevelSuite 1.0.0');
+		self::initConfiguration();
 
-		$locale = dsConfig::read("app.locale");
-		self::setupIniValues($locale);
+		// logging
+		self::initLogging();
 
-		// init session handling
-		dsSession::configure();
+		// setup all system settings
+		self::initSystem();
+
+		// session management
+		# self::initSession();
+
+		// routing
+		self::initRouting();
+
+		// publish new state system.boot.complete
+		self::getEventBus()->publish("system.boot.complete");
 	}
 
-	private static function initRouting($routing) {
-		// bind standard controller for startpage
+	/**
+	 * Initialize system wide constants
+	 */
+	private static function initConstants() {
+		// define CORE_VERION
+		define('CORE_VERSION', 'DevelSuite 1.0.0');
+
+		// set DOCUMENT_ROOT
+		if (!defined('DOCUMENT_ROOT')) {
+			define('DOCUMENT_ROOT', getenv("DOCUMENT_ROOT"));
+		}
+
+		// set DS as alias for DIRECTORY_SEPARATOR
+		if (!defined('DS')) {
+			define('DS', DIRECTORY_SEPARATOR);
+		}
+
+		// define APP_PATH
+		if (!defined('APP_PATH')) {
+			define('APP_PATH', DOCUMENT_ROOT . DS . 'application');
+
+		}
+
+		// define LOG_PATH
+		if (!defined('LOG_PATH')) {
+			define('LOG_PATH', DOCUMENT_ROOT . DS . 'tmp' . DS . 'log');
+		}
+
+		// define CONFIG_PATH
+		if (!defined('CONFIG_PATH')) {
+			define('CONFIG_PATH', APP_PATH . DS . 'config');
+		}
+	}
+
+	/**
+	 * Initialize configuration
+	 */
+	private static function initConfiguration() {
+		$configFile = CONFIG_PATH . DS . "config.php";
+
+		// check that config file exists
+		if (!file_exists($configFile)) {
+			throw new \Exception("Configuration file not found: " . $configFile);
+		}
+
+		require_once($configFile);
+	}
+
+	/**
+	 * Initialize logging
+	 */
+	private static function initLogging() {
+		// FIXME
+		// set_error_handler('_exception_handler');
+
+		// FIXME:
+		// check LOG_PATH is writeable
+		$loggingConf = dsConfig::read("logging");
+		print_r($loggingConf);
+
+	}
+
+	/**
+	 * Initialize system wide settings
+	 *
+	 * @throws \Exception
+	 */
+	private static function initSystem() {
+		// check PHP version
+		if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+			throw new \Exception("At least PHP-Version 5.3.0 is required");
+		}
+
+		// increase maximimum execution time (if possible)
+		if (function_exists('set_time_limit') == TRUE && @ini_get('safe_mode') == 0) {
+			@set_time_limit(300);
+		}
+
+		// set system wide locale
+		$locale = dsConfig::read("app.locale", dsLocale::$UNITED_KINGDOM);
+		setlocale(LC_ALL, $locale->getLanguage() . "_" . $locale->getCountry() . ".utf-8");
+
+		// set default timezone
+		$timezone = dsConfig::read("app.timezone", "Europe/Dublin");
+		date_default_timezone_set($timezone);
+
+		// set up display_errors and error_reporting depending on environment
+		$env = dsConfig::read('app.environment', self::ENV_DEVELOPMENT);
+		switch ($env) {
+			case self::ENV_DEVELOPMENT:
+			case self::ENV_TEST:
+				ini_set('display_errors',1);
+				ini_set('display_startup_errors',1);
+				error_reporting(E_ALL);
+				break;
+					
+			case self::ENV_PRODUCTION:
+				ini_set("display_errors", 0);
+				ini_set("display_startup_errors", 0);
+				error_reporting(0);
+				break;
+		}
+	}
+
+	/**
+	 * Initialise session management
+	 */
+	private static function initSession() {
+		$settings = dsConfig::read("session");
+
+		switch ($settings['handler']) {
+			case 'file':
+				$handler = "DevelSuite\\session\\impl\\dsFileSessionHandler";
+				break;
+
+			case 'databse':
+				$handler = "DevelSuite\\session\\impl\\dsDatabaseSessionHandler";
+				break;
+
+			case 'cache':
+				$handler = "DevelSuite\\session\\impl\\dsCacheSessionHandler";
+				throw \Exception("Cache session handler is not implemented.");
+				break;
+
+			case 'userdefined':
+				$handler = $settings['handler_class'];
+				break;
+		}
+
+		if (!class_exists($handler)) {
+			throw \Exception("Session handler could not be found.");
+		}
+
+		$sessionHandler = new $handler();
+		if (!($sessionHandler instanceof dsASessionHandler)) {
+			throw \Exception("Session handler must be subclass of dsASessionHandler.");
+		}
+		
+		
+	}
+
+	/**
+	 * Initialise routing
+	 */
+	private static function initRouting() {
+		$routingFile = CONFIG_PATH . DS . "routing.php";
+
+		// check that routing file exists
+		if (!file_exists($routingFile)) {
+			throw new \Exception("Routing file not found");
+		}
+
+		// bind standard controller for default start page
 		dsRouter::bind("/", array("controller" => "home"), array(), "home");
 
 		// bind all defined routes
-		require_once($routing);
+		require_once($routingFile);
 
 		// unspecific route for all other not defined routes
 		dsRouter::bind("/:controller/:action", array("action" => ""));
@@ -135,24 +289,12 @@ class dsApp {
 
 		return self::$logger;
 	}
-	
+
 	public static function getEventBus() {
 		if (self::$eventbus == NULL) {
 			self::$eventbus = new dsEventBus();
 		}
-		
+
 		return self::$eventbus;
-	}
-
-	private static function setupIniValues($locale) {
-		// set default timezone
-		date_default_timezone_set('Europe/Berlin');
-
-		setlocale(LC_ALL, $locale->getLanguage() . "_" . $locale->getCountry() . ".utf-8");
-
-		// maximale Ausfuehrungszeit des Scripts wenn moeglich erhoehen
-		if (function_exists("set_time_limit") == TRUE && @ini_get("safe_mode") == 0) {
-			@set_time_limit(300);
-		}
 	}
 }

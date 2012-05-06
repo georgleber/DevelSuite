@@ -1,12 +1,14 @@
 <?php
 /*
  * This file is part of the DevelSuite
-* Copyright (C) 2012 Georg Henkel <info@develman.de>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ * Copyright (C) 2012 Georg Henkel <info@develman.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace DevelSuite\session\impl;
+
+use DevelSuite\session\dsASessionHandler;
 
 use DevelSuite\config\dsConfig;
 use DevelSuite\session\impl\dsISessionManager;
@@ -15,72 +17,38 @@ use \PDO as PDO;
 use \PDOException as PDOException;
 
 /**
+ * FIXME
  * Class for handling sessions in a database.
  *
  * @package DevelSuite\session\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsDatabaseSession implements dsISessionManager {
+class dsDatabaseSessionHandler extends dsASessionHandler {
 	private $pdo;
-	private $sessionTimeout;
 
-	public function __construct() {
-		ini_set("session.use_trans_sid", "true");
-
-		$dsn = dsConfig::read('session.database.dsn');
-		$user = dsConfig::read('session.database.user');
-		$passwd = dsConfig::read('session.database.passwd');
-		$this->pdo = new PDO($dsn, $user, $passwd);
-
-		$timeout = dsConfig::read('session.timeout');
-		$this->sessionTimeout = $timeout * 60;
-
-		session_set_save_handler(
-		array(&$this, 'open'),
-		array(&$this, 'close'),
-		array(&$this, 'read'),
-		array(&$this, 'write'),
-		array(&$this, 'destroy'),
-		array(&$this, 'gc')
-		);
+	/**
+	 * Constructor
+	 * 
+	 * @Inject 
+	 * @var \PDO $pdo
+	 */
+	public function __construct(\PDO $pdo) {
+		parent::__construct();
 		
-		// start a new session
-		session_start();
-
-		/*
-		 * If cookies are disabled, use SSID and add it to all urls
-		if (!isset($_COOKIE['PHPSESSID'])) {
-		if (isset($_REQUEST['SSID']) && preg_match('~^[0-9a-f]{32}$~', $_REQUEST['SSID'])) {
-		output_add_rewrite_var('SSID', $_REQUEST['SSID']);
-		} else {
-		output_add_rewrite_var('SSID', session_id());
-		}
-		}
-		*/
-
-		// make sure that session values are stored
-		register_shutdown_function('session_write_close');
+		ini_set("session.use_trans_sid", "true");
+		$this->pdo = $pdo;
 	}
-
-	/* (non-PHPdoc)
-	 * @see DevelSuite\core\session.dsISessionManager::open()
-	*/
+	
 	public function open($savePath, $sessionName) {
 		return TRUE;
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\core\session.dsISessionManager::close()
-	*/
 	public function close() {
 		// call the garbage collector
-		return $this->gc(100);
+		return TRUE;
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\core\session.dsISessionManager::read()
-	*/
 	public function read($id) {
 		// create a query to get the session data
 		$selectSQL = "SELECT * FROM ds_session WHERE session_id = :SESSION_ID
@@ -102,11 +70,8 @@ class dsDatabaseSession implements dsISessionManager {
 		return $result;
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\core\session.dsISessionManager::write()
-	*/
 	public function write($id, $sessData) {
-		$time = time() + $this->sessionTimeout;
+		$time = time();
 
 		// check if some data was given
 		if ($sessData == NULL) {
@@ -144,9 +109,6 @@ class dsDatabaseSession implements dsISessionManager {
 		return $insertResult;
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\core\session.dsISessionManager::destroy()
-	*/
 	public function destroy($id) {
 		// create a query to delete a session
 		$deleteSQL = 'DELETE FROM ds_session WHERE session_id = :SESSION_ID';
@@ -158,32 +120,15 @@ class dsDatabaseSession implements dsISessionManager {
 		return $deleteResult;
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\core\session.dsISessionManager::gc()
-	*/
 	public function gc($maxlifetime) {
-		/* period after that a session pass off */
-		$maxlifetime = time() - $this->sessionTimeout;
-
-		// delete statement
-		/*
-		$selectSQL = 'SELECT * FROM ds_session WHERE session_expire < FROM_UNIXTIME(:MAXLIFETIME)';
-
-		$selectStmt = $this->pdo->prepare($selectSQL);
-		$selectStmt->bindParam(':MAXLIFETIME', $maxlifetime);
-		$selectResult = $selectStmt->execute();
-
-		while ($row = $selectStmt->fetch(PDO::FETCH_ASSOC)) {
-		$expire = $row['session_expire'];
-		echo "FOUND: " . date('d.m.Y H:i:s', $expire) . "<br/>";
-		}
-		*/
-
+		// overwrite with the predefined sessionLifetime
+		$maxlifetime = time() - $this->sessionLifetime;
+			
 		// delete statement
 		$deleteSQL = 'DELETE FROM ds_session WHERE session_expire < FROM_UNIXTIME(:MAXLIFETIME)';
 
 		$deleteStmt = $this->pdo->prepare($deleteSQL);
-		$deleteStmt->bindParam(':MAXLIFETIME', $maxlifetime);
+		$deleteStmt->bindValue(':MAXLIFETIME', $maxlifetime, PDO::PARAM_STR);
 		$deleteResult = $deleteStmt->execute();
 
 		return $deleteResult;
