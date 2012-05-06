@@ -8,6 +8,8 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\reflection\annotations\dsAnnotationRegistry;
+
 use DevelSuite\session\dsASessionHandler;
 
 use DevelSuite\i18n\dsLocale;
@@ -59,6 +61,8 @@ class dsApp {
 		// system wide constants
 		self::initConstants();
 
+		self::initAnnotations();
+
 		// configuration
 		self::initConfiguration();
 
@@ -109,6 +113,29 @@ class dsApp {
 		// define CONFIG_PATH
 		if (!defined('CONFIG_PATH')) {
 			define('CONFIG_PATH', APP_PATH . DS . 'config');
+		}
+	}
+
+	/**
+	 * Initialize system and user annotations
+	 */
+	private static function initAnnotations() {
+		dsAnnotationRegistry::addNamespace("DevelSuite\\reflection\\annotations\\annotation");
+		dsAnnotationRegistry::addNamespace("DevelSuite\\form\\annotation");
+
+		// load user annotations saved in annotations.php
+		$configFile = CONFIG_PATH . DS . "annotations.php";
+
+		// check that config file exists
+		if (file_exists($configFile)) {
+			require_once ($configFile);
+		}
+
+		print_r($namespaces);
+		// the namespaces are saved in a array called $namespaces
+		foreach ($namespaces as $namespace) {
+			echo "NAMESPACE: " . $namespace . "<br/>";
+			dsAnnotationRegistry::addNamespace($namespace);
 		}
 	}
 
@@ -215,8 +242,8 @@ class dsApp {
 		if (!($sessionHandler instanceof dsASessionHandler)) {
 			throw \Exception("Session handler must be subclass of dsASessionHandler.");
 		}
-		
-		
+
+
 	}
 
 	/**

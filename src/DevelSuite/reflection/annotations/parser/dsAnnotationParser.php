@@ -11,13 +11,17 @@ namespace DevelSuite\reflection\annotations\parser;
 use DevelSuite\reflection\annotations\dsAnnotationRegistry;
 
 /**
- * AnnotationParser parses the doc comment of a php object for registered annotations.
+ * This class parses the doc comment of a php object for registered annotations.
  *
  * @package DevelSuite\reflection\annotations\parser
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 class dsAnnotationParser implements dsIAnnotationParser {
+	/**
+	 * All ignored annotations
+	 * @var array
+	 */
 	private static $ignoredAnnotations = array(
 		"abstract", "access", "author", "copyright", 
 		"deprecated", "deprec", "example", "exception",
@@ -27,15 +31,25 @@ class dsAnnotationParser implements dsIAnnotationParser {
 		"throws", "todo", "var", "version");
 
 	/**
+	 * Overwrites the array of ignored annotations
+	 *
+	 * @param array $ignoredAnnotations
+	 * 		Array with the annotations to ignore
+	 */
+	public function setIgnoredAnnotations(array $ignoredAnnotations) {
+		self::$ignoredAnnotations = $ignoredAnnotations;
+	}
+
+	/**
 	 * (non-PHPdoc)
 	 * @see DevelSuite\reflection\annotations\parser.dsIAnnotationParser::parse()
 	 */
 	public function parse($docComment) {
-		$annotations = array();
+		$parsedAnnotations = array();
 
 		// no comment exists
 		if (trim($docComment) == '') {
-			return $annotations;
+			return $parsedAnnotations;
 		}
 
 		// extract the content of comment without * and /
@@ -50,7 +64,7 @@ class dsAnnotationParser implements dsIAnnotationParser {
 					$attributes = array();
 					// if annotations[2] is set, annotation has attributes
 					if (isset($annotations[2])) {
-						$attrPattern = "(\'\w+\')=(\'\w+\'|\d+)";
+						$attrPattern = "\'(\w+)\'\s?=\s?(\'\w+\'|\d+)";
 
 						// at least 2 attributes
 						if (preg_match('#\(((.+),(.+))+\)#', $annotations[2], $attrMatches)) {
@@ -60,7 +74,7 @@ class dsAnnotationParser implements dsIAnnotationParser {
 								// kill possible leading whitespaces
 								$attrib = trim($attrib);
 
-								if (preg_match('#' . $attrPattern . '#', $annotations[2], $attrMatch)) {
+								if (preg_match('#' . $attrPattern . '#', $attrib, $attrMatch)) {
 									// attrMatch[1] is identifier, attrMatch[2] is value
 									$attributes[$attrMatch[1]] = $attrMatch[2];
 								}
@@ -77,17 +91,15 @@ class dsAnnotationParser implements dsIAnnotationParser {
 
 					// load annotation from registry and initialize possible attributes
 					$annot = dsAnnotationRegistry::load($annotations[1]);
-
-					if (!empty($attributes)) {
+					if ($annot != NULL) {
+						// initialize attributes
 						$annot->initAttributes($attributes);
+						$parsedAnnotations[] = $annot;
 					}
-
-					$annotations[] = $annot;
 				}
 			}
 		}
 
-		return $annotations;
+		return $parsedAnnotations;
 	}
-
 }

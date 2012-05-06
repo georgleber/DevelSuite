@@ -52,7 +52,7 @@ class dsViewHelperCache {
 			// load class from application path if exists otherwise from framework
 			$helperClazz = "\\view\\helper\\" . ucfirst($helperName) . "ViewHelper";
 			if (!class_exists($helperClazz)) {
-				$helperClazz ="\\DevelSuite\\view\\helper\\impl\\ds" .  ucfirst($helperName) . "ViewHelper";
+				$helperClazz = "\\DevelSuite\\view\\helper\\impl\\ds" .  ucfirst($helperName) . "ViewHelper";
 				if (!class_exists($helperClazz)) {
 					throw new dsRenderingException(dsRenderingException::VIEWHELPER_NOT_FOUND, array($helperClazz));
 				}

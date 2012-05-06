@@ -10,8 +10,8 @@ class dsTestService {
 	/**
 	 * Bla
 	 *
-	 * @Inject
-	 * @Lenght('min' = 1, 'max' = 5)
+	 * @Test
+	 * @Length('min'=1,'max'=2)
 	 *
 	 * @param string $dsn
 	 * 		DSN
@@ -27,7 +27,7 @@ class dsTestService {
 	/**
 	 * a test method
 	 *
-	 * @Inject
+	 * Inject
 	 *
 	 * @param string $test
 	 * 		A test value

@@ -63,11 +63,9 @@ class dsReflectionMethod extends \ReflectionMethod implements dsIReflection {
 	 */
 	public function getAnnotations() {
 		if (empty($this->annotations)) {
-			$annotations = dsAnnotationParser::parse($this->getDocComment());
-
+			$annotations = $this->parser->parse($this->getDocComment());
 			foreach ($annotations as $annotation) {
-				print_r($annotation);
-				#$this->annotations[$annotation->getName()] = $annotation;
+				$this->annotations[$annotation->getName()] = $annotation;
 			}
 		}
 

@@ -9,7 +9,6 @@
 namespace DevelSuite\reflection;
 
 use DevelSuite\reflection\annotations\parser\dsAnnotationParser;
-
 use DevelSuite\reflection\annotations\parser\dsIAnnotationParser;
 
 /**
@@ -51,7 +50,7 @@ class dsReflectionClass extends \ReflectionClass implements dsIReflection {
 	 */
 	public function getAnnotations() {
 		if (empty($this->annotations)) {
-			$annotations = dsAnnotationParser::parse($this->getDocComment());
+			$annotations = $this->parser->parse($this->getDocComment());
 
 			foreach ($annotations as $annotation) {
 				$this->annotations[$annotation->getName()] = $annotation;
