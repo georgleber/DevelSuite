@@ -27,7 +27,7 @@ class dsTestService {
 	 * @param string $test
 	 * 		A test value
 	 */
-	public function setTest(TestObj $test) {
+	public function setTest(dsTestObj $test) {
 		echo "got test data test = ";
 		print_r($test);
 		echo "<br/>";

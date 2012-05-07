@@ -8,35 +8,48 @@
  */
 namespace DevelSuite\serviceprovider;
 
-use DevelSuite\serviceprovider\annotation\Inject;
-
 use DevelSuite\config\dsConfig;
 use DevelSuite\reflection\dsReflectionClass;
+use DevelSuite\serviceprovider\annotation\Inject;
 
 /**
  * FIXME
+ * ServiceProvider is a dependency injection container, which can load 
+ * services via constructor injection or setter injection. 
  *
  * @package DevelSuite\serviceprovider
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 class dsServiceProvider {
-	private $parameterMap;
-	private $classMap;
+	/**
+	 * Map with all registered services
+	 * @var array
+	 */
+	private $classMap = array();
 
-	public function registerParameter($alias, $value) {
-		$this->parameterMap[$alias] = $value;
-	}
-
+	/**
+	 * Register a service to the provider
+	 *
+	 * @param string $alias
+	 * 		Alias name of the service
+	 * @param string $class
+	 * 		Classname of the service (NAMESPACE: use . instead of \)
+	 */
 	public function registerService($alias, $class) {
 		$class = str_replace(".", "\\", $class);
 
 		$this->classMap[$alias]["class"] = $class;
 		$this->classMap[$alias]["injected"] = FALSE;
 		$this->classMap[$alias]["instance"] = NULL;
-
 	}
 
+	/**
+	 * Load a service
+	 *
+	 * @param string $alias
+	 * 		Alias name of the service
+	 */
 	public function get($alias) {
 		$instance = NULL;
 		if (array_key_exists($alias, $this->classMap)) {
@@ -54,6 +67,12 @@ class dsServiceProvider {
 		return $instance;
 	}
 
+	/**
+	 * Loads the class and injects all parameters
+	 *
+	 * @param string $className
+	 * 		Name of the class
+	 */
 	private function loadClass($className) {
 		// load class via reflection and parse methods for @Inject
 		$reflClass = new dsReflectionClass($className);
@@ -75,30 +94,72 @@ class dsServiceProvider {
 				// load parameters
 				$parameters = $this->determineInstances($method->getParameters());
 				// invoke method
-				$method->invoke($instance, $parameters);
+				$method->invokeArgs($instance, $parameters);
 			}
 		}
 
 		return $instance;
 	}
 
+	/**
+	 * Parse and load class instances of the parameters
+	 *
+	 * @param array $parameters
+	 * 		Parameters to parse
+	 */
 	private function determineInstances(array $parameters) {
 		$params = array();
 		foreach ($parameters as $parameter) {
-			$loadClass = $parameter->getClass();
-			if (array_key_exists($loadClass, $this->classMap)) {
-				if ($this->classMap[$alias]["injected"] == FALSE) {
-					$class = $this->classMap[$alias]["class"];
-					$instance = $this->loadClass($class);
+			$loadClass = NULL;
 
-					$this->classMap[$alias]["instance"] = $instance;
-					$this->classMap[$alias]["injected"] = TRUE;
-				} else {
-					$instance = $this->classMap[$alias]["instance"];
+			// ReflectionParameter::getClass() throws an exception if a class can not be autoloaded
+			// If this happens we catch the exception and parse the message to retrieve the classname
+			try {
+				$loadClass = $parameter->getClass()->getName();
+			} catch (\ReflectionException $e) {
+				if (preg_match('#Class (.+) does not exist#', $e->getMessage(), $m)) {
+					$loadClass = $m[1];
 				}
+			}
 
-				$params = $instance;
+			if ($loadClass != NULL) {
+				// load class from classmap
+				if (($alias = $this->findClass($loadClass)) != NULL) {
+					// if it is not already loaded inject it
+					if ($this->classMap[$alias]["injected"] == FALSE) {
+						$class = $this->classMap[$alias]["class"];
+						$instance = $this->loadClass($class);
+
+						$this->classMap[$alias]["instance"] = $instance;
+						$this->classMap[$alias]["injected"] = TRUE;
+					} else {
+						$instance = $this->classMap[$alias]["instance"];
+					}
+
+					$params[] = $instance;
+				}
+			} else {
+				// FIXME throw exception that parameter could not be parsed
 			}
 		}
+
+		return $params;
+	}
+
+	/**
+	 * Searches for a className in the classMap
+	 *
+	 * @param string $loadClass
+	 * 		Class to load from classMap
+	 */
+	private function findClass($loadClass) {
+		$keys = array_keys($this->classMap);
+		foreach ($keys as $key) {
+			if ($this->classMap[$key]['class'] === $loadClass) {
+				return $key;
+			}
+		}
+
+		return NULL;
 	}
 }
