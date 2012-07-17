@@ -30,7 +30,7 @@ abstract class dsAController {
 	 * Corresponding route of this controller
 	 * @var dsARoute
 	 */
-	private $route;
+	protected $route;
 
 	/**
 	 * TheFrontController
