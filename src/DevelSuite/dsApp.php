@@ -270,9 +270,6 @@ class dsApp {
 			throw new \Exception("Routing file not found");
 		}
 
-		// bind standard controller for default start page
-		dsRouter::bind("/", array("controller" => "home"), array(), "home");
-
 		// bind all defined routes
 		require_once($routingFile);
 
