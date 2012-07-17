@@ -65,10 +65,10 @@ class dsApp {
 		self::initConstants();
 
 		// setup all annotations
-		self::initAnnotations();
+		#self::initAnnotations();
 
 		// setup ServiceProvider and register services
-		self::initServiceProvider();
+		#self::initServiceProvider();
 
 		// configuration
 		self::initConfiguration();
