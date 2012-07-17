@@ -8,6 +8,12 @@
  */
 namespace DevelSuite\view;
 
+use Monolog\Processor\WebProcessor;
+
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\dsApp;
 use DevelSuite\exception\impl\dsRenderingException;
 
@@ -70,6 +76,15 @@ abstract class dsAView {
 		// first argument is action name
 		$action = $arguments[0];
 		$params = array_slice($arguments, 1);
+		
+		$log = new Logger("Debug");
+		$log->pushHandler(new StreamHandler(LOG_PATH . 'server.log'));
+		$log->pushProcessor(new WebProcessor());
+		
+		$log->debug("arguments loaded: ");
+		foreach ($arguments as $arg) {
+			$log->debug($arg . "<br/>");
+		}
 
 		$result = NULL;
 		if (method_exists($viewHelper, $action) && is_callable(array($viewHelper, $action))) {
