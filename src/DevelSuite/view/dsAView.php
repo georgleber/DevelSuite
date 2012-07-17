@@ -73,7 +73,7 @@ abstract class dsAView {
 
 		$result = NULL;
 		if (method_exists($viewHelper, $action) && is_callable(array($viewHelper, $action))) {
-			$result = call_user_func_array(array($viewHelper, $action), $params);
+			$result = call_user_func_array(array($viewHelper, $action), (array)$params);
 		} else {
 			throw new dsRenderingException(dsRenderingException::ACTION_NOT_CALLABLE, array($action,  get_class($viewHelper)));
 		}
