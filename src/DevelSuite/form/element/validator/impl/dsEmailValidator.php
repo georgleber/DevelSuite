@@ -37,7 +37,7 @@ class dsEmailValidator extends dsAValidator {
 	 * @see DevelSuite\form\element\validator.dsAValidator::init()
 	 */
 	protected function init() {
-		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__) . DS . "validation");
+		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__), "validation");
 
 		$errorMessage = sprintf($iniArr['dsEmailValidator.error'], $this->element->getCaption());
 		$this->errorMessage = $errorMessage;
