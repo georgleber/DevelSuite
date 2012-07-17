@@ -56,10 +56,16 @@ class dsMailView extends dsAView {
 	public function render() {
 		$file = $this->path . DS . $this->template;
 
+		$content = NULL;
 		if(file_exists($file)) {
+			ob_start();
 			include($file);
+			$content = ob_get_contents();
+			ob_end_clean();
 		} else {
 			throw new dsRenderingException(dsRenderingException::TEMPLATE_NOT_FOUND, array($file));
 		}
+		
+		return $content;
 	}
 }
