@@ -271,7 +271,7 @@ class dsApp {
 		}
 
 		// bind standard controller for default start page
-		dsRouter::bind("/", array("controller" => "home"), array(), "home");
+		# dsRouter::bind("/", array("controller" => "home"), array(), "home");
 
 		// bind all defined routes
 		require_once($routingFile);
