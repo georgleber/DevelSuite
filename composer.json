@@ -2,7 +2,7 @@
     "name": "Develman/DevelSuite",
     "type": "library",
     "description": "DevelSuite - Web Development Framework for PHP 5.3",
-    "version": "1.0.0",
+    "version": "develop",
     "license": "MIT",
     "authors": [
         {
