@@ -195,16 +195,9 @@ class dsFrontController {
 	 */
 	public function includeJavaScripts() {
 		$code = "";
-
-		// if javascript is used add jquery
-		$env = dsConfig::read("app.environment", "DEVELOPMENT");
-		$jqueryVersion = dsConfig::read("app.jquery.version", "1.7.1");
-
-		if ($env == "DEVELOPMENT") {
-			$code .= "<script type='text/javascript' src='/public/scripts/jquery-" . $jqueryVersion . ".min.js'></script>\n";
-		} else {
-			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery-" . $jqueryVersion . ".min.js'></script>\n";
-		}
+		
+		$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>";
+		$code .= "<script>window.jQuery || document.write('<script src=\"/public/scripts/jquery.min.js\"><\/script>')</script>";
 
 		foreach($this->javascripts as $script) {
 			$code .= "<script type='text/javascript' src='" . $script . "'></script>\n";
