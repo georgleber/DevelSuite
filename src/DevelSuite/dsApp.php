@@ -8,6 +8,8 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\view\helper\cache\dsViewHelperCache;
+
 use DevelSuite\serviceprovider\dsServiceProvider;
 
 use DevelSuite\reflection\annotations\dsAnnotationRegistry;
@@ -34,7 +36,6 @@ use DevelSuite\config\dsConfig;
 use DevelSuite\http\dsResponse;
 use DevelSuite\http\dsRequest;
 use DevelSuite\session\dsSession;
-use DevelSuite\view\cache\dsViewHelperCache;
 
 /**
  * FIXME
