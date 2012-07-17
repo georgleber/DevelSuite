@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\view\impl;
 
+use DevelSuite\config\dsConfig;
+
 use DevelSuite\dsApp;
 use DevelSuite\controller\dsAController;
 use DevelSuite\controller\dsPageController;
@@ -49,7 +51,7 @@ class dsHtmlView extends dsAView {
 	 * 		The corresponding controller
 	 */
 	public function __construct($template, $ctrl) {
-		$this->path = APP_PATH . DS . "view";
+		$this->path = dsConfig::read("app.viewdir", APP_PATH . DS . "view");
 		$this->template = $template;
 		$this->ctrl = $ctrl;
 	}
@@ -69,8 +71,7 @@ class dsHtmlView extends dsAView {
 	 * @see DevelSuite\view.dsAView::render()
 	 */
 	public function render() {
-		$className = preg_replace("#(.*)\\\\(.*)Controller#", "$2", get_class($this->ctrl));
-		$file = $this->path . DS . strtolower($className) . DS . $this->template;
+		$file = $this->path . DS . $this->template;
 
 		if(file_exists($file)) {
 			include($file);
