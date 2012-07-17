@@ -8,7 +8,7 @@
  */
 namespace DevelSuite\form\element;
 
-use DevelSuite\core\i18n\dsResourceBundle;
+use DevelSuite\i18n\dsResourceBundle;
 
 /**
  * Abstract superclass for all button elements.
@@ -68,7 +68,7 @@ abstract class dsAButtonElement {
 	 * @return The i18n text for the button
 	 */
 	protected function getButtonValue($buttonKey) {
-		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__) . DS . "buttonText");
+		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__), "buttonText");
 
 		$result = NULL;
 		if(array_key_exists($buttonKey, $iniArr)) {
