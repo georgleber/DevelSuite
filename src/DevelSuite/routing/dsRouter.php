@@ -132,7 +132,7 @@ class dsRouter {
 	 *
 	 * @return string URL of the named route
 	 */
-	public static function generateUrl($name, array $params = array()) {
+	public function generateUrl($name, array $params = array()) {
 		$route = $this->findRoute($name);
 		$url = $route->getPattern();
 
