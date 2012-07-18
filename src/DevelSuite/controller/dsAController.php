@@ -59,7 +59,7 @@ abstract class dsAController {
 		$this->frontCtrl = $frontCtrl;
 
 		$this->log = new Logger("Controller");
-		$this->log->pushHandler(new StreamHandler(LOG_PATH . 'server.log'));
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 		$this->log->pushProcessor(new WebProcessor());
 
 		$this->init();
