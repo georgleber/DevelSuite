@@ -5,7 +5,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- * 
+ *
  * Parts of this file are taken from dannyvankootens PHP-Router.
  * See the PHP-ROUTER_LICENSE file.
  */
@@ -103,6 +103,26 @@ class dsRouter {
 	}
 
 	/**
+	 * Find a route by the given name
+	 *
+	 * @param string $name
+	 * 		Name of the route
+	 * @throws dsDispatchException
+	 * 		Will be thrown if no route was found
+	 *
+	 * @return dsRoute named route element
+	 */
+	public function findRoute($name) {
+		$route = self::$namedRoutes[$name];
+
+		if ($route == NULL) {
+			throw new dsDispatchException(dsDispatchException::NAMED_ROUTE_NOT_FOUND, array($name));
+		}
+
+		return $route;
+	}
+
+	/**
 	 * Retrieves a route by the given name and creates a URL of it
 	 *
 	 * @param string $routeName
@@ -113,11 +133,7 @@ class dsRouter {
 	 * @return string URL of the named route
 	 */
 	public static function generateUrl($name, array $params = array()) {
-		$route = self::$namedRoutes[$name];
-		if ($route == NULL) {
-			throw new dsDispatchException(dsDispatchException::NAMED_ROUTE_NOT_FOUND, array($name));
-		}
-
+		$route = $this->findRoute($name);
 		$url = $route->getPattern();
 
 		// replace route url with given parameters
