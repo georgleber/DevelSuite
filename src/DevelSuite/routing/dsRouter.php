@@ -113,7 +113,10 @@ class dsRouter {
 	 * @return dsRoute named route element
 	 */
 	public function findRoute($name) {
-		$route = self::$namedRoutes[$name];
+		$route = NULL;
+		if (isset(self::$namedRoutes[$name])) {
+			$route = self::$namedRoutes[$name];
+		}
 
 		if ($route == NULL) {
 			throw new dsDispatchException(dsDispatchException::NAMED_ROUTE_NOT_FOUND, array($name));
