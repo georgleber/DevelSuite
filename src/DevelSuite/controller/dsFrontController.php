@@ -139,7 +139,13 @@ class dsFrontController {
 		dsApp::getResponse()->send();
 	}
 
-	
+	/**
+	 * The view will just be rendered and send to the client.
+	 * This is needed for ajax calls to load content directly.
+	 * 
+	 * @param dsAView $view
+	 * 		The view to pass thru to the client
+	 */
 	public function passThru(dsAView $view) {
 		$view->render();
 		
