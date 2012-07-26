@@ -139,6 +139,16 @@ class dsFrontController {
 		dsApp::getResponse()->send();
 	}
 
+	
+	public function passThru(dsAView $view) {
+		$view->render();
+		
+		// send response to client
+		dsApp::getResponse()->send();
+		
+		exit();
+	}
+
 	/**
 	 * Load a embedded Controller/Action in the layout.
 	 * This method can be called within a layout or template in order
@@ -195,7 +205,7 @@ class dsFrontController {
 	 */
 	public function includeJavaScripts() {
 		$code = "";
-		
+
 		$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>";
 		$code .= "<script>window.jQuery || document.write('<script src=\"/public/scripts/jquery.min.js\"><\/script>')</script>";
 
