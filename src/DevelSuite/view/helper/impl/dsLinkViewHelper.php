@@ -20,8 +20,8 @@ use DevelSuite\view\helper\dsIViewHelper;
  */
 class dsLinkViewHelper implements dsIViewHelper {
 	/**
-	 * Generate an internal link
-	 * 
+	 * Generate an internal HTML link
+	 *
 	 * @param string $routeName
 	 * 		Name of the route
 	 * @param string $linkText
@@ -32,14 +32,32 @@ class dsLinkViewHelper implements dsIViewHelper {
 	 * 		Parameters, which are needed for the route
 	 */
 	public function generateUrl($routeName, $linkText, array $attributes = array(), array $params = array()) {
+		$link = $this->generateUrlStart($routeName, $attributes, $params);
+		$link .= $linkText . "</a>";
+
+		return $link;
+	}
+
+	/**
+	 * Generate the start of an internal HTML link<br/>
+	 * <b>IMPORTANT: The link will notcontain a terminating <pre><a/></pre></b>
+	 *
+	 * @param string $routeName
+	 * 		Name of the route
+	 * @param array $attributes
+	 * 		Attributes for this link (e.g. styles, class, id, ...)
+	 * @param array $params
+	 * 		Parameters, which are needed for the route
+	 */
+	public function generateUrlStart($routeName, array $attributes = array(), array $params = array()) {
 		$url = dsApp::getRouter()->generateUrl($routeName, $params);
-		
+
 		$link = "<a ";
 		foreach ($attributes as $attr => $value) {
 			$link .= $attr . "='" . $value . "' ";
 		}
-		$link .= "href='" . $url . "'>" . $linkText . "</a>";
-		
+		$link .= "href='" . $url . "'>";
+
 		return $link;
 	}
 }
