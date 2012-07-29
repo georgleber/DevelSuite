@@ -177,7 +177,7 @@ class dsRoute extends dsARoute {
 			$parsed = preg_quote($this->pattern, '#');
 
 			// extract named parameters
-			preg_match_all('#:(\w+)#', $this->pattern, $namedElements);
+			preg_match_all('#:([\w-]+)#', $this->pattern, $namedElements);
 			foreach ($namedElements[1] as $index => $elem) {
 				// save name of the named parameter with leading :
 				$search = '\\' . $namedElements[0][$index];
