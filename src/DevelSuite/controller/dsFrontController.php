@@ -8,6 +8,9 @@
  */
 namespace DevelSuite\controller;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
 use DevelSuite\exception\dsErrorCodeException;
 
 use DevelSuite\dsApp;
@@ -32,6 +35,8 @@ use DevelSuite\view\dsAView;
  * @version 1.0
  */
 class dsFrontController {
+	private $log;
+	
 	/**
 	 * The main view (needed to allow nested calls)
 	 * @var dsAView
@@ -87,6 +92,11 @@ class dsFrontController {
 	 */
 	public function setTitle($title) {
 		$this->title = $title;
+	}
+	
+	public function __construct() {
+		$this->log = new Logger("FrontController");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 	}
 
 	/**
@@ -329,7 +339,7 @@ class dsFrontController {
 		} else {
 			$namespace = "\\controller\\";
 		}
-
+		
 		// load class and check if it is of type AController
 		$class = $namespace . ucfirst($route->getController()) . "Controller";
 		$controller = new $class();

@@ -136,7 +136,7 @@ class dsFlexiGrid extends dsHtmlView {
 
 		$useBundle = TRUE;
 		try {
-			$bundle = dsResourceBundle::getBundle(dsConfig::read('app.modeldir') . DS . "i18n" . DS . $table);
+			$bundle = dsResourceBundle::getBundle(dsConfig::read('app.modeldir') . DS . "i18n", $table);
 		} catch(dsFileNotFoundException $ex) {
 			$useBundle = FALSE;
 		}

@@ -17,7 +17,7 @@ use DevelSuite\view\helper\dsIViewHelper;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsDateViewHelper implements dsIViewHelper {
+class dsBBCodeViewHelper implements dsIViewHelper {
 	# array with all BBCodes to search for
 	private static $searchBBCodes = array(
 											'/\[u\](.+?)\[\/u\]/i', 

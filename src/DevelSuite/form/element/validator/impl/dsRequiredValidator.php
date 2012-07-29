@@ -37,7 +37,7 @@ class dsRequiredValidator extends dsAValidator {
 	 * @see DevelSuite\form\element\validator.dsAValidator::init()
 	 */
 	protected function init() {
-		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__) . DS . "validation");
+		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__), "validation");
 
 		$errorMessage = "";
 		if ($this->element instanceof dsSelect || $this->element instanceof dsRadioButtonGroup

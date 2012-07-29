@@ -47,7 +47,7 @@ class dsFileTypeValidator extends dsAValidator {
 	 */
 	public function setAllowedTypes(array $mimeTypes) {
 		$this->allowedTypes = $mimeTypes;
-		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__) . DS . "validation");
+		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__), "validation");
 		
 		$extTypes = array();
 		foreach ($this->allowedTypes as $singleTypes) {

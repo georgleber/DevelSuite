@@ -347,7 +347,7 @@ class dsForm {
 				$html .= "<div class='dsform-errors'>\n";
 
 				// load header text for form error message
-				$bundle = dsResourceBundle::getBundle(dirname(__FILE__) . DS . "form");
+				$bundle = dsResourceBundle::getBundle(dirname(__FILE__), "form");
 				$errorText = $bundle['Form.formErrors'];
 				$html .= "<p>" . $errorText . "</p>\n";
 
@@ -356,7 +356,7 @@ class dsForm {
 				// load header text for element error message
 				$html .= "<div class='dsform-errors'>\n";
 
-				$bundle = dsResourceBundle::getBundle(dirname(__FILE__) . DS . "form");
+				$bundle = dsResourceBundle::getBundle(dirname(__FILE__), "form");
 				$errorText = $bundle['Form.elementErrors'];
 				$html .= "<p>" . $errorText . "</p>\n";
 

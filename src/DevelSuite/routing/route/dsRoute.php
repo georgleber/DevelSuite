@@ -123,6 +123,8 @@ class dsRoute extends dsARoute {
 				$this->controller = $value;
 			} elseif ($key == "action") {
 				$this->action = $value;
+			} elseif ($key == "module") {
+				$this->module = $value;
 			} else {
 				if (isset($this->parameters[$key])) {
 					continue;
@@ -141,6 +143,8 @@ class dsRoute extends dsARoute {
 					$this->controller = rawurldecode($route[$key]);
 				} else if ($key == "action" && dsStringTools::isNullOrEmpty($this->action)) {
 					$this->action = rawurldecode($route[$key]);
+				} else if ($key == "module" && dsStringTools::isNullOrEmpty($this->module)) {
+					$this->module = rawurldecode($route[$key]);
 				} else {
 					$this->parameters[$key] = rawurldecode($route[$key]);
 				}
