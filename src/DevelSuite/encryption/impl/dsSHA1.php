@@ -15,10 +15,6 @@ namespace DevelSuite\encryption\impl;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-use Monolog\Handler\StreamHandler;
-
-use Monolog\Logger;
-
 class dsSHA1 implements dsIEncrypt {
 	// Konstante mit erlaubten Zeichen für den Passwortzusatz
 	const SALTCHARS = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -71,18 +67,9 @@ class dsSHA1 implements dsIEncrypt {
 			$salt = substr($hash, 0, $saltLength);
 		}
 		
-		$log = new Logger("SHA1");
-		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-		
-		$log->debug("Salt: " . $salt);
-
 		// Vergleichshash erzeugen
 		$tmpHash = $salt.sha1($salt.$password);
 		
-		$log->debug("Password: " . $password);
-		$log->debug("Hash: " . $hash);
-		$log->debug("TmpHash: " . $tmpHash);
-
 		// Stimmt das Passwort mit dem Hash ueberein ist der Rueckgabewert TRUE, ansonsten FALSE
 		return ($tmpHash == $hash) ? TRUE : FALSE;
 	}
