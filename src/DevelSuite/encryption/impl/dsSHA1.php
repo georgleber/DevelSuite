@@ -20,7 +20,7 @@ class dsSHA1 implements dsIEncrypt {
 	const SALTCHARS = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 	// Laenge des zu verwenden Salts
-	public static $saltLength = 12;
+	public static $saltLength = 16;
 	
 	/**
 	 * Erzeugt einen Hash aus einem Passwort
@@ -68,7 +68,7 @@ class dsSHA1 implements dsIEncrypt {
 		}
 
 		// Vergleichshash erzeugen
-		$tmpHash = $salt.sha1($salt.$passwort);
+		$tmpHash = $salt.sha1($salt.$password);
 
 		// Stimmt das Passwort mit dem Hash ueberein ist der Rueckgabewert TRUE, ansonsten FALSE
 		return ($tmpHash == $hash) ? TRUE : FALSE;
