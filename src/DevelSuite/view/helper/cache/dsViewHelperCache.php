@@ -50,7 +50,8 @@ class dsViewHelperCache {
 	public function lookup($helperName) {
 		if (!array_key_exists($helperName, $this->classCache)) {
 			// load class from application path if exists otherwise from framework
-			$helperClazz = "\\view\\helper\\" . ucfirst($helperName) . "ViewHelper";
+			$viewHelperPath = dsConfig::read("app.view.helper.path", "\\classes\\view\\helper\\");
+			$helperClazz = $viewHelperPath . ucfirst($helperName) . "ViewHelper";
 			if (!class_exists($helperClazz)) {
 				$helperClazz = "\\DevelSuite\\view\\helper\\impl\\ds" .  ucfirst($helperName) . "ViewHelper";
 				if (!class_exists($helperClazz)) {
