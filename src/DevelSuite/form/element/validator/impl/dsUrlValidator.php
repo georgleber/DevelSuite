@@ -27,7 +27,7 @@ class dsUrlValidator extends dsAValidator {
 		$result = TRUE;
 		$url = $this->element->getValue();
 
-		if (dsStringTools::isFilled($value)) {
+		if (dsStringTools::isFilled($url)) {
 			$result = preg_match("!^(http|https)+(://)+(www\.)?([a-z0-9\.-]{3,})\.[a-z]{2,4}(/?.*)?$!i", $url);
 		}
 
