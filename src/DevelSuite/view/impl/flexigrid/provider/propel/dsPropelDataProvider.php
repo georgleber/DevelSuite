@@ -427,6 +427,4 @@ class dsPropelDataProvider implements dsIDataProvider {
 			}
 		}
 	}
-
-
 }
