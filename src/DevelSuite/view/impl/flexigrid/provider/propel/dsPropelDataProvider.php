@@ -8,8 +8,6 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel;
 
-
-
 use DevelSuite\exception\spl\dsFileNotFoundException;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsArrayTools;
@@ -22,6 +20,7 @@ use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
 use DevelSuite\view\impl\flexigrid\provider\dsIDataProvider;
 use DevelSuite\view\impl\flexigrid\provider\propel\query\dsPropelQuery;
 use DevelSuite\view\impl\flexigrid\renderer\dsCellRendererRegistry;
+use DevelSuite\view\impl\flexigrid\renderer\dsICellRenderer;
 
 /**
  * FIXME

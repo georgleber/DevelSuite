@@ -11,6 +11,7 @@ namespace DevelSuite\view\impl\flexigrid\provider;
 use DevelSuite\view\impl\flexigrid\model\dsColumn;
 use DevelSuite\view\impl\flexigrid\filter\dsIWhereFilter;
 use DevelSuite\view\impl\flexigrid\filter\dsIColumnFilter;
+use DevelSuite\view\impl\flexigrid\renderer\dsICellRenderer;
 
 /**
  * Interface for all DataProvider
