@@ -160,7 +160,7 @@ class dsPropelQuery {
 					}
 
 					$this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
-					$this->queryClass->where($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+					$this->queryClass->where("'" . $searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?'", $extraction["query"]);
 				} else {
 					if (strpos($searchColumn->getIdentifier(), ".") !== FALSE) {
 						list($relation, $searchBy) = explode(".", $searchColumn->getIdentifier());
