@@ -23,7 +23,7 @@ abstract class dsAView {
 	 * Assigned values, accessable from within the template
 	 * @var array
 	 */
-	private $values = array();
+	protected $data = array();
 
 	/**
 	 * Assign values to the view
@@ -34,7 +34,7 @@ abstract class dsAView {
 	 * 			The value to assign
 	 */
 	public function assign($key, $value) {
-		$this->values[$key] = $value;
+		$this->data[$key] = $value;
 		return $this;
 	}
 
@@ -45,7 +45,7 @@ abstract class dsAView {
 	 * 		Key under which the value is saved
 	 */
 	public function __get($key) {
-		return $this->values[$key];
+		return $this->data[$key];
 	}
 
 	/**
