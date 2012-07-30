@@ -162,24 +162,24 @@ class dsColumn {
 				case dsColumnTypeConstants::TYPE_BOOLEAN:
 					$this->width = $capSize > 60 ? $capSize : 60;
 					break;
-						
+					
 				case dsColumnTypeConstants::TYPE_INTEGER:
 				case dsColumnTypeConstants::TYPE_DECIMAL:
 					$this->width = $capSize > 30 ? $capSize : 30;
 					break;
-						
+					
 				case dsColumnTypeConstants::TYPE_DATE:
 					$this->width = $capSize > 120 ? $capSize : 120;
 					break;
-						
+					
 				case dsColumnTypeConstants::TYPE_STRING:
 					$this->width = 250;
 					break;
-						
+					
 				case dsColumnTypeConstants::TYPE_TEXT:
 					$this->width = 500;
 					break;
-						
+					
 				default:
 					$this->width = 250;
 			}
@@ -204,11 +204,15 @@ class dsColumn {
 	public function getAlignment() {
 		$log = new Logger("Column");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-
+		
 		$alignment = $this->alignment;
 		$log->debug("alignment: [" . $alignment . "]");
 		if (dsStringTools::isNullOrEmpty($alignment)) {
-			$alignment = dsAlignmentConstants::ALIGN_CENTER;
+			if ($this->type == dsColumnTypeConstants::TYPE_TEXT) {
+				$alignment = dsAlignmentConstants::ALIGN_LEFT;
+			} else {
+				$alignment = dsAlignmentConstants::ALIGN_CENTER;
+			}
 		}
 
 		return $alignment;
