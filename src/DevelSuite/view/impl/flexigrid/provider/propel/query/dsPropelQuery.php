@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel\query;
 
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\dsApp;
 use DevelSuite\util\dsStringTools;
 use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
@@ -143,6 +147,9 @@ class dsPropelQuery {
 	 * Build up query with user defined search
 	 */
 	public function considerSearch() {
+		$log = new Logger("PropelQuery");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+		
 		if (dsStringTools::isFilled($this->searchColumn) && dsStringTools::isFilled($this->searchQuery)) {
 			$searchColumn = $this->findColumn($this->searchColumn);
 
@@ -151,6 +158,7 @@ class dsPropelQuery {
 
 				// check for a virtual column
 				if ($searchColumn instanceof dsVirtualColumn) {
+					$log->debug("Column is a VirtualColumn");
 					if (dsStringTools::isFilled($searchColumn->getJoin())) {
 						if (dsStringTools::isFilled($searchColumn->getJoinType())) {
 							$this->queryClass->join($searchColumn->getJoin(), $searchColumn->getJoinType());
@@ -163,6 +171,7 @@ class dsPropelQuery {
 					$this->queryClass->where("'" . $searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?'", $extraction["query"]);
 				} else {
 					if (strpos($searchColumn->getIdentifier(), ".") !== FALSE) {
+						$log->debug("Column is a RelationColumn");
 						list($relation, $searchBy) = explode(".", $searchColumn->getIdentifier());
 						$useQueryString = "use" . $relation . "Query";
 
@@ -170,6 +179,7 @@ class dsPropelQuery {
 						->filterBy($searchBy, $extraction["query"], $extraction["comparison"])
 						->endUse();
 					} else {
+						$log->debug("Column is a normal Column");
 						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
 					}
 				}
@@ -206,7 +216,7 @@ class dsPropelQuery {
 
 	private function extractSearchQuery($searchColumn) {
 		$extraction = array();
-		$extraction["comparison"] = "=";
+		$extraction["comparison"] = " = ";
 		$extraction["query"] = $this->searchQuery;
 
 		if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_BOOLEAN) {
