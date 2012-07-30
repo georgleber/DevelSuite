@@ -165,7 +165,7 @@ class dsColumn {
 					break;
 					
 				case dsColumnTypeConstants::TYPE_DATE:
-					$this->width = $capSize > 100 ? $capSize : 100;
+					$this->width = $capSize > 120 ? $capSize : 120;
 					break;
 					
 				case dsColumnTypeConstants::TYPE_STRING:
@@ -198,11 +198,17 @@ class dsColumn {
 	 * Return the alignment for this column
 	 */
 	public function getAlignment() {
+		$log = new Logger("PropelDataProvider");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+		
 		$alignment = $this->alignment;
+		$log->debug("alignment: [" . $alignment . "]");
 		if (dsStringTools::isNullOrEmpty($alignment)) {
 			if ($this->type === (dsColumnTypeConstants::TYPE_STRING || dsColumnTypeConstants::TYPE_TEXT)) {
+				$log->debug("column type is string or text: [" . $this->type . "]");
 				$alignment = dsAlignmentConstants::ALIGN_LEFT;
 			} else {
+				$log->debug("column type is something else: [" . $this->type . "]");
 				$alignment = dsAlignmentConstants::ALIGN_CENTER;
 			}
 		}
