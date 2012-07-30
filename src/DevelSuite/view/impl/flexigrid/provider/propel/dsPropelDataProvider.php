@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel;
 
+use DevelSuite\util\dsStringTools;
+
 use DevelSuite\exception\spl\dsFileNotFoundException;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsArrayTools;

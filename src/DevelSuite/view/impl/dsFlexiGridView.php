@@ -152,7 +152,7 @@ class dsFlexiGridView extends dsHtmlView {
 	 * Return the method for sending data
 	 */
 	public function getSendMethod() {
-		return $this->method;
+		return $this->sendMethod;
 	}
 
 	/**
