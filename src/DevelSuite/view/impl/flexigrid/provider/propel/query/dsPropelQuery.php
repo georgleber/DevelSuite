@@ -170,7 +170,7 @@ class dsPropelQuery {
 						->filterBy($searchBy, $extraction["query"], $extraction["comparison"])
 						->endUse();
 					} else {
-						$this->queryClass->filterBy($searchColumn->getgetIdentifier(), $extraction["query"], $extraction["comparison"]);
+						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
 					}
 				}
 
