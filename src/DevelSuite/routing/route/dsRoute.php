@@ -69,10 +69,11 @@ class dsRoute extends dsARoute {
 	 * @param array $constraints
 	 * 		Contraints for the parameters
 	 */
-	public function __construct($pattern, array $definedValues, array $constraints = array()) {
+	public function __construct($pattern, array $definedValues, array $constraints = array(), $routeName = NULL) {
 		$this->pattern = $pattern;
 		$this->definedValues = $definedValues;
 		$this->constraints = $constraints;
+		$this->name = $routeName;
 	}
 
 	/**

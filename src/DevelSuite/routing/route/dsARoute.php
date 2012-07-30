@@ -17,6 +17,12 @@ namespace DevelSuite\routing\route;
  */
 abstract class dsARoute {
 	/**
+	 * Name of this route
+	 * @var string
+	 */
+	protected $name;
+	
+	/**
 	 * Used module
 	 * @var string
 	 */
@@ -40,6 +46,13 @@ abstract class dsARoute {
 	 */
 	protected $parameters = array();
 
+	/**
+	 * Returns the name of this route
+	 */
+	public function getName() {
+		return $this->name;
+	}
+	
 	/**
 	 * Returns the used module
 	 */

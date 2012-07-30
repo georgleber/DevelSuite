@@ -51,7 +51,7 @@ class dsRouter {
 	 * 		Allowed methods for the route
 	 */
 	public static function bind($routePattern, array $definedValues, array $constraints = array(), $name = NULL, array $methods = array()) {
-		$route = new dsRoute($routePattern, $definedValues, $constraints);
+		$route = new dsRoute($routePattern, $definedValues, $constraints, $name);
 
 		if (!empty($methods)) {
 			$route->setMethods($methods);
