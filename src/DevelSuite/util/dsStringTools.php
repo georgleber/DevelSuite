@@ -9,7 +9,7 @@
 namespace DevelSuite\util;
 
 /**
- * FIXME
+ * Helper class for string relevant operations
  *
  * @package DevelSuite\util
  * @author  Georg Henkel <info@develman.de>
@@ -36,7 +36,7 @@ class dsStringTools {
 			if(ini_get('magic_quotes_sybase') && (strtolower(ini_get('magic_quotes_sybase')) != "off")) {
 				$sybaseOn = TRUE;
 			}
-				
+
 			$value = self::stripslashesDeep($value, $sybaseOn);
 		}
 

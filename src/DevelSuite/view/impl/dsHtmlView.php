@@ -8,11 +8,9 @@
  */
 namespace DevelSuite\view\impl;
 
-use DevelSuite\config\dsConfig;
-
 use DevelSuite\dsApp;
-use DevelSuite\controller\dsAController;
-use DevelSuite\controller\dsPageController;
+use DevelSuite\config\dsConfig;
+use DevelSuite\controller\dsFrontController;
 use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\view\dsAView;
 
@@ -26,7 +24,7 @@ use DevelSuite\view\dsAView;
 class dsHtmlView extends dsAView {
 	/**
 	 * The corresponding controller
-	 * @var dsAController
+	 * @var dsFrontController
 	 */
 	protected $ctrl;
 
@@ -47,10 +45,10 @@ class dsHtmlView extends dsAView {
 	 *
 	 * @param string $template
 	 * 		Used template
-	 * @param dsAController $ctrl
+	 * @param dsFrontController $ctrl
 	 * 		The corresponding controller
 	 */
-	public function __construct($template, $ctrl) {
+	public function __construct($template, dsFrontController $ctrl) {
 		$this->path = dsConfig::read("app.viewdir", APP_PATH . DS . "view");
 		$this->template = $template;
 		$this->ctrl = $ctrl;

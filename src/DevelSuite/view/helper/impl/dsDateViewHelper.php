@@ -21,8 +21,8 @@ class dsDateViewHelper implements dsIViewHelper {
 	/**
 	 * Calculate difference off a datetime to current time
 	 * and format it in words (e.g. 1 hour, 2 days, ...)
-	 * Enter description here ...
-	 * @param unknown_type $time
+	 *
+	 * @param string $time
 	 */
 	public function diffTime($time) {
 		$todaydate = date("Y-m-d H:i:s");

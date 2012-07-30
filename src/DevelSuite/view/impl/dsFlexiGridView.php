@@ -8,179 +8,279 @@
  */
 namespace DevelSuite\view\impl;
 
+use DevelSuite\util\dsStringTools;
+
+use DevelSuite\view\impl\flexigrid\provider\dsIDataProvider;
+
+use DevelSuite\controller\dsFrontController;
+
 use DevelSuite\config\dsConfig;
 use DevelSuite\exception\spl\dsFileNotFoundException;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\template\flexigrid\dsFlexiButton;
 
 /**
- * FIXME
- *
- * View that renders a pre-defined template with a pre-build
- * FlexiGrid table.
+ * View that renders a pre-defined template with a FlexiGrid table.
  *
  * @package DevelSuite\view\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsFlexiGrid extends dsHtmlView {
-	private $buttons = array();
-	private $requestUrl;
-	private $options;
-	private $title;
-	private $model;
-	private $columnModel = array();
-	private $searchItems;
-	private $singleSelect;
+class dsFlexiGridView extends dsHtmlView {
+	/**
+	 * DataProvider is responsible for creating the column
+	 * model and loading the data
+	 * @var dsIDataProvider
+	 */
+	private $provider;
 
-	public function __construct($template, $pageCtrl, $requestUrl, $model, $defaultButton = TRUE, $singleSelect = TRUE) {
-		parent::__construct($template, $pageCtrl);
+	/**
+	 * Title of this table
+	 * @var string
+	 */
+	private $title;
+
+	/**
+	 * URL to load data via JSON
+	 * @var string
+	 */
+	private $requestUrl;
+
+	/**
+	 * Method for data sending (default is POST)
+	 * @var string
+	 */
+	private $sendMethod = 'POST';
+
+	/**
+	 * Flag for allowing / disallowing multi-selection
+	 * @var bool
+	 */
+	private $singleSelect = TRUE;
+
+	/**
+	 * Default ordering is ascending
+	 * @var string
+	 */
+	private $sortOrder = "ASC";
+
+	/**
+	 * Name of the sorting column (default ID)
+	 * @var string
+	 */
+	private $sortColumn = "ID";
+
+	/**
+	 * Height of the table (default is 200)
+	 * @var int
+	 */
+	private $height = 200;
+
+	/**
+	 * Count of rows (default is 15)
+	 * @var int
+	 */
+	private $rowCount = 15;
+
+	/**
+	 * Map of all actions for this FlexiGrid table
+	 * @var array
+	 */
+	private $actionMap = array();
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $template
+	 * 		Used template
+	 * @param dsFrontController $ctrl
+	 * 		The corresponding controller
+	 * @param string $requestUrl
+	 * 		URL to load data
+	 * @param string $title
+	 * 		Title of the table
+	 */
+	public function __construct($template, dsFrontController $frontCtrl, $requestUrl, $title = NULL) {
+		parent::__construct($template, $frontCtrl);
 
 		$this->requestUrl = $requestUrl;
-		$this->model = $model;
-		$this->singleSelect = $singleSelect;
+		$this->title = $title;
+	}
 
-		$this->createColumnModelAndSearchItems();
+	/**
+	 * Set the corresponding DataProvider for handling data relevant operations
+	 *
+	 * @param dsIDataProvider $provider
+	 * 		The corresponding DataProvider
+	 */
+	public function setDataProvider(dsIDataProvider $provider) {
+		$this->provider = $provider;
+	}
 
-		if ($defaultButton) {
-			$this->initButtons();
+	// FIXME
+	public function useDefaultActions(array $editColumns = array(), array $deleteColumns = array()) {
+		$this->actionMap[] = new dsCreateAction();
+
+		$action = new dsEditAction($editColumns);
+		$action->setTable($this);
+		$this->actionMap[] = $action;
+
+		$action = new dsDeleteAction($deleteColumns);
+		$action->setTable($this);
+		$this->actionMap[] = $action;
+
+		$this->actionMap[] = new dsFlexiSeparator();
+	}
+
+	// FIXME
+	public function addAction(dsIFlexiAction $action) {
+		$action->setTable($this);
+		$this->actionMap[] = $action;
+	}
+
+	/**
+	 * Set the method for sending data to the server
+	 *
+	 * @param string $method
+	 * 		Method for sending data
+	 */
+	public function setSendMethod($method) {
+		$this->sendMethod = $method;
+	}
+
+	/**
+	 * Return the method for sending data
+	 */
+	public function getSendMethod() {
+		return $this->method;
+	}
+
+	/**
+	 * Set the sort column and the sort order
+	 *
+	 * @param string $sortColumn
+	 * 		Identifier of the sort column
+	 * @param string $sortOrder
+	 * 		Sort order for the sort column
+	 */
+	public function setSorting($sortColumn, $sortOrder = NULL) {
+		$this->sortColumn = $sortColumn;
+		if (dsStringTools::isFilled($sortOrder)) {
+			$this->sortOrder = $sortOrder;
 		}
 	}
 
-	private function initButtons() {
-		$button = new dsFlexiButton("add", "Erstellen");
-		$this->buttons["add"] = $button;
-
-		$button = new dsFlexiButton("edit", "Bearbeiten");
-		$button->doNeedID();
-		$this->buttons["edit"] = $button;
-
-		$button = new dsFlexiButton("remove", "Löschen");
-		$button->doNeedID();
-		$this->buttons["remove"] = $button;
-
-		$this->buttons["separator"] = NULL;
+	/**
+	 * Set a row count of this table
+	 *
+	 * @param int $rowCount
+	 * 		Count of rows to show
+	 */
+	public function setRowCount($rowCount) {
+		$this->rowCount = $rowCount;
 	}
 
+	/**
+	 * Return the row count of this table
+	 */
+	public function getRowCount() {
+		return $this->rowCount;
+	}
+
+	/**
+	 * Set the height of this table
+	 *
+	 * @param int $height
+	 * 		Height of this table
+	 */
+	public function setHeight($height) {
+		$this->height = $height;
+	}
+
+	/**
+	 * Return the height of this table
+	 */
+	public function getHeight() {
+		return $this->height;
+	}
+
+	/**
+	 * Set this table multi-selectable
+	 */
+	public function setMultiSelectable() {
+		$this->singleSelect = FALSE;
+	}
+
+	/**
+	 * Return if this table is single-selectable
+	 */
+	public function isSingleSelectable() {
+		return $this->singleSelect;
+	}
+
+	/**
+	 * Set the title of this table
+	 *
+	 * @param string $title
+	 * 		The title for this table
+	 */
 	public function setTitle($title) {
 		$this->title = $title;
 	}
 
-	public function removeButton($id) {
-		if (isset($this->buttons[$id])) {
-			unset($this->buttons[$id]);
+	/**
+	 * Return title of the table (if it is not set, the entity name
+	 * is taken from the dsIDataProvider)
+	 */
+	public function getTitle() {
+		$title = $this->title;
+		if (dsStringTools::isNullOrEmpty($title) && $this->provider != NULL) {
+			$title = $this->provider->getEntityName();
 		}
+
+		return $title;
 	}
 
-	public function addButton($id, $name, $bclass = NULL, $onpress = NULL, $callBack = NULL, $needID = FALSE, $needMultipleIDs = FALSE) {
-		$button = new dsFlexiButton($id, $name, $bclass, $onpress, $callBack);
-		if ($needID) {
-			$button->doNeedID();
-		}
-
-		if ($needMultipleIDs) {
-			$button->doNeedMultipleIDs();
-		}
-
-		$this->buttons[$id] = $button;
+	/**
+	 * Return URL to request for loading data
+	 */
+	public function getRequestUrl() {
+		return $this->requestUrl;
 	}
 
-	public function setOptions(array $options) {
-		$this->options = $options;
+	/**
+	 * Return column identifier of the default sortable column
+	 */
+	public function getSortColumn() {
+		return $this->sortColumn;
 	}
 
-	public function removeColumn($columnName) {
-		$position = -1;
-		for ($i = 0, $cntColModel = count($this->columnModel); $i < $cntColModel; $i++) {
-			if ($this->columnModel[$i]["id"] == strtolower($columnName)) {
-				$position = $i;
-				break;
-			}
-		}
-
-		if ($position != -1) {
-			array_splice($this->columnModel, $position, 1);
-			array_splice($this->searchItems, $position, 1);
-		}
+	/**
+	 * Return sort order of the default sortable column
+	 */
+	public function getSortOrder() {
+		return $this->sortOrder;
 	}
 
-	public function addColumn($display, $name, $width, $position = -1) {
-		$newColumn = array("display" => $display, "name" => $name, "width" => $width, "sortable" => 'false');
-		$newSearchItem = array("display" => $display, "name" => $name);
-		if ($position == -1) {
-			$this->columnModel[] = $newColumn;
-			$this->searchItems[] = $newSearchItem;
-		} else {
-			array_splice($this->columnModel, $position, 0, array($newColumn));
-			array_splice($this->searchItems, $position, 0, array($newSearchItem));
-		}
-	}
+	/**
+	 * Loads the FlexiGrid template, assigns all information to it and renders it
+	 */
+	public function doLayout() {
+		$flexiGridView = new dsHtmlView("flexigrid.tpl.php", $this->ctrl);
+		$flexiGridView->setPath(dirname(__FILE__) . DS . "tpl");
 
-	public function getFlexiGrid() {
-		$flexiGridTPL = new dsTemplate("flexigrid.tpl.php", $this->pageCtrl);
-		$flexiGridTPL->setPath(dirname(__FILE__) . "/flexigrid/tpl");
-		$flexiGridTPL->assign("url", $this->requestUrl);
-		$flexiGridTPL->assign("colModel", $this->columnModel);
-		$flexiGridTPL->assign("buttons", $this->buttons);
-		$flexiGridTPL->assign("searchItems", $this->searchItems);
-		$flexiGridTPL->assign("options", $this->options);
-		$flexiGridTPL->assign("title", $this->title);
-		$flexiGridTPL->assign("singleSelect", $this->singleSelect);
+		$flexiGridView->assign("title", $this->getTitle())
+		->assign("url", $this->getRequestUrl())
+		->assign("dataType", $this->provider->getDataType())
+		->assign("method", $this->getSendMethod())
+		->assign("columnModel", $this->provider->getColumnModel())
+		->assign("actions", $this->actionMap) // FIXME
+		->assign("sortname", $this->getSortColumn())
+		->assign("sortorder", $this->getSortOrder())
+		->assign("rp", $this->getRowCount())
+		->assign("height", $this->getHeight())
+		->assign("singleSelect", $this->isSingleSelectable());
 
-		return $flexiGridTPL->render();
-	}
-
-	public function createColumnModelAndSearchItems() {
-		$columns = $this->model->getColumns();
-		$table = strtolower($this->model->getPhpName());
-
-		$useBundle = TRUE;
-		try {
-			$bundle = dsResourceBundle::getBundle(dsConfig::read('app.modeldir') . DS . "i18n", $table);
-		} catch(dsFileNotFoundException $ex) {
-			$useBundle = FALSE;
-		}
-
-		foreach ($columns as $column) {
-			$colName = $column->getName();
-			$colPhpName = $column->getPhpName();
-			$colType = $column->getType();
-			$colSize = $column->getSize();
-
-			$modelCol = array();
-			$searchItem = array();
-
-			$modelCol["id"] = strtolower($colName);
-			$searchItem["id"] = strtolower($colName);
-			if ($useBundle && isset($bundle[strtolower($colName)])) {
-				$modelCol["display"] = $bundle[strtolower($colName)];
-				$searchItem["display"] = $bundle[strtolower($colName)];
-			} else {
-				$modelCol["display"] = $colPhpName;
-				$searchItem["display"] = $colPhpName;
-			}
-			$modelCol["name"] = $colPhpName;
-			$modelCol["sortable"] = 'true';
-			$searchItem["name"] = $colPhpName;
-
-			if (strtolower($colName) == "id") {
-				$searchItem["isdefault"] = TRUE;
-			}
-
-			if ($colType == "INTEGER") {
-				$modelCol["width"] = 30;
-			} else if($colType == "BOOLEAN") {
-				$modelCol["width"] = 60;
-			} else {
-				if ($colSize == 255) {
-					$modelCol["width"] = 250;
-				} else {
-					$modelCol["width"] = 120;
-				}
-			}
-
-			$this->columnModel[] = $modelCol;
-			$this->searchItems[] = $searchItem;
-		}
+		return $flexiGridView->render();
 	}
 }

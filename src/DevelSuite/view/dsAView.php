@@ -8,12 +8,6 @@
  */
 namespace DevelSuite\view;
 
-use Monolog\Processor\WebProcessor;
-
-use Monolog\Handler\StreamHandler;
-
-use Monolog\Logger;
-
 use DevelSuite\dsApp;
 use DevelSuite\exception\impl\dsRenderingException;
 
@@ -30,8 +24,6 @@ abstract class dsAView {
 	 * @var array
 	 */
 	private $values = array();
-
-	private $viewHelperCache = array();
 
 	/**
 	 * Assign values to the view

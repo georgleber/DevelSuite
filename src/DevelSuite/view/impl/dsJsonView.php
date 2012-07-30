@@ -35,5 +35,6 @@ class dsJsonView extends dsAView {
 	 */
 	public function render() {
 		$encode = json_encode($this->data);
+		echo $encode;
 	}
 }
