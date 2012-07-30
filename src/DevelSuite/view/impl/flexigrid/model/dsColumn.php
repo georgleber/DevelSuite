@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\view\impl\flexigrid\model;
 
+use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
+
 use DevelSuite\view\impl\flexigrid\constants\dsAlignmentConstants;
 use DevelSuite\util\dsStringTools;
 
@@ -34,8 +36,8 @@ class dsColumn {
 	private $caption;
 
 	/**
-	 * PDO type of the column
-	 * @var int
+	 * Type of the column
+	 * @var string
 	 */
 	private $type;
 
@@ -86,8 +88,8 @@ class dsColumn {
 	 *
 	 * @param string $identifier
 	 * 		Identifier of this column
-	 * @param int $type
-	 * 		PDO type of this column
+	 * @param string $type
+	 * 		ColumnType of this column
 	 * @param string $caption
 	 * 		Caption of this column (if not set, identifier is used)
 	 */
@@ -128,7 +130,7 @@ class dsColumn {
 	}
 
 	/**
-	 * Return the PDO type of this column
+	 * Return the ColumnType of this column
 	 */
 	public function getType() {
 		return $this->type;
@@ -153,19 +155,24 @@ class dsColumn {
 
 		if ($this->width == 0) {
 			switch ($this->type) {
-				case PDO::PARAM_BOOL:
+				case dsColumnTypeConstants::TYPE_BOOLEAN:
 					$this->width = $capSize > 60 ? $capSize : 60;
 					break;
 					
-				case PDO::PARAM_INT:
+				case dsColumnTypeConstants::TYPE_INTEGER:
+				case dsColumnTypeConstants::TYPE_DECIMAL:
 					$this->width = $capSize > 30 ? $capSize : 30;
 					break;
 					
-				case PDO::PARAM_STR:
+				case dsColumnTypeConstants::TYPE_DATE:
+					$this->width = $capSize > 100 ? $capSize : 100;
+					break;
+					
+				case dsColumnTypeConstants::TYPE_STRING:
 					$this->width = 250;
 					break;
 					
-				case PDO::PARAM_LOB:
+				case dsColumnTypeConstants::TYPE_TEXT:
 					$this->width = 500;
 					break;
 					
@@ -193,7 +200,11 @@ class dsColumn {
 	public function getAlignment() {
 		$alignment = $this->alignment;
 		if (dsStringTools::isNullOrEmpty($alignment)) {
-			$alignment = dsAlignmentConstants::ALIGN_CENTER;
+			if ($this->type === (dsColumnTypeConstants::TYPE_STRING || dsColumnTypeConstants::TYPE_TEXT)) {
+				$alignment = dsAlignmentConstants::ALIGN_LEFT;
+			} else {
+				$alignment = dsAlignmentConstants::ALIGN_CENTER;
+			}
 		}
 
 		return $alignment;
