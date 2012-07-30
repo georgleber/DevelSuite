@@ -208,7 +208,7 @@ class dsColumn {
 		$alignment = $this->alignment;
 		$log->debug("alignment: [" . $alignment . "]");
 		if (dsStringTools::isNullOrEmpty($alignment)) {
-			if ($this->type === (dsColumnTypeConstants::TYPE_STRING || dsColumnTypeConstants::TYPE_TEXT)) {
+			if ($this->type === dsColumnTypeConstants::TYPE_STRING || $this->type === dsColumnTypeConstants::TYPE_TEXT) {
 				$log->debug("column type is string or text: [" . $this->type . "]");
 				$alignment = dsAlignmentConstants::ALIGN_LEFT;
 			} else {

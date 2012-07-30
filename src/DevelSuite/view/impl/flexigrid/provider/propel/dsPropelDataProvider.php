@@ -411,10 +411,8 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * 		The identifier of the column
 	 */
 	private function getColumnIndex($columnIdentifier) {
-		$this->log->debug("Searching for index of column: " . $columnIdentifier);
 		for ($i = 0, $cnt = count($this->columnModel); $i < $cnt; $i++) {
 			$ident = $this->columnModel[$i]->getIdentifier();
-			$this->log->debug("ident: " . $ident);
 			if (strtolower($ident) === strtolower($columnIdentifier)) {
 				return $i;
 			}
