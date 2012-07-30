@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\view\impl\flexigrid\model;
 
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
 
 use DevelSuite\view\impl\flexigrid\constants\dsAlignmentConstants;
@@ -198,7 +202,7 @@ class dsColumn {
 	 * Return the alignment for this column
 	 */
 	public function getAlignment() {
-		$log = new Logger("PropelDataProvider");
+		$log = new Logger("Column");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 		
 		$alignment = $this->alignment;
