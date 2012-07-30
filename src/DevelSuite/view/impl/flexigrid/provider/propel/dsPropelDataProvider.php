@@ -336,7 +336,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 		if (dsStringTools::isFilled($this->bundlePath)) {
 			$table = strtolower($this->tableMap->getPhpName());
 			try {
-				$bundle = dsResourceBundle::getBundle($this->bundlePath . DS . $table);
+				$bundle = dsResourceBundle::getBundle($this->bundlePath, $table);
 			} catch(dsFileNotFoundException $ex) {
 				// do nothing
 			}
