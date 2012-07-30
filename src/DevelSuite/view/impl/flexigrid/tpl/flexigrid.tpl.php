@@ -20,7 +20,7 @@
 				<?php 
 					foreach ($this->columnModel as $column):
 						if ($column->isSearchable()) {
-							echo $searchItem->printSearchColumn();
+							echo $column->printSearchColumn();
 						}
 					endforeach; 
 				?>			  		
