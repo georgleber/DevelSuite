@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel;
 
+use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
+
 /**
  * Maps propel column types to their FlexiGrid corresponding types
  *
