@@ -71,10 +71,10 @@ class dsFlexiGridView extends dsHtmlView {
 	private $sortColumn = "ID";
 
 	/**
-	 * Height of the table (default is 200)
+	 * Height of the table (default is 300)
 	 * @var int
 	 */
-	private $height = 200;
+	private $height = 300;
 
 	/**
 	 * Count of rows (default is 15)

@@ -8,11 +8,13 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel;
 
-use DevelSuite\util\dsStringTools;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 use DevelSuite\exception\spl\dsFileNotFoundException;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsArrayTools;
+use DevelSuite\util\dsStringTools;
 use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
 use DevelSuite\view\impl\flexigrid\filter\dsIColumnFilter;
 use DevelSuite\view\impl\flexigrid\filter\dsIWhereFilter;
@@ -32,6 +34,12 @@ use DevelSuite\view\impl\flexigrid\renderer\dsICellRenderer;
  * @version 1.0
  */
 class dsPropelDataProvider implements dsIDataProvider {
+	/**
+	 * The responsible logger
+	 * @var Logger
+	 */
+	private $log;
+
 	/**
 	 * TableMap for analyzing the entity and creating a column model
 	 * @var PropelTableMap
@@ -80,6 +88,9 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * 		Path to the i18n bundle files for translation of the column names
 	 */
 	public function __construct($tableMap, $bundlePath = NULL) {
+		$this->log = new Logger("PropelDataProvider");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+
 		$this->tableMap = $tableMap;
 		$this->bundlePath = $bundlePath;
 
@@ -147,6 +158,8 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 */
 	public function removeColumn($columnIdentifier) {
 		$index = $this->getColumnIndex($columnIdentifier);
+		
+		$this->log->debug("Remove column: Index: " . $index . ", primaryKeyIndex: " . $this->primaryIdx);
 
 		// do not allow to remove primary keys
 		if ($index < $this->primaryIdx) {
@@ -282,7 +295,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 
 				if ($column instanceof dsVirtualColumn) {
 					$method = "get" . $column->getIdentifier();
-						
+
 					$virtualResult = NULL;
 					if (is_callable(array($result, $method))) {
 						$virtualResult = call_user_func(array($result, $method));
@@ -294,7 +307,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 				} else {
 					$relation = $result;
 					$columnIdent = $column->getIdentifier();
-						
+
 					// if column contains .'s, it is a relation column
 					while (($pos = strpos($columnIdent, ".")) !== FALSE) {
 						$tableName = substr($columnIdent, 0, $pos);
@@ -375,7 +388,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 			if ($column->isLob() || $column->isPrimaryKey()) {
 				continue;
 			}
-			
+				
 			$caption = $identifier = $column->getPhpName();
 			$columnType = dsPropelTypeMapper::mapPropelType($column->getType());
 
