@@ -158,8 +158,8 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 */
 	public function removeColumn($columnIdentifier) {
 		$index = $this->getColumnIndex($columnIdentifier);
-		
-		$this->log->debug("Remove column: Index: " . $index . ", primaryKeyIndex: " . $this->primaryIdx);
+
+		$this->log->debug("Removig column " . $columnIdentifier .", found on index: " . $index . ", current primaryIdx: " . $this->primaryIdx);
 
 		// do not allow to remove primary keys
 		if ($index < $this->primaryIdx) {
@@ -388,7 +388,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 			if ($column->isLob() || $column->isPrimaryKey()) {
 				continue;
 			}
-				
+
 			$caption = $identifier = $column->getPhpName();
 			$columnType = dsPropelTypeMapper::mapPropelType($column->getType());
 
@@ -411,7 +411,14 @@ class dsPropelDataProvider implements dsIDataProvider {
 		}
 	}
 
+	/**
+	 * Search for the column in model and return the index of it
+	 *
+	 * @param string $columnIdentifier
+	 * 		The identifier of the column
+	 */
 	private function getColumnIndex($columnIdentifier) {
+		$this->log->debug("Searching for index of column: " . $columnIdentifier);
 		for ($i = 0, $cnt = count($this->columnModel); $i < $cnt; $i++) {
 			$ident = $this->columnModel[$i]->getIdentifier();
 			if (strtolower($ident) === strtolower($columnIdentifier)) {
