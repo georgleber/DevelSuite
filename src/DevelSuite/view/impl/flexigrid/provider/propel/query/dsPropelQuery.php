@@ -226,8 +226,8 @@ class dsPropelQuery {
 			// compare dates
 			$extraction["query"] = $this->searchQuery;
 		} else {
-			$extraction["query"] = '%' . $this->searchQuery . '%';
-			$extraction["comparison"] = 'LIKE';
+			$extraction["query"] = "%" . $this->searchQuery . "%";
+			$extraction["comparison"] = " LIKE ";
 		}
 
 		return $extraction;
