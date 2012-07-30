@@ -41,14 +41,6 @@ interface dsIDataProvider {
 	public function loadData();
 
 	/**
-	 * Set the request method for loading data
-	 * 
-	 * @param string $requestMethod
-	 * 		Method for requesting the data
-	 */
-	public function setRequestMethod($requestMethod);
-
-	/**
 	 * FIXME!!!
 	 */
 	public function addColumnFilter(dsIColumnFilter $filter);
@@ -89,4 +81,22 @@ interface dsIDataProvider {
 	 * 		Identifier of the column
 	 */
 	public function getColumn($columnIdentifier);
+
+	/**
+	 * Set a default CellRenderer for a column type
+	 *
+	 * @param string $columnType
+	 * 		The column type to set the renderer for
+	 * @param dsICellRenderer $cellRenderer
+	 * 		The new CellRenderer
+	 */
+	public function setDefaultCellRenderer($columnType, dsICellRenderer $cellRenderer);
+
+	/**
+	 * Return the CellRenderer for a column type
+	 *
+	 * @param string $columnType
+	 * 		The column type, for which the CellRenderer will be returned
+	 */
+	public function getDefaultCellRenderer($columnType);
 }

@@ -8,13 +8,16 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel;
 
-use DevelSuite\view\impl\flexigrid\provider\propel\query\dsPropelQuery;
-
+use DevelSuite\exception\spl\dsFileNotFoundException;
+use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsArrayTools;
-
-use DevelSuite\view\impl\flexigrid\renderer\dsCellRendererRegistry;
-
+use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
+use DevelSuite\view\impl\flexigrid\model\dsColumn;
+use DevelSuite\view\impl\flexigrid\model\propel\dsPropelColumn;
+use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
 use DevelSuite\view\impl\flexigrid\provider\dsIDataProvider;
+use DevelSuite\view\impl\flexigrid\provider\propel\query\dsPropelQuery;
+use DevelSuite\view\impl\flexigrid\renderer\dsCellRendererRegistry;
 
 /**
  * FIXME
@@ -55,13 +58,9 @@ class dsPropelDataProvider implements dsIDataProvider {
 	private $queryClass;
 
 	/**
-	 * Method for requesting data (default is POST)
-	 * @var string
+	 * Registry with all defined dSICellRenderer
+	 * @var array
 	 */
-	private $requestMethod = 'POST';
-
-	// FIXME
-	private $virtualColumns = array();
 	private $rendererRegistry;
 
 	private $columnFilter = array();
@@ -80,14 +79,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 		$this->bundlePath = $bundlePath;
 
 		$this->rendererRegistry = new dsCellRendererRegistry();
-	}
-
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\view\impl\flexigrid\provider.dsIDataProvider::setRequestMethod()
-	 */
-	public function setRequestMethod($requestMethod) {
-		$this->requestMethod = $requestMethod;
 	}
 
 	/**
@@ -122,9 +113,9 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 */
 	public function getColumnModel() {
 		if (empty($this->columnModel)) {
-			$this->buildModel();	
+			$this->buildModel();
 		}
-		
+
 		return $this->columnModel;
 	}
 
@@ -186,18 +177,28 @@ class dsPropelDataProvider implements dsIDataProvider {
 		return NULL;
 	}
 
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\provider.dsIDataProvider::setDefaultCellRenderer()
+	 */
 	public function setDefaultCellRenderer($columnType, dsICellRenderer $cellRenderer) {
 		$this->rendererRegistry->setCellRenderer($columnType, $cellRenderer);
 	}
 
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\provider.dsIDataProvider::getDefaultCellRenderer()
+	 */
 	public function getDefaultCellRenderer($columnType) {
 		return $this->rendererRegistry->getCellRenderer($columnType);
 	}
 
+	// FIXME
 	public function addColumnFilter(dsIColumnFilter $filter) {
 		$this->columnFilter[] = $filter;
 	}
 
+	// FIXME
 	public function addWhereFilter(dsIWhereFilter $filter) {
 		$this->whereFilter[] = $filter;
 	}
@@ -210,125 +211,86 @@ class dsPropelDataProvider implements dsIDataProvider {
 		if (empty($this->columnModel)) {
 			$this->buildModel();
 		}
-		
-		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel);
-		$propelQuery->loadRequest();
-		
-		$pager = NULL;
-		$filtered = FALSE;
 
-		foreach ($this->columnFilter as $filter) {
+		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel);
+		$propelQuery->buildQuery();
+
+		/*
+		 foreach ($this->columnFilter as $filter) {
 			$column = $filter->getColumn();
 			$searchQry = $filter->getQuery();
 			$comparisonType = $filter->getComparisonType() != NULL ? $filter->getComparisonType() : "=";
 
 			if (strpos($column, ".") !== FALSE) {
-				list($relation, $searchBy) = explode(".", $column);
+			list($relation, $searchBy) = explode(".", $column);
 
-				$useQueryString = "use" . $relation . "Query";
-				$queryObject->{$useQueryString}()
-				->filterBy($searchBy, $searchQry, $comparisonType)
-				->endUse();
+			$useQueryString = "use" . $relation . "Query";
+			$queryObject->{$useQueryString}()
+			->filterBy($searchBy, $searchQry, $comparisonType)
+			->endUse();
 			} else {
-				call_user_func_array(array($queryObject, 'filterBy' . $column), array($searchQry, $comparisonType));
+			call_user_func_array(array($queryObject, 'filterBy' . $column), array($searchQry, $comparisonType));
 			}
 
 			$filtered = TRUE;
-		}
+			}
 
-		foreach ($this->whereFilter as $filter) {
+			foreach ($this->whereFilter as $filter) {
 			$searchQry = $filter->getQuery();
 			$searchValue = $filter->getValue();
 			$join = $filter->join();
 
 			if (dsStringTools::isFilled($join)) {
-				$queryObject->join($join);
+			$queryObject->join($join);
 			}
 			$queryObject->where($searchQry, $searchValue);
 
 			$filtered = TRUE;
-		}
-
-		$searchColumn = $this->getColumn($searchCol);
-		if ($searchColumn != NULL && $searchColumn->isSearchable() && dsStringTools::isFilled($searchQuery)) {
-			if (strpos($searchColumn->getIdentifier(), ".") !== FALSE) {
-				list($relation, $searchBy) = explode(".", $searchColumn->getIdentifier());
-				$useQueryString = "use" . $relation . "Query";
-				$comparisonType = "=";
-				$searchQry = "";
-
-				if ($searchColumn->getType() === dsColumnTypes::COLUMNTYPE_BOOLEAN) {
-					$searchQry = dsStringTools::is_boolean($searchQuery);
-				} else if ($searchColumn->getType() === (dsColumnTypes::COLUMNTYPE_INTEGER || dsColumnTypes::COLUMNTYPE_DECIMAL)) {
-					$searchQry = $searchQuery;
-				} else {
-					$searchQry = '%' . $searchQuery . '%';
-					$comparisonType = 'LIKE';
-				}
-
-				$queryObject->{$useQueryString}()
-				->filterBy($searchBy, $searchQry, $comparisonType)
-				->endUse();
-			} else {
-				$column = $this->tableMap->getColumn($searchColumn->getIdentifier());
-				if ($column->getType() == "BOOLEAN" && dsStringTools::is_boolean($searchQuery)) {
-					$queryObject->filterBy($column->getPhpName(), dsStringTools::is_boolean($searchQuery));
-				} else if ($column->isNumeric() && is_numeric($searchQuery)) {
-					$queryObject->filterBy($column->getPhpName(), $searchQuery);
-				} else {
-					$searchQuery = '%' . $searchQuery . '%';
-					$queryObject->filterBy($column->getPhpName(), $searchQuery, " LIKE ");
-				}
 			}
-			$filtered = TRUE;
-		}
+			*/
 
-		foreach ($this->virtualColumns as $virtualColumn) {
-			if (dsStringTools::isFilled($virtualColumn->getJoin())) {
-				$queryObject->join($virtualColumn->getJoin(), $virtualColumn->getJoinType());
-			}
-
-			$queryObject->withColumn($virtualColumn->getQuery(), $virtualColumn->getIdentifier());
-		}
+		// retrieve ResultSet from PropelQuery
+		$resultSet = $propelQuery->query();
 
 		$retVal = array();
-		$retVal["page"] = $page;
+		$retVal["page"] = $propelQuery->getOffset();
+		$retVal["total"] = count($resultSet);
 
-		if ($filtered) {
-			$retVal["total"] = $queryObject->count();
-		} else {
-			$retVal["total"] = $total;
-		}
-
-		$resultSet = $propelQuery->query();
-		
-		$rows = array();
 		$rowCnt = 1;
+		$rows = array();
 		foreach ($resultSet as $result) {
 			$cells = array();
 			$objectArr = $result->toArray("phpName", TRUE, array(), TRUE);
+
 			foreach ($this->columnModel as $column) {
-				$renderer = NULL;
+
+				// load column specific CellRenderer if it is set,
+				// otherwise load it from the registry
+				$cellRenderer = NULL;
 				if ($column->getCellRenderer() !== NULL) {
-					$renderer = $column->getCellRenderer();
+					$cellRenderer = $column->getCellRenderer();
 				} else {
-					$renderer = $this->rendererRegistry->getCellRenderer($column->getType());
-					$renderer->setColumn($column);
+					$cellRenderer = $this->rendererRegistry->getCellRenderer($column->getType());
+					$cellRenderer->setColumn($column);
 				}
 
-				if ($column->isVirtual()) {
+
+				if ($column instanceof dsVirtualColumn) {
 					$method = "get" . $column->getIdentifier();
+						
 					$virtualResult = NULL;
 					if (is_callable(array($result, $method))) {
 						$virtualResult = call_user_func(array($result, $method));
 					}
 
 					if ($virtualResult != NULL) {
-						$renderer->setValue($virtualResult);
+						$cellRenderer->setValue($virtualResult);
 					}
 				} else {
 					$relation = $result;
 					$columnIdent = $column->getIdentifier();
+						
+					// if column contains .'s, it is a relation column
 					while (($pos = strpos($columnIdent, ".")) !== FALSE) {
 						$tableName = substr($columnIdent, 0, $pos);
 						$columnName = substr($columnIdent, $pos + 1);
@@ -342,25 +304,28 @@ class dsPropelDataProvider implements dsIDataProvider {
 					}
 
 					if ($relation != NULL) {
-						$renderer->setValue($relation->getByName($columnIdent));
+						$cellRenderer->setValue($relation->getByName($columnIdent));
 					} else {
 						if (array_key_exists($column->getIdentifier(), $objectArr)) {
-							$renderer->setValue($result->getByName($column->getIdentifier()));
+							$cellRenderer->setValue($result->getByName($column->getIdentifier()));
 						}
 					}
 				}
 
-				$cells[$column->getIdentifier()] = $renderer->render();
+				$cells[$column->getIdentifier()] = $cellRenderer->render();
 			}
 
 			$rows[] = array('id' => $rowCnt, 'cell' => $cells);
-			$rowCnt;
+			$rowCnt++;
 		}
 
 		$retVal["rows"] = $rows;
 		return $retVal;
 	}
 
+	/**
+	 *
+	 */
 	private function buildModel() {
 		$bundle = NULL;
 		if (dsStringTools::isFilled($this->bundlePath)) {
@@ -375,25 +340,22 @@ class dsPropelDataProvider implements dsIDataProvider {
 		// first add primary keys
 		$primaryKeys = $this->tableMap->getPrimaryKeys();
 		foreach ($primaryKeys as $primaryKeyColumn) {
-			$caption = $identifier = $primaryKeyColumn->getPhpName();
-			$columnType = $primaryKeyColumn->getType();
-			$columnSize = $primaryKeyColumn->getSize();
+			$identifier = $primaryKeyColumn->getName();
+			$caption = $primaryKeyColumn->getPhpName();
+			$columnType = dsPropelTypeMapper::mapPropelType($primaryKeyColumn->getType());
 
 			if ($bundle !== NULL && isset($bundle[strtolower($identifier)])) {
 				$caption = $bundle[strtolower($identifier)];
 			}
 
-			$column = new dsColumn($caption, $identifier, $columnType, $columnSize);
-
+			// create column
+			$column = new dsPropelColumn($identifier, $columnType, $caption);
 			if ($primaryKeyColumn->isForeignKey()) {
 				$relatedTable = $primaryKeyColumn->getRelation()->getName();
 				$column->setRelatedTable($relatedTable);
-
-				$column->setSearchable(FALSE);
-				$column->setWidth(120);
 			} else {
-				$column->setHide(TRUE);
-				$column->setSearchable(TRUE);
+				$column->setHide();
+				$column->setSearchable();
 			}
 
 			$this->columnModel[] = $column;
@@ -409,20 +371,18 @@ class dsPropelDataProvider implements dsIDataProvider {
 			if ($column->isLob() || $column->isPrimaryKey()) {
 				continue;
 			}
-
-			$caption = $identifier = $column->getPhpName();
-			$columnType = $column->getType();
-			$columnSize = $column->getSize();
+			
+			$identifier = $column->getName();
+			$caption = $column->getPhpName();
+			$columnType = dsPropelTypeMapper::mapPropelType($column->getType());
 
 			if ($bundle !== NULL && isset($bundle[strtolower($identifier)])) {
 				$caption = $bundle[strtolower($identifier)];
 			}
 
-			$modelCol = new dsColumn($caption, $identifier, $columnType, $columnSize);
-			$modelCol->setSearchable(TRUE);
-
+			$modelCol = new dsPropelColumn($identifier, $columnType, $caption);
 			if ($firstColumn) {
-				$modelCol->setDefaultSearchColumn(TRUE);
+				$modelCol->setDefaultSearchColumn();
 			}
 
 			if ($column->isForeignKey()) {
@@ -443,4 +403,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 			}
 		}
 	}
+
+
 }

@@ -240,6 +240,7 @@ class dsColumn {
 	 * 		TRUE, if this colum should be the default search column
 	 */
 	public function setDefaultSearchColumn($defaultSearchColumn = TRUE) {
+		$this->searchable = TRUE;
 		$this->defaultSearchColumn = $defaultSearchColumn;
 	}
 

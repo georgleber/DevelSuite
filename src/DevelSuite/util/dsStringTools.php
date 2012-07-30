@@ -138,4 +138,24 @@ class dsStringTools {
 
 		return $output;
 	}
+
+	public static function isBoolean($var)  {
+		if(is_bool($var)){
+			return $var;
+		} else if($var === NULL || $var === 'NULL' || $var === 'null'){
+			return false;
+		} else if(is_string($var)){
+			$var = trim($var);
+			if($var=='false'){ return false;
+			} else if($var=='true'){ return true;
+			} else if($var=='no'){ return false;
+			} else if($var=='yes'){ return true;
+			} else if($var=='off'){ return false;
+			} else if($var=='on'){ return true;
+			} else if($var==''){ return false;
+			} else if($var=='wahr'){ return true;
+			} else if($var=='falsch'){ return false;
+			} else { return true; }
+		}
+	}
 }

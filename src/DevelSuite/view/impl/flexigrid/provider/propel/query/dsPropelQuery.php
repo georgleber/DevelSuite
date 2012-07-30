@@ -15,6 +15,12 @@ namespace DevelSuite\view\impl\flexigrid\provider\propel\query;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
+use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
+
+use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
+
+use DevelSuite\util\dsStringTools;
+
 use DevelSuite\view\impl\flexigrid\constants\dsSortOrderConstants;
 
 use DevelSuite\dsApp;
@@ -67,13 +73,13 @@ class dsPropelQuery {
 	 * @var string
 	 */
 	private $searchQuery;
-	
+
 	/**
 	 * Total count of rows in table
 	 * @var int
 	 */
 	private $total;
-	
+
 	/**
 	 * Flag, that marks the query as filtered or not
 	 * @var bool
@@ -91,6 +97,18 @@ class dsPropelQuery {
 	public function __construct($queryClass, array $columnModel) {
 		$this->queryClass = $queryClass;
 		$this->columnModel = $columnModel;
+	}
+
+	/**
+	 * Return the offset of the query
+	 */
+	public function getOffset() {
+		return $this->offset;
+	}
+
+	public function buildQuery() {
+		$this->loadRequest();
+		$this->considerSearch();
 	}
 
 	/**
@@ -124,13 +142,53 @@ class dsPropelQuery {
 		$this->searchColumn = $request['qtype'];
 		$this->searchQuery = $request['query'];
 	}
-	
+
+	/**
+	 * Build up query with user defined search
+	 */
+	public function considerSearch() {
+		if (dsStringTools::isFilled($this->searchColumn) && dsStringTools::isFilled($this->searchQuery)) {
+			$searchColumn = $this->findColumn($this->searchColumn);
+
+			if ($searchColumn != NULL && $searchColumn->isSearchable()) {
+				$extraction = $this->extractSearchQuery($searchColumn);
+
+				// check for a virtual column
+				if ($searchColumn instanceof dsVirtualColumn) {
+					if (dsStringTools::isFilled($searchColumn->getJoin())) {
+						if (dsStringTools::isFilled($searchColumn->getJoinType())) {
+							$this->queryClass->join($searchColumn->getJoin(), $searchColumn->getJoinType());
+						} else {
+							$this->queryClass->join($searchColumn->getJoin());
+						}
+					}
+
+					$this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
+					$this->queryClass->where($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+				} else {
+					if (strpos($searchColumn->getIdentifier(), ".") !== FALSE) {
+						list($relation, $searchBy) = explode(".", $searchColumn->getIdentifier());
+						$useQueryString = "use" . $relation . "Query";
+
+						$this->queryClass->{$useQueryString}()
+						->filterBy($searchBy, $extraction["query"], $extraction["comparison"])
+						->endUse();
+					} else {
+						$this->queryClass->filterBy($searchColumn->getgetIdentifier(), $extraction["query"], $extraction["comparison"]);
+					}
+				}
+
+				$this->filtered = TRUE;
+			}
+		}
+	}
+
 	public function query() {
 		$resultSet = $this->queryClass->orderBy($this->sortBy, strtoupper($this->sortOrder))
 		->offset(($page - 1) * $cnt)
 		->limit($cnt)
 		->find();
-		
+
 		return $resultSet;
 	}
 
@@ -148,5 +206,24 @@ class dsPropelQuery {
 		}
 
 		return NULL;
+	}
+
+	private function extractSearchQuery($searchColumn) {
+		$extraction = array();
+		$extraction["comparison"] = "=";
+		$extraction["query"] = $this->searchQuery;
+
+		if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_BOOLEAN) {
+			$extraction["query"] = dsStringTools::isBoolean($this->searchQuery);
+		} else if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_DATE) {
+			// FIXME
+			// compare dates
+			$extraction["query"] = $this->searchQuery;
+		} else {
+			$extraction["query"] = '%' . $this->searchQuery . '%';
+			$extraction["comparison"] = 'LIKE';
+		}
+
+		return $extraction;
 	}
 }
