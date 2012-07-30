@@ -95,6 +95,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 		$this->bundlePath = $bundlePath;
 
 		$this->rendererRegistry = new dsCellRendererRegistry();
+		$this->buildModel();
 	}
 
 	/**
@@ -128,10 +129,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * @see DevelSuite\view\impl\flexigrid\provider.dsIDataProvider::getColumnModel()
 	 */
 	public function getColumnModel() {
-		if (empty($this->columnModel)) {
-			$this->buildModel();
-		}
-
 		return $this->columnModel;
 	}
 
@@ -226,10 +223,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * @see DevelSuite\view\impl\flexigrid\provider.dsIDataProvider::loadData()
 	 */
 	public function loadData() {
-		if (empty($this->columnModel)) {
-			$this->buildModel();
-		}
-
 		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel);
 		$propelQuery->buildQuery();
 
