@@ -8,6 +8,12 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel\query;
 
+use DevelSuite\dsApp;
+use DevelSuite\util\dsStringTools;
+use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
+use DevelSuite\view\impl\flexigrid\constants\dsSortOrderConstants;
+use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
+
 /**
  * Creates a Propel Query to
  *
@@ -15,16 +21,6 @@ namespace DevelSuite\view\impl\flexigrid\provider\propel\query;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
-
-use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
-
-use DevelSuite\util\dsStringTools;
-
-use DevelSuite\view\impl\flexigrid\constants\dsSortOrderConstants;
-
-use DevelSuite\dsApp;
-
 class dsPropelQuery {
 	/**
 	 * The Propel query class of the corresponding entity
@@ -184,9 +180,9 @@ class dsPropelQuery {
 	}
 
 	public function query() {
-		$resultSet = $this->queryClass->orderBy($this->sortBy, strtoupper($this->sortOrder))
-		->offset(($page - 1) * $cnt)
-		->limit($cnt)
+		$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
+		->offset(($this->offset - 1) * $this->limit)
+		->limit($this->limit)
 		->find();
 
 		return $resultSet;
