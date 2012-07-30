@@ -345,8 +345,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 		// first add primary keys
 		$primaryKeys = $this->tableMap->getPrimaryKeys();
 		foreach ($primaryKeys as $primaryKeyColumn) {
-			$identifier = $primaryKeyColumn->getName();
-			$caption = $primaryKeyColumn->getPhpName();
+			$caption = $identifier = $primaryKeyColumn->getPhpName();
 			$columnType = dsPropelTypeMapper::mapPropelType($primaryKeyColumn->getType());
 
 			if ($bundle !== NULL && isset($bundle[strtolower($identifier)])) {
@@ -377,8 +376,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 				continue;
 			}
 			
-			$identifier = $column->getName();
-			$caption = $column->getPhpName();
+			$caption = $identifier = $column->getPhpName();
 			$columnType = dsPropelTypeMapper::mapPropelType($column->getType());
 
 			if ($bundle !== NULL && isset($bundle[strtolower($identifier)])) {
