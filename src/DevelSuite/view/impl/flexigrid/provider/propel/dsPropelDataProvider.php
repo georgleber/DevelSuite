@@ -8,10 +8,14 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel;
 
+
+
 use DevelSuite\exception\spl\dsFileNotFoundException;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsArrayTools;
 use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
+use DevelSuite\view\impl\flexigrid\filter\dsIColumnFilter;
+use DevelSuite\view\impl\flexigrid\filter\dsIWhereFilter;
 use DevelSuite\view\impl\flexigrid\model\dsColumn;
 use DevelSuite\view\impl\flexigrid\model\propel\dsPropelColumn;
 use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
