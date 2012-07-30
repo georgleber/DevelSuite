@@ -35,8 +35,12 @@ use DevelSuite\view\dsAView;
  * @version 1.0
  */
 class dsFrontController {
+	/**
+	 * The responsible logger
+	 * @var Logger
+	 */
 	private $log;
-	
+
 	/**
 	 * The main view (needed to allow nested calls)
 	 * @var dsAView
@@ -93,7 +97,10 @@ class dsFrontController {
 	public function setTitle($title) {
 		$this->title = $title;
 	}
-	
+
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		$this->log = new Logger("FrontController");
 		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
@@ -152,16 +159,16 @@ class dsFrontController {
 	/**
 	 * The view will just be rendered and send to the client.
 	 * This is needed for ajax calls to load content directly.
-	 * 
+	 *
 	 * @param dsAView $view
 	 * 		The view to pass thru to the client
 	 */
 	public function passThru(dsAView $view) {
 		$view->render();
-		
+
 		// send response to client
 		dsApp::getResponse()->send();
-		
+
 		exit();
 	}
 
@@ -313,7 +320,7 @@ class dsFrontController {
 	 */
 	private function render() {
 		if (!isset($this->layout)) {
-			$this->layout = APP_PATH . DS . "layout" . DS . "layout.tpl.php";
+			$this->layout = dsConfig::read("app.layoutdir", APP_PATH . DS . "layout") . DS . "layout.tpl.php"; 
 		}
 
 		// try to load layout and include it
@@ -339,7 +346,7 @@ class dsFrontController {
 		} else {
 			$namespace = "\\controller\\";
 		}
-		
+
 		// load class and check if it is of type AController
 		$class = $namespace . ucfirst($route->getController()) . "Controller";
 		$controller = new $class();
