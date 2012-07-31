@@ -11,14 +11,25 @@ namespace DevelSuite\view\impl\flexigrid\action;
 use DevelSuite\view\impl\dsFlexiGridView;
 
 /**
- * FIXME
+ * Interface for all FlexiActions
  *
  * @package DevelSuite\view\impl\flexigrid\action
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 interface dsIFlexiAction {
-	public function setTable(dsFlexiGridView $table);
+	/**
+	 * Return the identifier for this action
+	 */
+	public function getIdentifier();
+	
+	/**
+	 * Creates code for a javascript function depending on this action and its needs.
+	 */
 	public function getJSFunction();
+
+	/**
+	 * Provide javascript representation of this button
+	 */
 	public function __toString();
 }

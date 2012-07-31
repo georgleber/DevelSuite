@@ -52,17 +52,17 @@
 			$('.grid').flexReload();
 		}
 
-		function getRequestedContent(grid, requestColumns, singleSelect) {
+		function getRequestedColumns(grid, requestColumns, multiSelection) {
 			var content = new Array(); 
 			if ($('.trSelected', grid).length == 0) {
 				jAlert("Es wurde kein Datensatz ausgewählt.", "Fehler");
 				return null;
-			} else if (singleSelect && $('.trSelected', grid).length > 1) {
+			} else if (!multiSelection && $('.trSelected', grid).length > 1) {
 				jAlert("Es wurde mehr als ein Datensatz ausgewählt, es ist aber nur einfache Selektierung zulässig", "Fehler");
 				return null;
 			} else {
 				$('.trSelected', grid).each(function(row) {
-					if (!singleSelect) {
+					if (multiSelection) {
 						content[row] = new Array();
 					}
 					
@@ -72,10 +72,10 @@
 
 						$.each(requestColumns, function(index, column) {
 							if (abbr == column) {
-								if (singleSelect) {
-									content.push({name: column, value: data});
-								} else {
+								if (multiSelection) {
 									content[row].push({name: column, value: data});
+								} else {
+									content.push({name: column, value: data});
 								}	
 							}
 						});

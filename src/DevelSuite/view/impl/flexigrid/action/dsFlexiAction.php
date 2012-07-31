@@ -21,10 +21,10 @@ use DevelSuite\view\impl\dsFlexiGridView;
  */
 class dsFlexiAction implements dsIFlexiAction {
 	/**
-	 * Corresponging FlexiGridTable
-	 * @var dsFlexiGridTable
+	 * Identifier for this action
+	 * @var string
 	 */
-	protected $table;
+	private $identifier;
 
 	/**
 	 * Name of this action
@@ -51,10 +51,16 @@ class dsFlexiAction implements dsIFlexiAction {
 	private $event;
 
 	/**
+	 * Flag, if action allows mulit selection
+	 * @var bool
+	 */
+	protected $multiSelection = FALSE;
+
+	/**
 	 * Columns to request
 	 * @var array
 	 */
-	private $requestColumns = array();
+	protected $requestColumns = array();
 
 	/**
 	 * Constructor
@@ -67,6 +73,7 @@ class dsFlexiAction implements dsIFlexiAction {
 	 * 		Which CSS class should be used
 	 */
 	public function __construct($caption, $action, $cssClass = NULL) {
+		$this->identifier = $action;
 		$this->caption = $caption;
 		$this->event = "flexi.action." . $action;
 		$this->action = "flexi_do" . ucfirst($action);
@@ -74,27 +81,37 @@ class dsFlexiAction implements dsIFlexiAction {
 		$this->cssClass = $cssClass != NULL ? $cssClass : $action;
 	}
 
-	/**
-	 * Set the corresponding FlexgiGridTable
-	 *
-	 * @param dsFlexiGridTable $table
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\action.dsIFlexiAction::getIdentifier()
 	 */
-	public function setTable(dsFlexiGridView $table) {
-		$this->table = $table;
+	public function getIdentifier() {
+		return $this->identifier;
 	}
 
 	/**
-	 * Set the columns, which should be loaded by this action
+	 * Set multi-selection flag for this action
 	 *
-	 * @param array $columns
-	 * 		The colums, which content will be requested
+	 * @param bool $multiSelection
+	 * 		TRUE, if action allows multi-selection
 	 */
-	public function setRequestColumns(array $columns) {
-		$this->requestColumns = $columns;
+	public function setMultiSelection($multiSelection = TRUE) {
+		$this->multiSelection = $multiSelection;
 	}
 
 	/**
-	 * Creates code for a javascript function depending on this action and its needs.
+	 * Set the columns needed for the request
+	 *
+	 * @param array $requestColumns
+	 * 		Array with the needed columns
+	 */
+	public function setRequestColumns(array $requestColumns) {
+		$this->requestColumns = $requestColumns;
+	}
+
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\action.dsIFlexiAction::getJSFunction()
 	 */
 	public function getJSFunction() {
 		$code = "function " . $this->action . "(com, grid) {\n";
@@ -103,39 +120,42 @@ class dsFlexiAction implements dsIFlexiAction {
 		$code .= "var event = jQuery.Event('" . $this->event . "')\n";
 
 		// load content of the requested columns
-		if (!empty($this->requestColumns)) {
+		if ($this->getRequestColumns() != NULL && !empty($this->getRequestColumns())) {
+			$requestColumns = $this->getRequestColumns();
+
 			$code .= "var reqColumns = new Array();\n";
-			for ($i = 0, $cnt = count($this->requestColumns); $i < $cnt; $i++) {
-				$code .= "reqColumns[" . $i . "] = '" . $this->requestColumns[$i] . "';\n";
+			for ($i = 0, $cnt = count($requestColumns); $i < $cnt; $i++) {
+				$code .= "reqColumns[" . $i . "] = '" . $requestColumns[$i] . "';\n";
 			}
 
-			if ($this->table != NULL && $this->table->isSingleSelect()) {
-				$code .= "\nvar reqContents = getRequestedContent(grid, reqColumns, true);\n\n";
+			if ($this->multiSelection) {
+				$code .= "\nvar reqContents = getRequestedColumns(grid, reqColumns, true);\n\n";
 			} else {
-				$code .= "\nvar reqContents = getRequestedContent(grid, reqColumns, false);\n\n";
+				$code .= "\nvar reqContents = getRequestedColumns(grid, reqColumns, false);\n\n";
 			}
 
 			// trigger event
 			$code .= "if (reqContents != null) {\n";
-			if ($this->table != NULL && $this->table->isSingleSelect()) {
+			if ($this->multiSelection) {
 				$code .= "jQuery('body').trigger(event, [reqContents, true]);\n";
 			} else {
 				$code .= "jQuery('body').trigger(event, [reqContents, false]);\n";
 			}
-			$code .= "console.log(\"Event " . $this->event . " triggered\");";
 			$code .= "}\n";
 		} else {
 			// trigger event
 			$code .= "jQuery('body').trigger(event);\n";
 		}
+
+		$code .= "console.log(\"Event " . $this->event . " triggered\");";
 		$code .= "}\n\n";
 
 		return $code;
 	}
 
-	/**
+	/*
 	 * (non-PHPdoc)
-	 * @see DevelSuite\core\template\flexigrid2.dsIFlexiSeparator::__toString()
+	 * @see DevelSuite\view\impl\flexigrid\action.dsIFlexiAction::__toString()
 	 */
 	public function __toString() {
 		$code = "{ ";

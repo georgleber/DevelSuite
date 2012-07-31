@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\view\impl;
 
+use DevelSuite\view\impl\flexigrid\action\impl\dsCreateAction;
+
+use DevelSuite\view\impl\flexigrid\action\dsIFlexiAction;
+
 use DevelSuite\util\dsStringTools;
 
 use DevelSuite\view\impl\flexigrid\provider\dsIDataProvider;
@@ -117,25 +121,52 @@ class dsFlexiGridView extends dsHtmlView {
 		$this->provider = $provider;
 	}
 
-	// FIXME
-	public function useDefaultActions(array $editColumns = array(), array $deleteColumns = array()) {
-		$this->actionMap[] = new dsCreateAction();
+	/**
+	 * Adding default actions (Create, Edit, Delete) to the action map
+	 */
+	public function useDefaultActions() {
+		$action = new dsCreateAction();
+		$this->actionMap[$action->getIdentifier()] = $action;
 
-		$action = new dsEditAction($editColumns);
-		$action->setTable($this);
-		$this->actionMap[] = $action;
+		$action = new dsEditAction();
+		$this->actionMap[$action->getIdentifier()] = $action;
 
-		$action = new dsDeleteAction($deleteColumns);
-		$action->setTable($this);
-		$this->actionMap[] = $action;
+		$action = new dsDeleteAction();
+		$this->actionMap[$action->getIdentifier()] = $action;
 
-		$this->actionMap[] = new dsFlexiSeparator();
+		$this->actionMap["sep1"] = new dsFlexiSeparator("sep1");
 	}
 
-	// FIXME
+	/**
+	 * Add a action to the action map
+	 *
+	 * @param dsIFlexiAction $action
+	 * 		Action to add to the map
+	 */
 	public function addAction(dsIFlexiAction $action) {
-		$action->setTable($this);
-		$this->actionMap[] = $action;
+		$this->actionMap[$action->getIdentifier()] = $action;
+	}
+
+	/**
+	 * Retrieve an action from the map
+	 *
+	 * @param string $identifier
+	 * 		Identifier of the action
+	 */
+	public function getAction($identifier) {
+		$action = NULL;
+		if (isset($this->actionMap[$identifier])) {
+			$action = $this->actionMap[$identifier];
+		}
+
+		return $action;
+	}
+
+	/**
+	 * Return the actions for this table
+	 */
+	public function getActionMap() {
+		return $this->actionMap();
 	}
 
 	/**
@@ -274,7 +305,7 @@ class dsFlexiGridView extends dsHtmlView {
 		->assign("dataType", $this->provider->getDataType())
 		->assign("method", $this->getSendMethod())
 		->assign("columnModel", $this->provider->getColumnModel())
-		->assign("actions", $this->actionMap) // FIXME
+		->assign("actions", $this->getActionMap())
 		->assign("sortname", $this->getSortColumn())
 		->assign("sortorder", $this->getSortOrder())
 		->assign("rp", $this->getRowCount())

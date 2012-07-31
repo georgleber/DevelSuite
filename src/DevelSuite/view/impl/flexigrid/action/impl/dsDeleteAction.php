@@ -18,13 +18,12 @@ use DevelSuite\view\impl\flexigrid\action\dsFlexiAction;
  * @version 1.0
  */
 class dsDeleteAction extends dsFlexiAction {
-	public function __construct(array $columns = array()) {
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
 		parent::__construct("Löschen", "delete");
 
-		if (empty($columns)) {
-			$this->setRequestColumns(array("ID"));
-		} else {
-			$this->setRequestColumns($columns);
-		}
+		$this->setRequestColumns();
 	}
 }

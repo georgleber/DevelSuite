@@ -18,6 +18,9 @@ use DevelSuite\view\impl\flexigrid\action\dsFlexiAction;
  * @version 1.0
  */
 class dsCreateAction extends dsFlexiAction {
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		parent::__construct("Erstellen", "create");
 	}

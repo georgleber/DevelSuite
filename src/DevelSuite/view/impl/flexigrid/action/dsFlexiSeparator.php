@@ -18,16 +18,44 @@ use DevelSuite\view\impl\dsFlexiGridView;
  * @version 1.0
  */
 class dsFlexiSeparator implements dsIFlexiAction {
-	public function setTable(dsFlexiGridView $table) {
-		// do nothing
+	/**
+	 * Identifier for this action
+	 * @var string
+	 */
+	private $identifier;
+
+	/**
+	 * Constructor
+	 *
+	 * @param string $identifier
+	 * 		Identifier for this action
+	 */
+	public function __construct($identifier) {
+		$this->identifier = $identifier;
 	}
 
-	public function __toString() {
-		return "{ separator: true }";
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\action.dsIFlexiAction::getIdentifier()
+	 */
+	public function getIdentifier() {
+		return $this->identifier;
 	}
 
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\action.dsIFlexiAction::getJSFunction()
+	 */
 	public function getJSFunction() {
 		// not needed
 		return "";
+	}
+
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\action.dsIFlexiAction::__toString()
+	 */
+	public function __toString() {
+		return "{ separator: true }";
 	}
 }
