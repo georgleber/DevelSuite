@@ -166,7 +166,7 @@ class dsFlexiGridView extends dsHtmlView {
 	 * Return the actions for this table
 	 */
 	public function getActionMap() {
-		return $this->actionMap();
+		return $this->actionMap;
 	}
 
 	/**
