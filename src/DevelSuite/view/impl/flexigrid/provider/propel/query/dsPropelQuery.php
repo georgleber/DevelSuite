@@ -105,6 +105,14 @@ class dsPropelQuery {
 	public function getOffset() {
 		return $this->offset;
 	}
+	
+	public function getTotal() {
+		if ($this->filtered) {
+			$this->total = $this->queryClass->count();
+		}
+		
+		return $this->total;
+	}
 
 	public function buildQuery() {
 		$this->loadRequest();

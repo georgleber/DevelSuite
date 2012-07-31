@@ -265,7 +265,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 
 		$retVal = array();
 		$retVal["page"] = $propelQuery->getOffset();
-		$retVal["total"] = count($resultSet);
+		$retVal["total"] = $propelQuery->getTotal();
 
 		$rowCnt = 1;
 		$rows = array();
