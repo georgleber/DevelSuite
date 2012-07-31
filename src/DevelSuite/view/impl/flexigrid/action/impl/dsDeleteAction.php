@@ -24,6 +24,6 @@ class dsDeleteAction extends dsFlexiAction {
 	public function __construct() {
 		parent::__construct("Löschen", "delete");
 
-		$this->setRequestColumns();
+		$this->setRequestColumns(array("ID"));
 	}
 }
