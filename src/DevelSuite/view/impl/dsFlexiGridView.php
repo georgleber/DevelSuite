@@ -8,11 +8,13 @@
  */
 namespace DevelSuite\view\impl;
 
+
 use DevelSuite\config\dsConfig;
 use DevelSuite\controller\dsFrontController;
 use DevelSuite\exception\spl\dsFileNotFoundException;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsStringTools;
+use DevelSuite\view\impl\flexigrid\action\dsFlexiSeparator;
 use DevelSuite\view\impl\flexigrid\action\dsIFlexiAction;
 use DevelSuite\view\impl\flexigrid\action\impl\dsCreateAction;
 use DevelSuite\view\impl\flexigrid\action\impl\dsDeleteAction;
