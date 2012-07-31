@@ -8,20 +8,16 @@
  */
 namespace DevelSuite\view\impl;
 
-use DevelSuite\view\impl\flexigrid\action\impl\dsCreateAction;
-
-use DevelSuite\view\impl\flexigrid\action\dsIFlexiAction;
-
-use DevelSuite\util\dsStringTools;
-
-use DevelSuite\view\impl\flexigrid\provider\dsIDataProvider;
-
-use DevelSuite\controller\dsFrontController;
-
 use DevelSuite\config\dsConfig;
+use DevelSuite\controller\dsFrontController;
 use DevelSuite\exception\spl\dsFileNotFoundException;
 use DevelSuite\i18n\dsResourceBundle;
-use DevelSuite\template\flexigrid\dsFlexiButton;
+use DevelSuite\util\dsStringTools;
+use DevelSuite\view\impl\flexigrid\action\dsIFlexiAction;
+use DevelSuite\view\impl\flexigrid\action\impl\dsCreateAction;
+use DevelSuite\view\impl\flexigrid\action\impl\dsDeleteAction;
+use DevelSuite\view\impl\flexigrid\action\impl\dsEditAction;
+use DevelSuite\view\impl\flexigrid\provider\dsIDataProvider;
 
 /**
  * View that renders a pre-defined template with a FlexiGrid table.
