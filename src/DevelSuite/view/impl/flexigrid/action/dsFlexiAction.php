@@ -120,12 +120,10 @@ class dsFlexiAction implements dsIFlexiAction {
 		$code .= "var event = jQuery.Event('" . $this->event . "')\n";
 
 		// load content of the requested columns
-		if ($this->getRequestColumns() != NULL && !empty($this->getRequestColumns())) {
-			$requestColumns = $this->getRequestColumns();
-
+		if (!empty($this->requestColumns)) {
 			$code .= "var reqColumns = new Array();\n";
-			for ($i = 0, $cnt = count($requestColumns); $i < $cnt; $i++) {
-				$code .= "reqColumns[" . $i . "] = '" . $requestColumns[$i] . "';\n";
+			for ($i = 0, $cnt = count($this->requestColumns); $i < $cnt; $i++) {
+				$code .= "reqColumns[" . $i . "] = '" . $this->requestColumns[$i] . "';\n";
 			}
 
 			if ($this->multiSelection) {
