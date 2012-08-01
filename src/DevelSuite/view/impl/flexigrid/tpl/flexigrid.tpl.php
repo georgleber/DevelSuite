@@ -101,7 +101,7 @@
 						var colIndex = getIndexByTitle(columnName);
 
 						if (colIndex != -1) {
-							var value = tableRow.find('td:nth-child(' + colIndex + ')').html();
+							var value = tableRow[0].html();
 							console.log("columnName: " + columnName + ", value: " + value);
 	
 							var column = new Column(columnName, value);
