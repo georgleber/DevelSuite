@@ -132,6 +132,7 @@ class dsFrontController {
 			// the full design
 			$request = dsApp::getRequest();
 			if($request->isAjaxRequest() || $request['ajaxFileUpload']) {
+				$this->log->debug("Ajax Request -> render directly!");
 				$this->rootView->render();
 			} else {
 				$this->render();
