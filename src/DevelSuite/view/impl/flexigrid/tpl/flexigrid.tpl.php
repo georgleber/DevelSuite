@@ -101,6 +101,7 @@
 						var colIndex = getIndexByTitle(columnName);
 
 						if (colIndex != -1) {
+							console.log("tableRow: " + tableRow);
 							var value = $('td:nth-Child(' + colIndex + ')', tableRow).children('div').html();
 
 							console.log("columnName: " + columnName + ", value: " + value);
