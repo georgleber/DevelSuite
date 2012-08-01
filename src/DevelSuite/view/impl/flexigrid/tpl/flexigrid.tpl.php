@@ -52,8 +52,32 @@
 			$('.grid').flexReload();
 		}
 
+		function Column(name, value) {
+			this.name = name;
+			this.value = value;
+		}
+
+		function Row(index) {
+			this.columns = new Array();
+			this.index = index;
+
+			this.addColumn = function(column) {
+				this.columns.push(column);
+			}
+		}
+
+		function ResultSet(multiSelection) {
+			this.rows = new Array();
+			this.multiSelection = multiSelection;
+			
+			this.addRow = function(row) {
+				this.rows.push(row);
+			}
+		}
+
 		function getRequestedColumns(grid, requestColumns, multiSelection) {
-			var content = new Array(); 
+			var resultSet = new ResultSet(multiSelection);
+			
 			if ($('.trSelected', grid).length == 0) {
 				jAlert("Es wurde kein Datensatz ausgewählt.", "Fehler");
 				return null;
@@ -61,28 +85,25 @@
 				jAlert("Es wurde mehr als ein Datensatz ausgewählt, es ist aber nur einfache Selektierung zulässig", "Fehler");
 				return null;
 			} else {
-				$('.trSelected', grid).each(function(row) {
-					if (multiSelection) {
-						content[row] = new Array();
-					}
+				$('.trSelected', grid).each(function(rowIndex) {
+					var row = new Row(rowIndex);
 					
 					$('td', this).each(function() {
 						var abbr = $(this).attr('abbr');
-						var data = $(this).children('div').html();
+						var value = $(this).children('div').html();
 
-						$.each(requestColumns, function(index, column) {
-							if (abbr == column) {
-								if (multiSelection) {
-									content[row].push({name: column, value: data});
-								} else {
-									content.push({name: column, value: data});
-								}	
+						$.each(requestColumns, function(index, columnName) {
+							if (abbr == columnName) {
+								var column = new Column(columnName, data);
+								row.addColumn(column);
 							}
 						});
 					});
+
+					resultSet.addRow(row);
 				});
 
-				return content;
+				return resultSet;
 			}
 		}
 	});
