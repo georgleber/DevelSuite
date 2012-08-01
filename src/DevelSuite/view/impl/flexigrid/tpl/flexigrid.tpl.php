@@ -123,7 +123,7 @@
 			$('div.hDivBox > table > thead > tr > th', grid).each(function(index) {
 				 var name = $(this).attr('title');
 				 console.log("Checking cell: [" + name + "]");
-				 if (name == columnName) {
+				 if (name === columnName) {
 					 return index;					 
 				 }
 			});
