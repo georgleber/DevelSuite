@@ -101,7 +101,7 @@
 						var colIndex = getIndexByTitle(columnName);
 
 						if (colIndex != -1) {
-							var cell = $('td:nth-Child(' + colIndex + ')', this);
+							var cell = $('td:nth-Child(' + colIndex + ')', '.trSelected');
 							var value = $(cell).children('div').html();
 
 							console.log("Cell: " + cell + ", value: " + value);
