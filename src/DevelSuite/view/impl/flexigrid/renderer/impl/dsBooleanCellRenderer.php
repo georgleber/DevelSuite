@@ -19,7 +19,7 @@ use DevelSuite\util\dsStringTools;
  */
 class dsBooleanCellRenderer extends dsACellRenderer {
 	public function setValue($value) {
-		$this->value = dsStringTools::is_boolean($value);
+		$this->value = dsStringTools::isBoolean($value);
 	}
 
 	public function render() {
