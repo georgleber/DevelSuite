@@ -64,6 +64,14 @@
 			this.addColumn = function(column) {
 				this.columns.push(column);
 			}
+
+			this.getColumn = function(columnName) {
+				for (var i = 0; i < this.columns.length; i++) {
+					if (columns[i].name == columnName) {
+						return column;
+					}
+				}
+			}
 		}
 
 		function ResultSet(multiSelection) {
