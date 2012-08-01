@@ -86,7 +86,7 @@
 		}
 
 		function getRequestedColumns(grid, requestColumns, multiSelection) {
-			alert(grid);
+			console.log(grid);
 			var resultSet = new ResultSet(multiSelection);
 			
 			if ($('.trSelected', grid).length == 0) {
@@ -98,17 +98,17 @@
 			} else {
 				$('.trSelected', grid).each(function(rowIndex) {
 					var row = new Row(rowIndex);
-					
-					$('td', this).each(function() {
-						var cellName = $(this).attr('abbr');
-						var value = $(this).children('div').html();
 
-						$.each(requestColumns, function(index, columnName) {
-							if (cellName == columnName) {
-								var column = new Column(columnName, data);
-								row.addColumn(column);
-							}
-						});
+					$.each(requestColumns, function(index, columnName) {
+						var colIndex = getColumnIndex(columnName);
+
+						if (colIndex != -1) {
+							var cell = $('td:nth-Child(' + columnIndex + ')', this);
+							var value = $(cell).children('div').html();
+	
+							var column = new Column(columnName, value);
+							row.addColumn(column);
+						}
 					});
 
 					resultSet.addRow(row);
@@ -119,7 +119,14 @@
 		}
 
 		function getColumnIndex(columnName, grid) {
-			
+			$('div.hDivBox > table > thead > tr > th', grid).each(function(index) {
+				 var title = $(this).attr('title');
+				 if (title == columnName) {
+					 return index;					 
+				 }
+			});
+
+			return -1;
 		}
 	});
 /* ]]> */
