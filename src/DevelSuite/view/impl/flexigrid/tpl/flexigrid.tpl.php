@@ -119,18 +119,22 @@
 		}
 
 		function getColumnIndex(columnName, grid) {
+			var columnIndex = -1;
 			console.log("loading column index for column: [" + columnName + "]");
 			$('div.hDivBox > table > thead > tr > th', grid).each(function(index) {
 				 var name = $(this).attr('title');
 				 console.log("Checking cell: [" + name + "]");
 				 if (name === columnName) {
-					 return index;					 
+					 columnIndex = index;
+					 return;					 
 				 }
 			});
 
-			console.log("no cell found with name: " + columnName);
+			if (columnIndex > -1) {
+				console.log("found column at index: " + columnIndex);
+			}
 
-			return -1;
+			return columnIndex;
 		}
 	});
 /* ]]> */
