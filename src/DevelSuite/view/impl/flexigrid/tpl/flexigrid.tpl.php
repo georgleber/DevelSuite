@@ -86,6 +86,7 @@
 		}
 
 		function getRequestedColumns(grid, requestColumns, multiSelection) {
+			alert(grid);
 			var resultSet = new ResultSet(multiSelection);
 			
 			if ($('.trSelected', grid).length == 0) {
@@ -99,11 +100,11 @@
 					var row = new Row(rowIndex);
 					
 					$('td', this).each(function() {
-						var cellName = $(this).attr('data-name');
+						var cellName = $(this).attr('abbr');
 						var value = $(this).children('div').html();
 
 						$.each(requestColumns, function(index, columnName) {
-							if (abbr == columnName) {
+							if (cellName == columnName) {
 								var column = new Column(columnName, data);
 								row.addColumn(column);
 							}
@@ -115,6 +116,10 @@
 
 				return resultSet;
 			}
+		}
+
+		function getColumnIndex(columnName, grid) {
+			
 		}
 	});
 /* ]]> */
