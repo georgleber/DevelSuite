@@ -102,8 +102,6 @@
 
 						if (colIndex != -1) {
 							var value = tableRow.children().eq(colIndex).children('div').html();
-							console.log("columnName: " + columnName + ", value: " + value);
-	
 							var column = new Column(columnName, value);
 							row.addColumn(column);
 						}
