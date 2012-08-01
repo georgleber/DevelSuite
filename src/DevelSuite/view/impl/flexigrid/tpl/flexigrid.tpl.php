@@ -66,10 +66,8 @@
 			}
 
 			this.getColumn = function(columnName) {
-				console.log("Searching for column name: " + columnName + ", count columns: " + this.columns.length);
 				for (var i = 0; i < this.columns.length; i++) {
 					if (this.columns[i].name == columnName) {
-						console.log("internal column name: " + this.columns[i].name);
 						return this.columns[i];
 					}
 				}
@@ -105,6 +103,8 @@
 						if (colIndex != -1) {
 							var cell = $('td:nth-Child(' + colIndex + ')', this);
 							var value = $(cell).children('div').html();
+
+							console.log("Cell: " + cell + ", value: " + value);
 	
 							var column = new Column(columnName, value);
 							row.addColumn(column);
