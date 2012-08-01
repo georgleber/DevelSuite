@@ -121,9 +121,9 @@
 		function getColumnIndex(columnName, grid) {
 			console.log("loading column index for column: " + columnName);
 			$('div.hDivBox > table > thead > tr > th', grid).each(function(index) {
-				 var name = $(this).children('div').html();
+				 var name = $(this).attr('title');
 				 console.log("Checking cell: " + name);
-				 if (String(name) == columnName) {
+				 if (name == columnName) {
 					 return index;					 
 				 }
 			});
