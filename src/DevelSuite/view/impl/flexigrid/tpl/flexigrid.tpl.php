@@ -101,9 +101,12 @@
 
 					$.each(requestColumns, function(index, columnName) {
 						var colIndex = getColumnIndex(columnName);
+						var colIndex2 = getIndexByTitle(columnName);
+
+						console.log("Index1: " + colIndex + ", Index2: " + colIndex2);
 
 						if (colIndex != -1) {
-							var cell = $('td:nth-Child(' + columnIndex + ')', this);
+							var cell = $('td:nth-Child(' + colIndex + ')', this);
 							var value = $(cell).children('div').html();
 	
 							var column = new Column(columnName, value);
@@ -117,6 +120,11 @@
 				return resultSet;
 			}
 		}
+
+		function getIndexByTitle(title) {
+	 		return $('div.hDivBox > table > thead > tr > th[title="' + title + '"]').index();
+		}
+					
 
 		function getColumnIndex(columnName, grid) {
 			var columnIndex = -1;
