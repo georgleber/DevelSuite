@@ -45,24 +45,6 @@ class dsLinkViewHelper implements dsIViewHelper {
 	 * 		Parameters, which are needed for the route
 	 */
 	public function generateLink($routeName, $linkText, array $attributes = array(), array $params = array()) {
-		$link = $this->generateLinkStart($routeName, $attributes, $params);
-		$link .= $linkText . "</a>";
-
-		return $link;
-	}
-
-	/**
-	 * Generate the start of an internal HTML link<br/>
-	 * <b>IMPORTANT: The link will notcontain a terminating <pre><a/></pre></b>
-	 *
-	 * @param string $routeName
-	 * 		Name of the route
-	 * @param array $attributes
-	 * 		Attributes for this link (e.g. styles, class, id, ...)
-	 * @param array $params
-	 * 		Parameters, which are needed for the route
-	 */
-	public function generateLinkStart($routeName, array $attributes = array(), array $params = array()) {
 		$url = $this->generateUrl($routeName, $params);
 
 		$link = "<a ";
@@ -70,6 +52,8 @@ class dsLinkViewHelper implements dsIViewHelper {
 			$link .= $attr . "='" . $value . "' ";
 		}
 		$link .= "href='" . $url . "'>";
+
+		$link .= $linkText . "</a>";
 
 		return $link;
 	}
