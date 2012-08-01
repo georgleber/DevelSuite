@@ -101,10 +101,9 @@
 						var colIndex = getIndexByTitle(columnName);
 
 						if (colIndex != -1) {
-							var cell = $('td:nth-Child(' + colIndex + ')', tableRow);
-							var value = $(cell).children('div').html();
+							var value = $('td:nth-Child(' + colIndex + ')', tableRow).children('div').html();
 
-							console.log("Cell: " + cell + ", value: " + value);
+							console.log("columnName: " + columnName + ", value: " + value);
 	
 							var column = new Column(columnName, value);
 							row.addColumn(column);
