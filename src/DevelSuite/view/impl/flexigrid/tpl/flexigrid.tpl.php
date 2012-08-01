@@ -84,7 +84,6 @@
 		}
 
 		function getRequestedColumns(grid, requestColumns, multiSelection) {
-			console.log(grid);
 			var resultSet = new ResultSet(multiSelection);
 			
 			if ($('.trSelected', grid).length == 0) {
@@ -96,12 +95,13 @@
 			} else {
 				$('.trSelected', grid).each(function(rowIndex) {
 					var row = new Row(rowIndex);
+					var tableRow = $(this);
 
 					$.each(requestColumns, function(index, columnName) {
 						var colIndex = getIndexByTitle(columnName);
 
 						if (colIndex != -1) {
-							var cell = $('td:nth-Child(' + colIndex + ')', '.trSelected');
+							var cell = $('td:nth-Child(' + colIndex + ')', tableRow);
 							var value = $(cell).children('div').html();
 
 							console.log("Cell: " + cell + ", value: " + value);
