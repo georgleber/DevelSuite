@@ -119,12 +119,16 @@
 		}
 
 		function getColumnIndex(columnName, grid) {
+			console.log("loading column index for column: " + columnName);
 			$('div.hDivBox > table > thead > tr > th', grid).each(function(index) {
-				 var title = $(this).attr('title');
-				 if (title == columnName) {
+				 var name = $(this).children('div').html();
+				 console.log("Checking cell: " + name);
+				 if (name == columnName) {
 					 return index;					 
 				 }
 			});
+
+			console.log("no cell found with name: " + columnName);
 
 			return -1;
 		}
