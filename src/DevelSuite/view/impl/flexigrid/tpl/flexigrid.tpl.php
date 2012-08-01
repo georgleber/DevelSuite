@@ -68,8 +68,8 @@
 			this.getColumn = function(columnName) {
 				console.log("Searching for column name: " + columnName + ", count columns: " + this.columns.length);
 				for (var i = 0; i < this.columns.length; i++) {
-					if (columns[i].name == columnName) {
-						console.log("internal column name: " + columns[i].name);
+					if (this.columns[i].name == columnName) {
+						console.log("internal column name: " + this.columns[i].name);
 						return column;
 					}
 				}
@@ -99,7 +99,7 @@
 					var row = new Row(rowIndex);
 					
 					$('td', this).each(function() {
-						var abbr = $(this).attr('abbr');
+						var cellName = $(this).attr('data-name');
 						var value = $(this).children('div').html();
 
 						$.each(requestColumns, function(index, columnName) {
