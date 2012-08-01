@@ -66,8 +66,10 @@
 			}
 
 			this.getColumn = function(columnName) {
+				console.log("Searching for column name: " + columnName);
 				for (var i = 0; i < this.columns.length; i++) {
 					if (columns[i].name == columnName) {
+						console.log("internal column name: " + columns[i].name);
 						return column;
 					}
 				}
