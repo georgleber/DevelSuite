@@ -70,7 +70,7 @@
 				for (var i = 0; i < this.columns.length; i++) {
 					if (this.columns[i].name == columnName) {
 						console.log("internal column name: " + this.columns[i].name);
-						return column;
+						return this.columns[i];
 					}
 				}
 			}
@@ -100,10 +100,7 @@
 					var row = new Row(rowIndex);
 
 					$.each(requestColumns, function(index, columnName) {
-						var colIndex = getColumnIndex(columnName);
-						var colIndex2 = getIndexByTitle(columnName);
-
-						console.log("Index1: " + colIndex + ", Index2: " + colIndex2);
+						var colIndex = getIndexByTitle(columnName);
 
 						if (colIndex != -1) {
 							var cell = $('td:nth-Child(' + colIndex + ')', this);
@@ -122,27 +119,8 @@
 		}
 
 		function getIndexByTitle(title) {
-	 		return $('div.hDivBox > table > thead > tr > th[title="' + title + '"]').index();
-		}
-					
-
-		function getColumnIndex(columnName, grid) {
-			var columnIndex = -1;
-			console.log("loading column index for column: [" + columnName + "]");
-			$('div.hDivBox > table > thead > tr > th', grid).each(function(index) {
-				 var name = $(this).attr('title');
-				 console.log("Checking cell: [" + name + "]");
-				 if (name === columnName) {
-					 columnIndex = index;
-					 return;					 
-				 }
-			});
-
-			if (columnIndex > -1) {
-				console.log("found column at index: " + columnIndex);
-			}
-
-			return columnIndex;
+	 		var index = $('div.hDivBox > table > thead > tr > th[title="' + title + '"]').index();
+	 		return index;
 		}
 	});
 /* ]]> */
