@@ -101,7 +101,7 @@
 						var colIndex = getIndexByTitle(columnName);
 
 						if (colIndex != -1) {
-							var value = tableRow.children().html();
+							var value = tableRow.children().eq(colIndex).html();
 							console.log("columnName: " + columnName + ", value: " + value);
 	
 							var column = new Column(columnName, value);
