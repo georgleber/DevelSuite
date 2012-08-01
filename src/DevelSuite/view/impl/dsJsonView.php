@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\view\impl;
 
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\dsApp;
 use DevelSuite\view\dsAView;
 
@@ -19,6 +23,8 @@ use DevelSuite\view\dsAView;
  * @version 1.0
  */
 class dsJsonView extends dsAView {
+	private $log;
+	
 	/**
 	 * Constructor
 	 *
@@ -27,6 +33,9 @@ class dsJsonView extends dsAView {
 	 */
 	public function __construct() {
 		dsApp::getResponse()->setContentType("application/json");
+		
+		$this->log = new Logger("JsonView");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . "server.log"));
 	}
 
 	/**
@@ -35,6 +44,9 @@ class dsJsonView extends dsAView {
 	 */
 	public function render() {
 		$encode = json_encode($this->data);
+		
+		$this->log->debug("Sending encoded string: " . $encode);
+		
 		echo $encode;
 	}
 }
