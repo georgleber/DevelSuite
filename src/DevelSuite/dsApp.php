@@ -26,10 +26,6 @@ use DevelSuite\i18n\dsLocale;
 
 use DevelSuite\eventbus\impl\dsEventBus;
 
-use Monolog\Handler\SyslogHandler;
-
-use Monolog\Processor\WebProcessor;
-
 use Monolog\Handler\StreamHandler;
 
 use Monolog\Logger;
@@ -269,7 +265,7 @@ class dsApp {
 
 		// check that routing file exists
 		if (!file_exists($routingFile)) {
-			throw new \Exception("Routing file not found");
+			throw new dsFileNotFoundException("Routing file not found");
 		}
 
 		// bind all defined routes
