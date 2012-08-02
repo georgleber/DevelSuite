@@ -58,10 +58,10 @@ class dsSession {
 				break;
 		}
 
-		if(!class_exists($handler, FALSE)) {
-			$classFile = "impl/" . $handler . ".php";
-			require ($classFile);
-		}
+		#if(!class_exists($handler, FALSE)) {
+		#	$classFile = "impl/" . $handler . ".php";
+		#	require ($classFile);
+		#}
 
 		if (class_exists($handler)) {
 			$sessionHandler = new $handler();
