@@ -215,10 +215,7 @@ class dsApp {
 	 * Initialise session management
 	 */
 	private static function initSession() {
-		$log = new Logger("App");
-		$log->pushHandler(new StreamHandler(LOG_PATH . DS . "server.log"));
-		$log->debug("DIES IST EIN TEST");
-
+		die("session");
 		$settings = dsConfig::read("session");
 		switch ($settings['handler']) {
 			case 'file':
@@ -245,9 +242,6 @@ class dsApp {
 		}
 
 		die("using handler: " . $handler);
-		echo "using handler: ";
-		print_r($handler);
-
 		if (!class_exists($handler)) {
 			$log->debug("handler: " . $handler . " does not exist");
 			throw new dsSessionException(dsSessionException::HANDLER_NOT_FOUND, array($handler));
