@@ -49,7 +49,7 @@ class dsMailView extends dsAView {
 		$this->template = $template;
 	}
 
-	/**
+	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\view.dsAView::render()
 	 */

@@ -9,6 +9,7 @@
 namespace DevelSuite\session\impl;
 
 /**
+ * FIXME
  * Class for handling sessions in a filesystem.
  *
  * @package DevelSuite\session\impl

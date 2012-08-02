@@ -9,68 +9,60 @@
 namespace DevelSuite\encryption\impl;
 
 /**
- * FIXME
+ * Class for encryption with SHA1 algorithm
  *
  * @package DevelSuite\encryption
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 class dsSHA1 implements dsIEncrypt {
-	// Konstante mit erlaubten Zeichen für den Passwortzusatz
-	const SALTCHARS = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-	// Laenge des zu verwenden Salts
-	public static $saltLength = 16;
-	
 	/**
-	 * Erzeugt einen Hash aus einem Passwort
-	 *
-	 * @param string  $password Passwort
-	 * @param int  $saltLength Anzahl Stellen fuer den Salt
-	 * @return array
+	 * Length of salt
 	 */
-	public static function createHash($password, $saltLength = NULL) {
-		// 16-stelligen Salt erzeugen der fuer SHA1 erforderlich ist
+	public static $saltLength = 16;
+
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\encryption.dsIEncrypt::createHash()
+	 */
+	public static function createHash($password, $specificAddition = NULL) {
+		// create 16-digit salt, needed by SHA1 algorithm
 		$useSalt = 0;
-		if($saltLength) {
-			$useSalt = $saltLength;
+		if($specificAddition != NULL) {
+			$useSalt = $specificAddition;
 		} else {
 			$useSalt = self::$saltLength;
 		}
 
 		$salt = '';
 		for ($i = 0; $i < $useSalt; $i++) {
-			$tmpStr = str_shuffle(self::SALTCHARS);
+			$tmpStr = str_shuffle(dsIEncrypt::SALTCHARS);
 			$salt .= $tmpStr[0];
 		}
 
-		// Passwort Hash erzeugen
+		// create password hash
 		$hash = $salt.sha1($salt.$password);
 
 		return $hash;
 	}
 
-	/**
-	 * Prueft ein Passwort gegen einen Hash
-	 *
-	 * @param string  $password Passwort aus dem der zu vergleichende Hash erzeugt werden soll
-	 * @param string  $hash Der zu vergleichende Hash mit komplettem Salt
-	 * @return bool
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\encryption.dsIEncrypt::checkHash()
 	 */
-	public static function checkHash($password, $hash, $saltLength = NULL) {
+	public static function checkHash($password, $hash, $specificAddition = NULl) {
+		// extract complete salt from hash
 		$salt = NULL;
-		if($saltLength == NULL) {
-			// Komplettes Salt aus dem Hash extrahieren
+		if($specificAddition == NULL) {
 			$salt = substr($hash, 0, 15);
 		} else {
-			// Komplettes Salt aus dem Hash extrahieren} else {
-			$salt = substr($hash, 0, $saltLength);
+			$salt = substr($hash, 0, $specificAddition);
 		}
-		
-		// Vergleichshash erzeugen
+
+		// create hash for comparison
 		$tmpHash = $salt.sha1($salt.$password);
-		
-		// Stimmt das Passwort mit dem Hash ueberein ist der Rueckgabewert TRUE, ansonsten FALSE
+
+		// check hashed password with hash
 		return ($tmpHash == $hash) ? TRUE : FALSE;
 	}
 }

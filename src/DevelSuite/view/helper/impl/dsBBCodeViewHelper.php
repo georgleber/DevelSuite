@@ -18,7 +18,10 @@ use DevelSuite\view\helper\dsIViewHelper;
  * @version 1.0
  */
 class dsBBCodeViewHelper implements dsIViewHelper {
-	# array with all BBCodes to search for
+	/**
+	 * all BBCodes to search for
+	 * @var array
+	 */
 	private static $searchBBCodes = array(
 											'/\[u\](.+?)\[\/u\]/i', 
 											'/\[i\](.+?)\[\/i\]/i', 
@@ -31,7 +34,10 @@ class dsBBCodeViewHelper implements dsIViewHelper {
 											'/\[size=small\](.+?)\[\/size\]/i', 
 											'/\[color=([[:alnum:]]{6}?)\](.*?)\[\/color\]/i');
 
-	# array with all XHTML-compliant replacecements for the BBCode
+	/**
+	 * all XHTML-compliant replacecements for the BBCode
+	 * @var array
+	 */
 	private static $BBCodeXHTMLReplacements = array(
 											'<span style="text-decoration: underline">\\1</span>', 
 											'<em>\\1</em>', 

@@ -29,7 +29,7 @@ class dsJsonView extends dsAView {
 		dsApp::getResponse()->setContentType("application/json");
 	}
 
-	/**
+	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\view.dsAView::render()
 	 */

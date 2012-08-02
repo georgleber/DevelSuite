@@ -19,7 +19,7 @@ use DevelSuite\view\impl\flexigrid\constants\dsSortOrderConstants;
 use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
 
 /**
- * Creates a Propel Query to
+ * Creates a Propel Query depending on search, filter and virtual columns
  *
  * @package DevelSuite\view\impl\flexigrid\provider\propel\query
  * @author  Georg Henkel <info@develman.de>
@@ -105,15 +105,21 @@ class dsPropelQuery {
 	public function getOffset() {
 		return $this->offset;
 	}
-	
+
+	/**
+	 * Returns the total count of rows in the result set
+	 */
 	public function getTotal() {
 		if ($this->filtered) {
 			$this->total = $this->queryClass->count();
 		}
-		
+
 		return $this->total;
 	}
 
+	/**
+	 * Creates the query
+	 */
 	public function buildQuery() {
 		$this->loadRequest();
 		$this->considerSearch();
@@ -157,7 +163,7 @@ class dsPropelQuery {
 	public function considerSearch() {
 		$log = new Logger("PropelQuery");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-		
+
 		if (dsStringTools::isFilled($this->searchColumn) && dsStringTools::isFilled($this->searchQuery)) {
 			$searchColumn = $this->findColumn($this->searchColumn);
 
@@ -197,6 +203,9 @@ class dsPropelQuery {
 		}
 	}
 
+	/**
+	 * Retrieve the result set of the query from database
+	 */
 	public function query() {
 		$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
 		->offset(($this->offset - 1) * $this->limit)
@@ -222,6 +231,13 @@ class dsPropelQuery {
 		return NULL;
 	}
 
+	/**
+	 * Extracts the comparison type used for the searchColumn and
+	 * adjusts the searchQuery.
+	 *
+	 * @param dsColumn $searchColumn
+	 * 		The column, which is used for the search
+	 */
 	private function extractSearchQuery($searchColumn) {
 		$extraction = array();
 		$extraction["comparison"] = " = ";

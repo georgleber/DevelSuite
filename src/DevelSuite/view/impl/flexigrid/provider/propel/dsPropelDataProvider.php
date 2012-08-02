@@ -27,7 +27,8 @@ use DevelSuite\view\impl\flexigrid\renderer\dsCellRendererRegistry;
 use DevelSuite\view\impl\flexigrid\renderer\dsICellRenderer;
 
 /**
- * FIXME
+ * PropelDataProvider uses Propel for building the column model and 
+ * loading data from database.
  *
  * @package DevelSuite\view\impl\flexigrid\provider\propel
  * @author  Georg Henkel <info@develman.de>

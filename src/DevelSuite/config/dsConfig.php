@@ -17,7 +17,7 @@ namespace DevelSuite\config;
  */
 class dsConfig {
 	/**
-	 * Speichert alle Einstellungen
+	 * Saves all settings
 	 * @var array
 	 */
 	private static $values = array();
@@ -26,7 +26,9 @@ class dsConfig {
 	 * FIXME
 	 *
 	 * @param string $key
+	 * 		Key for the setting
 	 * @param mixed $value
+	 * 		Value of the setting
 	 */
 	public static function write($key, $value) {
 		if(strpos($key, '.') === FALSE) {
@@ -52,6 +54,9 @@ class dsConfig {
 	 * FIXME
 	 *
 	 * @param string $key
+	 * 		Key of the setting
+	 * @param mixed $fallback
+	 * 		Optional fallback if no setting was found under the key
 	 */
 	public static function read($key = NULL, $fallback = NULL) {
 		if ($key === NULL) {
@@ -95,15 +100,15 @@ class dsConfig {
 	/**
 	 * Deletes a config entry
 	 *
-	 * @param string $var
+	 * @param string $key
+	 * 		Key of setting, which will be removed
 	 */
-	public static function delete($key = NULL) {
+	public static function delete($key) {
 		if (strpos($key, '.') === FALSE) {
 			unset(self::$values[$key]);
-			return;
+		} else {
+			$keys = explode('.', $key, 3);
+			self::$values[$keys[0]] = NULL;
 		}
-
-		$keys = explode('.', $key, 3);
-		self::$values[$keys[0]] = NULL;
 	}
 }

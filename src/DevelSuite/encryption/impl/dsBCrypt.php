@@ -8,81 +8,75 @@
  */
 namespace DevelSuite\encryption\impl;
 
+use DevelSuite\encryption\dsEncryptDelegate;
 use DevelSuite\exception\impl\dsEncryptionException;
 
 /**
- * FIXME
+ * Class for encryption with Blowfish algorithm 
  *
  * @package DevelSuite\encryption
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 class dsBCrypt implements dsIEncrypt {
-	// Konstante mit erlaubten Zeichen fuer den Passwortzusatz
-	const SALTCHARS = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-	// Anzahl der Wiederholungen (Cost). minimal 4, maximal 31
+	/**
+	 * Count of iteration (cost), minimum 4, maximum 31
+	 */
 	public static $cost = 12;
 
-	/**
-	 * Erzeugt einen Hash aus einem Passwort
-	 *
-	 * @param string $password
-	 * 			Das zu verschluesselnde Passwort
-	 * @param int  $cost
-	 * 			Anzahl der Wiederholungen
-	 * @return string
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\encryption.dsIEncrypt::createHash()
 	 */
-	public static function createHash($password, $cost = NULL) {
-		// Pruefen ob Blowfish vom Server unterstuetzt wird
-		self::checkBlowfish();
+	public static function createHash($password, $specificAddition = NULL) {
+		// check if blowfish is installed
+		if (!dsEncryptDelegate::checkBlowfish()) {
+			throw new dsEncryptionException(dsEncryptionException::BLOWFISH_UNSUPPORTED);
+		}
 
-		// 22-stelligen Salt erzeugen der fuer Blowfish erforderlich ist
+		// create 22-digit salt, need by Blowfish
 		$tmpSalt = '';
 		for ($i = 0; $i <= 21; $i++) {
-			$tmpStr = str_shuffle(self::SALTCHARS);
+			$tmpStr = str_shuffle(dsIEncrypt::SALTCHARS);
 			$tmpSalt .= $tmpStr[0];
 		}
 
 		// Anzahl der Wiederholungen ermitteln
 		$useCost = 0;
-		if ($cost) {
-			// Fuehrende 0 voranstellen bei einstelliger Wiederholung
-			$useCost = sprintf('%02d', min(31, max(intval($cost), 4)));
+		if ($specificAddition != NULL) {
+			// prepend leading 0 at one-digit iteration
+			$useCost = sprintf('%02d', min(31, max(intval($specificAddition), 4)));
 		} else {
-			// Standard verwenden
+			// use standard
 			$useCost = self::$cost;
 		}
 
-		// Komplettes Salt mit Algorithmus und Wiederholungen
-		$salt = '$2a$'.$useCost.'$'.$tmpSalt.'$';
+		// complete salt with algorithm and iterations
+		$salt = '$2a$' . $useCost . '$' . $tmpSalt . '$';
 
-		// Passwort Hash erzeugen
+		// create password hash
 		$hash = crypt($password, $salt);
 
 		return $hash;
 	}
 
-	public static function checkHash($password, $hash, $unused = NULL) {
-		// Pruefen ob Blowfish vom Server unterstuetzt wird
-		self::checkBlowfish();
-
-		// Komplettes Salt mit Algorithmus und Wiederholungen aus dem Hash extrahieren
-		$tmpSalt = substr($hash, 0, 29);
-
-		// Vergleichshash erzeugen
-		$tmpHash = crypt($password, $tmpSalt.'$');
-
-		// Stimmt das Passwort mit dem Hash ueberein ist der Rueckgabewert TRUE, ansonsten FALSE
-		return ($tmpHash == $hash) ? TRUE : FALSE;
-	}
-
-	/**
-	 * Prueft ob der Blowfish Algorithmus unterstuetzt wird
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\encryption.dsIEncrypt::checkHash()
 	 */
-	private static function checkBlowfish() {
-		if (CRYPT_BLOWFISH !== 1) {
+	public static function checkHash($password, $hash, $specificAddition = NULl) {
+		// check if blowfish is installed
+		if (!dsEncryptDelegate::checkBlowfish()) {
 			throw new dsEncryptionException(dsEncryptionException::BLOWFISH_UNSUPPORTED);
 		}
+
+		// extract complete salt with algorithm and iterations from hash
+		$tmpSalt = substr($hash, 0, 29);
+
+		// create hash for comparison
+		$tmpHash = crypt($password, $tmpSalt.'$');
+
+		// check hashed password with hash
+		return ($tmpHash == $hash) ? TRUE : FALSE;
 	}
 }

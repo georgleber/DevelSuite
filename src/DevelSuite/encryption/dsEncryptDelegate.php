@@ -66,9 +66,10 @@ class dsEncryptDelegate {
 	}
 
 	/**
-	 * Prueft ob der Blowfish Algorithmus unterstuetzt wird
+	 * Checks if the blowfish algorithm is installed
 	 *
-	 * @return TRUE, if blowfish is available or not
+	 * @return bool
+	 * 		TRUE if blowfish is available, FALSE if not
 	 */
 	private static function checkBlowfish() {
 		if (CRYPT_BLOWFISH !== 1) {

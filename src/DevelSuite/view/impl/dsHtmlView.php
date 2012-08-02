@@ -64,7 +64,7 @@ class dsHtmlView extends dsAView {
 		$this->path = $path;
 	}
 
-	/**
+	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\view.dsAView::render()
 	 */

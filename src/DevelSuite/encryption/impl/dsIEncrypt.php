@@ -9,22 +9,39 @@
 namespace DevelSuite\encryption\impl;
 
 /**
- * FIXME
+ * Interface for all encryption classes
  *
  * @package DevelSuite\encryption
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
 interface dsIEncrypt {
+	/**
+	 * Constant with all allowed characters for password salt
+	 */
+	const SALTCHARS = './0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+	/**
+	 * Creates a hash from a password
+	 *
+	 * @param string $password
+	 * 		Password to hash
+	 * @param string $specificAddition
+	 * 		Algorithm specific additional information (optional)
+	 * @return string
+	 * 		The hashed password
+	 */
 	public static function createHash($password, $specificAddition = NULL);
 
 	/**
-	 * Prueft ein Passwort gegen einen Hash
+	 * Checks a password against a hash
 	 *
-	 * @param string  	$password Passwort aus dem der zu vergleichende Hash erzeugt werden soll
-	 * @param string	$hash Der zu vergleichende Hash mit komplettem Salt
-	 * @param mixed		$unused NOT USED - ONLY NEEDED FOR INTERFACE NEEDS (see dsSHA1.php)!!!
+	 * @param string $password
+	 * 		Password to check
+	 * @param string $hash
+	 * 		Hash for comparison with hashed password
 	 * @return bool
+	 * 		TRUE, if hashed password is equal to hash
 	 */
-	public static function checkHash($password, $hash);
+	public static function checkHash($password, $hash, $specificAddition = NULl);
 }

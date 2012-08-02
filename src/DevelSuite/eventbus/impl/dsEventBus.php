@@ -27,7 +27,7 @@ class dsEventBus implements dsIEventbus {
 	 */
 	private $subscriberMap = array();
 
-	/**
+	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\eventbus.dsIEventbus::subscribe()
 	 */
