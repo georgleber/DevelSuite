@@ -215,8 +215,9 @@ class dsApp {
 	 * Initialise session management
 	 */
 	private static function initSession() {
-		die("session");
 		$settings = dsConfig::read("session");
+		
+		die("handler: " . $settings['handler']);
 		switch ($settings['handler']) {
 			case 'file':
 				$handler = "DevelSuite\\session\\impl\\dsFileSessionHandler";
