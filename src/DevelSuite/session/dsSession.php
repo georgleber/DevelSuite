@@ -29,6 +29,7 @@ class dsSession {
 		$settings = dsConfig::read("session");
 
 		$handler = NULL;
+		die("configured handler: " . $settings['handler']);
 		switch ($settings['handler']) {
 			case 'file':
 				$handler = "\\DevelSuite\\session\\impl\\dsFileSessionHandler";
