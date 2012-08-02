@@ -52,6 +52,7 @@ class dsSession {
 				return;
 		}
 
+		die("using handler: " . $handler);
 		if(!class_exists($handler, FALSE)) {
 			$classFile = "impl/" . $handler . ".php";
 			require ($classFile);
