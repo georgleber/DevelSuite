@@ -10,9 +10,10 @@ namespace DevelSuite\session;
 
 use DevelSuite\config\dsConfig;
 use DevelSuite\exception\impl\dsSessionException;
+use DevelSuite\exception\spl\dsUnsupportedOperationException;
 
 /**
- * FIXME
+ * Defines constants for the different handlers and load the configured one
  *
  * @package DevelSuite\session
  * @author  Georg Henkel <info@develman.de>
@@ -24,8 +25,6 @@ class dsSession {
 	const HANDLER_FILE 		= 300;
 	const HANDLER_CACHE		= 400;
 	const HANDLER_USER 		= 500;
-
-	private static $sessHandler;
 
 	/**
 	 * Configures the session handling
@@ -57,11 +56,6 @@ class dsSession {
 				$handler = $settings['userclass'];
 				break;
 		}
-
-		#if(!class_exists($handler, FALSE)) {
-		#	$classFile = "impl/" . $handler . ".php";
-		#	require ($classFile);
-		#}
 
 		if (class_exists($handler)) {
 			$sessionHandler = new $handler();

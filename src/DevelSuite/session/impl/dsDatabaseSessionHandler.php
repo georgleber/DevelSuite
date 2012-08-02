@@ -9,15 +9,11 @@
 namespace DevelSuite\session\impl;
 
 use DevelSuite\dsApp;
-
-use DevelSuite\exception\impl\dsSessionException;
-
-use DevelSuite\util\dsStringTools;
-
-use DevelSuite\session\dsASessionHandler;
-
 use DevelSuite\config\dsConfig;
+use DevelSuite\exception\impl\dsSessionException;
+use DevelSuite\session\dsASessionHandler;
 use DevelSuite\session\impl\dsISessionManager;
+use DevelSuite\util\dsStringTools;
 
 use \PDO as PDO;
 use \PDOException as PDOException;

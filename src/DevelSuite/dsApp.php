@@ -10,25 +10,15 @@ namespace DevelSuite;
 
 use DevelSuite\exception\spl\dsFileNotFoundException;
 
-use DevelSuite\exception\impl\dsSessionException;
-
-use DevelSuite\exception\spl\dsUnsupportedOperationException;
-
 use DevelSuite\view\helper\cache\dsViewHelperCache;
 
 use DevelSuite\serviceprovider\dsServiceProvider;
 
 use DevelSuite\reflection\annotations\dsAnnotationRegistry;
 
-use DevelSuite\session\dsASessionHandler;
-
 use DevelSuite\i18n\dsLocale;
 
 use DevelSuite\eventbus\impl\dsEventBus;
-
-use Monolog\Handler\StreamHandler;
-
-use Monolog\Logger;
 
 use DevelSuite\routing\dsRoute;
 
@@ -84,8 +74,6 @@ class dsApp {
 
 		// routing
 		self::initRouting();
-
-		die("test");
 
 		// publish new state system.boot.complete
 		self::getEventBus()->publish("system.boot.complete");
@@ -224,7 +212,6 @@ class dsApp {
 	private static function initRouting() {
 		$routingFile = CONFIG_PATH . DS . "routing.php";
 
-		die("routing");
 		// check that routing file exists
 		if (!file_exists($routingFile)) {
 			throw new dsFileNotFoundException("Routing file not found");
@@ -275,16 +262,6 @@ class dsApp {
 		}
 
 		return self::$route;
-	}
-
-	public static function getLogger() {
-		if (self::$logger == NULL) {
-			self::$logger = new Logger("ControllerLogger");
-			self::$logger->pushHandler(new StreamHandler(dirname(APP_PATH) . '/tmp/log/develsuite.log', Logger::DEBUG));
-			self::$logger->pushProcessor(new WebProcessor());
-		}
-
-		return self::$logger;
 	}
 
 	public static function getEventBus() {
