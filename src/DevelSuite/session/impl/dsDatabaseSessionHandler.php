@@ -47,6 +47,8 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 	 * @see DevelSuite\session.dsASessionHandler::init()
 	 */
 	protected function init() {
+		$this->log->debug("Using DatabaseSessionHandler");
+		
 		$this->tableName = dsConfig::read("session.database.tablename", "ds_session");#
 
 		$dsn = dsConfig::read('session.database.dsn');
@@ -65,6 +67,7 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 	 * Check if the session table exists and create it if not.
 	 */
 	private function checkTable() {
+		$this->log->debug("checking if table " . $this->tableName . " exists");
 		$sql = "SHOW TABLES LIKE :TABLE";
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->bindParam(':TABLE', $this->tableName);
@@ -75,7 +78,8 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		}
 
 		if (!$tableExist) {
-			$sql = "CREATE TABLE IF NOT EXISTS  `ds_session` (
+			$this->log->debug("creating table " . $this->tableName . " exists");
+			$sql = "CREATE TABLE IF NOT EXISTS  `" . $this->tableName. "` (
 					  `session_id` varchar(32) NOT NULL default '',
 					  `user_agent` varchar(255) NOT NULL default '',
 					  `session_expire` datetime NOT NULL,

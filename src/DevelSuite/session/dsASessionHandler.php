@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\session;
 
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\config\dsConfig;
 
 /**
@@ -19,6 +23,8 @@ use DevelSuite\config\dsConfig;
  * @version 1.0
  */
 abstract class dsASessionHandler {
+	protected $log;
+	
 	/**
 	 * Maximum Lifetime of a session
 	 * @var string
@@ -38,6 +44,9 @@ abstract class dsASessionHandler {
 		} else {
 			$this->sessionLifetime = get_cfg_var('session.gc_maxlifetime');
 		}
+		
+		$this->log = new Logger("ASessionHandler");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . "server.log"));
 		
 		// init
 		$this->init();
