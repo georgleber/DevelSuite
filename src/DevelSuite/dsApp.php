@@ -84,6 +84,8 @@ class dsApp {
 
 		// routing
 		self::initRouting();
+		
+		die("test");
 
 		// publish new state system.boot.complete
 		self::getEventBus()->publish("system.boot.complete");
@@ -264,6 +266,7 @@ class dsApp {
 	private static function initRouting() {
 		$routingFile = CONFIG_PATH . DS . "routing.php";
 
+		die("routing");
 		// check that routing file exists
 		if (!file_exists($routingFile)) {
 			throw new dsFileNotFoundException("Routing file not found");
