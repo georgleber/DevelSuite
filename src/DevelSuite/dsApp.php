@@ -84,7 +84,7 @@ class dsApp {
 
 		// routing
 		self::initRouting();
-		
+
 		die("test");
 
 		// publish new state system.boot.complete
@@ -215,40 +215,7 @@ class dsApp {
 	 * Initialise session management
 	 */
 	private static function initSession() {
-		$settings = dsConfig::read("session");
-		
-		$handler = NULL;
-		switch ($settings['handler']) {
-			case 'file':
-				$handler = "DevelSuite\\session\\impl\\dsFileSessionHandler";
-				throw new dsUnsupportedOperationException("File session handler is not implemented.");
-				break;
-
-			case 'databse':
-				$handler = "DevelSuite\\session\\impl\\dsDatabaseSessionHandler";
-				break;
-
-			case 'cache':
-				$handler = "DevelSuite\\session\\impl\\dsCacheSessionHandler";
-				throw new dsUnsupportedOperationException("Cache session handler is not implemented.");
-				break;
-
-			case 'userdefined':
-				$handler = $settings['userclass'];
-				break;
-
-			case 'php':
-				return;
-		}
-
-		if (!class_exists($handler)) {
-			throw new dsSessionException(dsSessionException::HANDLER_NOT_FOUND, array($handler));
-		}
-
-		$sessionHandler = new $handler();
-		if (!($sessionHandler instanceof dsASessionHandler)) {
-			throw new dsSessionException(dsSessionException::HANDLER_INSTANTIATION_ERROR, array($handler));
-		}
+		dsSession::configure();
 	}
 
 	/**
