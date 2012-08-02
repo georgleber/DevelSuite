@@ -29,6 +29,8 @@ abstract class dsASessionHandler {
 	 * Constructor
 	 */
 	public function __construct() {
+		ini_set('session.save_handler', 'user');
+		
 		// load session timeout
 		$this->sessionLifetime = dsConfig::read('session.maxlifetime');
 		if ($this->sessionLifetime != NULL) {
@@ -36,7 +38,7 @@ abstract class dsASessionHandler {
 		} else {
 			$this->sessionLifetime = get_cfg_var('session.gc_maxlifetime');
 		}
-
+		
 		// init
 		$this->init();
 

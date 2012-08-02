@@ -24,6 +24,7 @@ class dsSessionException extends dsErrorCodeException {
 
 	const HANDLER_NOT_FOUND 			= 100;
 	const HANDLER_INSTANTIATION_ERROR 	= 200;
+	const DB_CONNECTION_MISSING			= 300;
 
 	/**
 	 * Constructor
