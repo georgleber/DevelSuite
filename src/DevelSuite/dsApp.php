@@ -246,6 +246,8 @@ class dsApp {
 		}
 		
 		$log->debug("using handler: " . $handler);
+		echo "using handler: ";
+		print_r($handler);
 
 		if (!class_exists($handler)) {
 			$log->debug("handler: " . $handler . " does not exist");
