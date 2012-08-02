@@ -18,7 +18,7 @@ use DevelSuite\config\dsConfig;
  * Abstract class for all SessionHandler, for initializing
  * all needed information.
  *
- * @package DevelSuite
+ * @package DevelSuite\session
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */

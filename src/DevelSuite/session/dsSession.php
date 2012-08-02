@@ -9,17 +9,12 @@
 namespace DevelSuite\session;
 
 use DevelSuite\config\dsConfig;
-
 use DevelSuite\exception\impl\dsSessionException;
-
-use DevelSuite\core\session\impl\dsDatabaseSession;
-
-use DevelSuite\core\config\dsConfig;
 
 /**
  * FIXME
  *
- * @package DevelSuite
+ * @package DevelSuite\session
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
