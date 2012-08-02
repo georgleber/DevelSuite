@@ -54,7 +54,7 @@ class dsApp {
 	const ENV_DEVELOPMENT 	= "DEVELOPMENT";
 	const ENV_TEST 			= "TEST";
 	const ENV_PRODUCTION	= "PRODUCTION";
-
+	
 	private static $request;
 	private static $response;
 	private static $route;
@@ -217,8 +217,10 @@ class dsApp {
 	 * Initialise session management
 	 */
 	private static function initSession() {
+		$log = new Logger("ASessionHandler");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . "server.log"));
+		
 		$settings = dsConfig::read("session");
-
 		switch ($settings['handler']) {
 			case 'file':
 				$handler = "DevelSuite\\session\\impl\\dsFileSessionHandler";
@@ -242,13 +244,17 @@ class dsApp {
 			default:
 				return;
 		}
+		
+		$log->debug("using handler: " . $handler);
 
 		if (!class_exists($handler)) {
+			$log->debug("handler: " . $handler . " does not exist");
 			throw new dsSessionException(dsSessionException::HANDLER_NOT_FOUND, array($handler));
 		}
 
 		$sessionHandler = new $handler();
 		if (!($sessionHandler instanceof dsASessionHandler)) {
+			$log->debug("sessionhandler does not extend ASessionHandler");
 			throw new dsSessionException(dsSessionException::HANDLER_INSTANTIATION_ERROR, array($handler));
 		}
 	}
