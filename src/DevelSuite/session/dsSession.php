@@ -19,6 +19,12 @@ use DevelSuite\exception\impl\dsSessionException;
  * @version 1.0
  */
 class dsSession {
+	const HANDLER_PHP 		= 100;
+	const HANDLER_DATABASE 	= 200;
+	const HANDLER_FILE 		= 300;
+	const HANDLER_CACHE		= 400;
+	const HANDLER_USER 		= 500;
+
 	private static $sessHandler;
 
 	/**
@@ -29,31 +35,29 @@ class dsSession {
 		$settings = dsConfig::read("session");
 
 		$handler = NULL;
-		die("configured handler: " . $settings['handler']);
 		switch ($settings['handler']) {
-			case 'file':
+			case self::HANDLER_PHP:
+				return;
+
+			case self::HANDLER_DATABASE:
+				$handler = "\\DevelSuite\\session\\impl\\dsDatabaseSessionHandler";
+				break;
+
+			case self::HANDLER_FILE:
 				$handler = "\\DevelSuite\\session\\impl\\dsFileSessionHandler";
 				throw new dsUnsupportedOperationException("File session handler is not implemented.");
 				break;
 
-			case 'databse':
-				$handler = "\\DevelSuite\\session\\impl\\dsDatabaseSessionHandler";
-				break;
-
-			case 'cache':
+			case self::HANDLER_CACHE:
 				$handler = "\\DevelSuite\\session\\impl\\dsCacheSessionHandler";
 				throw new dsUnsupportedOperationException("Cache session handler is not implemented.");
 				break;
 
-			case 'userdefined':
+			case self::HANDLER_USER:
 				$handler = $settings['userclass'];
 				break;
-
-			case 'php':
-				return;
 		}
 
-		die("using handler: " . $handler);
 		if(!class_exists($handler, FALSE)) {
 			$classFile = "impl/" . $handler . ".php";
 			require ($classFile);
