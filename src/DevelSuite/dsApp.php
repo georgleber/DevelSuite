@@ -50,7 +50,7 @@ class dsApp {
 	const ENV_DEVELOPMENT 	= "DEVELOPMENT";
 	const ENV_TEST 			= "TEST";
 	const ENV_PRODUCTION	= "PRODUCTION";
-	
+
 	private static $request;
 	private static $response;
 	private static $route;
@@ -213,9 +213,10 @@ class dsApp {
 	 * Initialise session management
 	 */
 	private static function initSession() {
-		$log = new Logger("ASessionHandler");
+		$log = new Logger("App");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . "server.log"));
-		
+		$log->debug("DIES IST EIN TEST");
+
 		$settings = dsConfig::read("session");
 		switch ($settings['handler']) {
 			case 'file':
@@ -235,12 +236,12 @@ class dsApp {
 			case 'userdefined':
 				$handler = $settings['userclass'];
 				break;
-				
+
 			case 'php':
 			default:
 				return;
 		}
-		
+
 		$log->debug("using handler: " . $handler);
 		echo "using handler: ";
 		print_r($handler);
@@ -267,7 +268,7 @@ class dsApp {
 		if (!file_exists($routingFile)) {
 			$log = new Logger("App");
 			$log->pushHandler(new StreamHandler(LOG_PATH . DS . "server.log"));
-			$log->debug("DIES IST EIN TEST");
+			$log->info("DIES IST EIN TEST");
 			throw new dsFileNotFoundException("Routing file not found");
 		}
 
