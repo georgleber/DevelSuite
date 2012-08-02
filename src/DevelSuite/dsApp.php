@@ -8,6 +8,8 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\exception\spl\dsFileNotFoundException;
+
 use DevelSuite\exception\impl\dsSessionException;
 
 use DevelSuite\exception\spl\dsUnsupportedOperationException;
@@ -77,9 +79,6 @@ class dsApp {
 
 		// configuration
 		self::initConfiguration();
-
-		// logging
-		self::initLogging();
 
 		// setup all system settings
 		self::initSystem();
@@ -166,22 +165,10 @@ class dsApp {
 
 		// check that config file exists
 		if (!file_exists($configFile)) {
-			throw new \Exception("Configuration file not found: " . $configFile);
+			throw new dsFileNotFoundException("Configuration file not found: " . $configFile);
 		}
 
 		require_once($configFile);
-	}
-
-	/**
-	 * Initialize logging
-	 */
-	private static function initLogging() {
-		// FIXME
-		// set_error_handler('_exception_handler');
-
-		// FIXME:
-		// check LOG_PATH is writeable
-		$loggingConf = dsConfig::read("logging");
 	}
 
 	/**
@@ -264,8 +251,6 @@ class dsApp {
 		if (!($sessionHandler instanceof dsASessionHandler)) {
 			throw new dsSessionException(dsSessionException::HANDLER_INSTANTIATION_ERROR, array($handler));
 		}
-
-
 	}
 
 	/**
