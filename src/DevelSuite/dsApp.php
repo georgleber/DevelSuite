@@ -265,6 +265,9 @@ class dsApp {
 
 		// check that routing file exists
 		if (!file_exists($routingFile)) {
+			$log = new Logger("App");
+			$log->pushHandler(new StreamHandler(LOG_PATH . DS . "server.log"));
+			$log-debug("DIES IST EIN TEST");
 			throw new dsFileNotFoundException("Routing file not found");
 		}
 
