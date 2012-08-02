@@ -217,6 +217,7 @@ class dsApp {
 	private static function initSession() {
 		$settings = dsConfig::read("session");
 		
+		$handler = NULL;
 		switch ($settings['handler']) {
 			case 'file':
 				$handler = "DevelSuite\\session\\impl\\dsFileSessionHandler";
@@ -240,15 +241,12 @@ class dsApp {
 				return;
 		}
 
-		die("using handler: " . $handler);
 		if (!class_exists($handler)) {
-			$log->debug("handler: " . $handler . " does not exist");
 			throw new dsSessionException(dsSessionException::HANDLER_NOT_FOUND, array($handler));
 		}
 
 		$sessionHandler = new $handler();
 		if (!($sessionHandler instanceof dsASessionHandler)) {
-			$log->debug("sessionhandler does not extend ASessionHandler");
 			throw new dsSessionException(dsSessionException::HANDLER_INSTANTIATION_ERROR, array($handler));
 		}
 	}
