@@ -60,7 +60,6 @@ abstract class dsAController {
 
 		$this->log = new Logger("Controller");
 		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-		$this->log->pushProcessor(new WebProcessor());
 
 		$this->init();
 		return $this->callAction($action);

@@ -8,6 +8,10 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\exception\impl\dsSessionException;
+
+use DevelSuite\exception\spl\dsUnsupportedOperationException;
+
 use DevelSuite\view\helper\cache\dsViewHelperCache;
 
 use DevelSuite\serviceprovider\dsServiceProvider;
@@ -81,7 +85,7 @@ class dsApp {
 		self::initSystem();
 
 		// session management
-		# self::initSession();
+		self::initSession();
 
 		// routing
 		self::initRouting();
@@ -231,6 +235,7 @@ class dsApp {
 		switch ($settings['handler']) {
 			case 'file':
 				$handler = "DevelSuite\\session\\impl\\dsFileSessionHandler";
+				throw new dsUnsupportedOperationException("File session handler is not implemented.");
 				break;
 
 			case 'databse':
@@ -239,21 +244,25 @@ class dsApp {
 
 			case 'cache':
 				$handler = "DevelSuite\\session\\impl\\dsCacheSessionHandler";
-				throw \Exception("Cache session handler is not implemented.");
+				throw new dsUnsupportedOperationException("Cache session handler is not implemented.");
 				break;
 
 			case 'userdefined':
-				$handler = $settings['handler_class'];
+				$handler = $settings['userclass'];
 				break;
+				
+			case 'php':
+			default:
+				return;
 		}
 
 		if (!class_exists($handler)) {
-			throw \Exception("Session handler could not be found.");
+			throw new dsSessionException(dsSessionException::HANDLER_NOT_FOUND, array($handler));
 		}
 
 		$sessionHandler = new $handler();
 		if (!($sessionHandler instanceof dsASessionHandler)) {
-			throw \Exception("Session handler must be subclass of dsASessionHandler.");
+			throw new dsSessionException(dsSessionException::HANDLER_INSTANTIATION_ERROR, array($handler));
 		}
 
 

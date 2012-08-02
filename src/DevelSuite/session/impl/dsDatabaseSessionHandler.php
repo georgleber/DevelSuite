@@ -25,31 +25,32 @@ use \PDOException as PDOException;
  * @version 1.0
  */
 class dsDatabaseSessionHandler extends dsASessionHandler {
-	private $pdo;
-
-	/**
-	 * Constructor
-	 * 
-	 * @Inject 
-	 * @var \PDO $pdo
-	 */
-	public function __construct(\PDO $pdo) {
-		parent::__construct();
+	protected function init() {
 		
-		ini_set("session.use_trans_sid", "true");
-		$this->pdo = $pdo;
 	}
 	
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\session.dsASessionHandler::open()
+	 */
 	public function open($savePath, $sessionName) {
 		return TRUE;
 	}
 
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\session.dsASessionHandler::close()
+	 */
 	public function close() {
 		// call the garbage collector
 		return TRUE;
 	}
 
-	public function read($id) {
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\session.dsASessionHandler::read()
+	 */
+	public function read($sessionId) {
 		// create a query to get the session data
 		$selectSQL = "SELECT * FROM ds_session WHERE session_id = :SESSION_ID
 					AND user_agent = :USER_AGENT AND session_expire > :TIME";
@@ -70,7 +71,11 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		return $result;
 	}
 
-	public function write($id, $sessData) {
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\session.dsASessionHandler::write()
+	 */
+	public function write($sessionId, $data) {
 		$time = time();
 
 		// check if some data was given
@@ -109,7 +114,11 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		return $insertResult;
 	}
 
-	public function destroy($id) {
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\session.dsASessionHandler::destroy()
+	 */
+	public function destroy($sessionId) {
 		// create a query to delete a session
 		$deleteSQL = 'DELETE FROM ds_session WHERE session_id = :SESSION_ID';
 
@@ -120,7 +129,11 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		return $deleteResult;
 	}
 
-	public function gc($maxlifetime) {
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\session.dsASessionHandler::gc()
+	 */
+	public function gc($lifetime) {
 		// overwrite with the predefined sessionLifetime
 		$maxlifetime = time() - $this->sessionLifetime;
 			

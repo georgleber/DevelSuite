@@ -1,27 +1,17 @@
 {
-    "hash": "a9eb7d0b484daad3de7cdc6caaac14c8",
+    "hash": "f509b47af9de4221efe29be0ae2a6ee5",
     "packages": [
         {
             "package": "monolog/monolog",
             "version": "1.0.2"
         },
         {
-            "package": "swiftmailer/swiftmailer",
-            "version": "dev-master",
-            "alias-pretty-version": "4.1.x-dev",
-            "alias-version": "4.1.9999999.9999999-dev"
+            "package": "propel/propel1",
+            "version": "1.6.4"
         },
         {
             "package": "swiftmailer/swiftmailer",
-            "version": "dev-master",
-            "alias-pretty-version": "4.2.x-dev",
-            "alias-version": "4.2.9999999.9999999-dev"
-        },
-        {
-            "package": "swiftmailer/swiftmailer",
-            "version": "dev-master",
-            "source-reference": "8b2aa953f87da228ba413e8fb1372e49c1374050",
-            "commit-date": "1342198037"
+            "version": "v4.1.8"
         }
     ],
     "packages-dev": null,
