@@ -26,23 +26,21 @@ class dsSession {
 	 */
 	public static function configure() {
 		ini_set('session.save_handler', 'user');
-			
-		$namespace = "\\DevelSuite\\session\\impl\\";
 		$settings = dsConfig::read("session");
 
 		$handler = NULL;
 		switch ($settings['handler']) {
 			case 'file':
-				$handler = $namespace . "dsFileSessionHandler";
+				$handler = "\\DevelSuite\\session\\impl\\dsFileSessionHandler";
 				throw new dsUnsupportedOperationException("File session handler is not implemented.");
 				break;
 
 			case 'databse':
-				$handler = $namespace . "dsDatabaseSessionHandler";
+				$handler = "\\DevelSuite\\session\\impl\\dsDatabaseSessionHandler";
 				break;
 
 			case 'cache':
-				$handler = $namespace . "dsCacheSessionHandler";
+				$handler = "\\DevelSuite\\session\\impl\\dsCacheSessionHandler";
 				throw new dsUnsupportedOperationException("Cache session handler is not implemented.");
 				break;
 
