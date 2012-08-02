@@ -185,7 +185,7 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		$sql = 'DELETE FROM ' . $this->tableName . ' WHERE session_id = :SESSION_ID';
 
 		$stmt = $this->pdo->prepare($sql);
-		$stmt->bindParam(':SESSION_ID', sessionId);
+		$stmt->bindParam(':SESSION_ID', $sessionId);
 		$result = $stmt->execute();
 
 		return $result;
