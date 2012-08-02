@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\session;
 
+use DevelSuite\config\dsConfig;
+
 use DevelSuite\exception\impl\dsSessionException;
 
 use DevelSuite\core\session\impl\dsDatabaseSession;
