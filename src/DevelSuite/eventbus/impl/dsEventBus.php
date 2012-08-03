@@ -8,7 +8,7 @@
  */
 namespace DevelSuite\eventbus\impl;
 
-use DevelSuite\eventbus\dsEvent;
+use DevelSuite\eventbus\event\dsEvent;
 use DevelSuite\eventbus\dsIEventBus;
 use DevelSuite\eventbus\dsIEventSubscriber;
 

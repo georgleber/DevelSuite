@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\eventbus;
 
+use DevelSuite\eventbus\event\dsEvent;
+
 /**
  * Interface for all EventSubscriber to handle fired events.
  *

@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\controller;
 
+use DevelSuite\eventbus\event\dsExceptionEvent;
+
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -15,7 +17,7 @@ use DevelSuite\exception\dsErrorCodeException;
 
 use DevelSuite\dsApp;
 use DevelSuite\config\dsConfig;
-use DevelSuite\eventbus\dsEvent;
+use DevelSuite\eventbus\event\dsEvent;
 use DevelSuite\exception\impl\dsDispatchException;
 use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\http\dsRequest;
@@ -138,7 +140,12 @@ class dsFrontController {
 				$this->render();
 			}
 		} catch(dsDispatchException $e) {
-			echo "dispatch exception occured " . $e;
+			$this->log->err("DispatchException occured during request dispatching, error: " . $e);
+			
+			$event = new dsExceptionEvent("system.dispatching.exception", get_class($this), $e);
+			dsApp::getEventBus()->publish("system.dispatching.exception", $event);
+			
+			
 			# FIXME:
 			# throw a DispatchException, if the controller could not be found
 			# then show up a 404 Error Page
@@ -321,7 +328,7 @@ class dsFrontController {
 	 */
 	private function render() {
 		if (!isset($this->layout)) {
-			$this->layout = dsConfig::read("app.layoutdir", APP_PATH . DS . "layout") . DS . "layout.tpl.php"; 
+			$this->layout = dsConfig::read("app.layoutdir", APP_PATH . DS . "layout") . DS . "layout.tpl.php";
 		}
 
 		// try to load layout and include it

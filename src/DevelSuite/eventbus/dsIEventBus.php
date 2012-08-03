@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\eventbus;
 
+use DevelSuite\eventbus\event\dsEvent;
+
 /**
  * Interface for subscribing, unsubscribing EventListeners and notifying
  * them on fired events.
