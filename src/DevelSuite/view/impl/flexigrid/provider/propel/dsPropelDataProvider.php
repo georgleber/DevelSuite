@@ -315,7 +315,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 						$columnIdent = $columnName;
 					}
 
-					if ($relation !== $result) {
+					if ($relation != NULL && $relation !== $result) {
 						$cellRenderer->setValue($relation->getByName($columnIdent));
 					} else {
 						if (array_key_exists($column->getIdentifier(), $objectArr)) {

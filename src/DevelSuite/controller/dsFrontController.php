@@ -144,8 +144,7 @@ class dsFrontController {
 			
 			$event = new dsExceptionEvent("system.dispatching.exception", get_class($this), $e);
 			dsApp::getEventBus()->publish("system.dispatching.exception", $event);
-			
-			
+
 			# FIXME:
 			# throw a DispatchException, if the controller could not be found
 			# then show up a 404 Error Page
