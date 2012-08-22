@@ -71,7 +71,7 @@ class dsEncryptDelegate {
 	 * @return bool
 	 * 		TRUE if blowfish is available, FALSE if not
 	 */
-	private static function checkBlowfish() {
+	public static function checkBlowfish() {
 		if (CRYPT_BLOWFISH !== 1) {
 			return FALSE;
 		}
