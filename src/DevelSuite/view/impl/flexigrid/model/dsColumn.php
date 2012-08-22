@@ -9,13 +9,12 @@
 namespace DevelSuite\view\impl\flexigrid\model;
 
 use Monolog\Handler\StreamHandler;
-
 use Monolog\Logger;
 
-use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
-
-use DevelSuite\view\impl\flexigrid\constants\dsAlignmentConstants;
 use DevelSuite\util\dsStringTools;
+use DevelSuite\view\impl\flexigrid\constants\dsColumnTypeConstants;
+use DevelSuite\view\impl\flexigrid\constants\dsAlignmentConstants;
+use DevelSuite\view\impl\flexigrid\renderer\dsICellRenderer;
 
 use \PDO as PDO;
 
