@@ -15,7 +15,7 @@ namespace DevelSuite\view\impl\flexigrid\filter\propel;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsAColumnFilter implements dsIPropelFilter {
+abstract class dsAColumnFilter implements dsIPropelFilter {
 	abstract public function getColumn();
 	abstract public function getValue();
 	abstract public function getComparisonType();
