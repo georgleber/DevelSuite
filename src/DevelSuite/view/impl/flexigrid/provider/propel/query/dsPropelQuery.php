@@ -224,10 +224,15 @@ class dsPropelQuery {
 	}
 
 	public function considerFilter() {
+		$this->log->debug("Considering filter");
+		
 		if ($this->filter != NULL && $this->filter instanceof dsIPropelFilter) {
+			$this->log->debug("Building Query from filter");
 			$this->filter->buildQuery($this->queryClass);
-		}
-	}
+		} else {
+			$this->log->debug("Filter is NULL or it is not instance of dsIPropelFilter: " . $this->filter);
+		}	
+ 	}
 
 	/**
 	 * Retrieve the result set of the query from database
