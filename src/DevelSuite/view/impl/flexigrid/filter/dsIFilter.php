@@ -9,14 +9,12 @@
 namespace DevelSuite\view\impl\flexigrid\filter;
 
 /**
- * FIXME
+ * Common interface for all FlexiGrid filters
  *
  * @package DevelSuite\view\impl\flexigrid\filter
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-interface dsIWhereFilter {
-	public function getQuery();
-	public function getValue();
-	public function join();
+interface dsIFilter {
+	public function buildQuery();
 }

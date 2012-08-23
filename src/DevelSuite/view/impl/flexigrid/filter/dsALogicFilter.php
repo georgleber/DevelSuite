@@ -9,14 +9,10 @@
 namespace DevelSuite\view\impl\flexigrid\filter;
 
 /**
- * FIXME
+ * Abstract superclass for logical comparing filters (AndFilter, OrFilter)
  *
  * @package DevelSuite\view\impl\flexigrid\filter
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-interface dsIColumnFilter {
-	public function getColumn();
-	public function getQuery();
-	public function getComparisonType();
-}
+class dsALogicFilter implements dsIFilter {}
