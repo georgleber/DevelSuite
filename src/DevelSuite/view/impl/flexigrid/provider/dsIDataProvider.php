@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider;
 
+use DevelSuite\view\impl\flexigrid\filter\dsIFilter;
+
 use DevelSuite\view\impl\flexigrid\model\dsColumn;
 use DevelSuite\view\impl\flexigrid\filter\dsIWhereFilter;
 use DevelSuite\view\impl\flexigrid\filter\dsIColumnFilter;
@@ -42,10 +44,12 @@ interface dsIDataProvider {
 	public function loadData();
 
 	/**
-	 * FIXME!!!
+	 * Add a filter for the table
+	 *
+	 * @param dsIFilter $filter
+	 * 		Any applicable filter for the table
 	 */
-	public function addColumnFilter(dsIColumnFilter $filter);
-	public function addWhereFilter(dsIWhereFilter $filter);
+	public function addFilter(dsIFilter $filter);
 
 	/**
 	 * Add a column to the model

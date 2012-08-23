@@ -15,6 +15,4 @@ namespace DevelSuite\view\impl\flexigrid\filter;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-interface dsIFilter {
-	public function buildQuery();
-}
+interface dsIFilter {}

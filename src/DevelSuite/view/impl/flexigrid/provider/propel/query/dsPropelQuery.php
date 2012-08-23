@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel\query;
 
+use DevelSuite\view\impl\flexigrid\filter\propel\dsIPropelFilter;
+
+use DevelSuite\view\impl\flexigrid\filter\dsIFilter;
+
 use Monolog\Handler\StreamHandler;
 
 use Monolog\Logger;
@@ -27,6 +31,12 @@ use DevelSuite\view\impl\flexigrid\model\propel\dsVirtualColumn;
  */
 class dsPropelQuery {
 	/**
+	 * Logger instance
+	 * @var Logger
+	 */
+	private $log;
+
+	/**
 	 * The Propel query class of the corresponding entity
 	 * @var QueryClass
 	 */
@@ -37,6 +47,12 @@ class dsPropelQuery {
 	 * @var array
 	 */
 	private $columnModel;
+
+	/**
+	 * The filter for the table
+	 * @var dsIFilter
+	 */
+	private $filter;
 
 	/**
 	 * offset, where to start the result set
@@ -93,10 +109,16 @@ class dsPropelQuery {
 	 * 		The query class to load data with propel
 	 * @param array $columnModel
 	 * 		The column model
+	 * @param dsIFilter $filter
+	 * 		Fitler for the table
 	 */
-	public function __construct($queryClass, array $columnModel) {
+	public function __construct($queryClass, array $columnModel, dsIFilter $filter) {
+		$this->log = new Logger("PropelQuery");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+
 		$this->queryClass = $queryClass;
 		$this->columnModel = $columnModel;
+		$this->filter = $filter;
 	}
 
 	/**
@@ -123,6 +145,7 @@ class dsPropelQuery {
 	public function buildQuery() {
 		$this->loadRequest();
 		$this->considerSearch();
+		$this->considerFilter();
 	}
 
 	/**
@@ -161,9 +184,6 @@ class dsPropelQuery {
 	 * Build up query with user defined search
 	 */
 	public function considerSearch() {
-		$log = new Logger("PropelQuery");
-		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-
 		if (dsStringTools::isFilled($this->searchColumn) && dsStringTools::isFilled($this->searchQuery)) {
 			$searchColumn = $this->findColumn($this->searchColumn);
 
@@ -172,7 +192,7 @@ class dsPropelQuery {
 
 				// check for a virtual column
 				if ($searchColumn instanceof dsVirtualColumn) {
-					$log->debug("Column is a VirtualColumn");
+					$this->log->debug("Column is a VirtualColumn");
 					if (dsStringTools::isFilled($searchColumn->getJoin())) {
 						if (dsStringTools::isFilled($searchColumn->getJoinType())) {
 							$this->queryClass->join($searchColumn->getJoin(), $searchColumn->getJoinType());
@@ -185,7 +205,7 @@ class dsPropelQuery {
 					$this->queryClass->where("'" . $searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?'", $extraction["query"]);
 				} else {
 					if (strpos($searchColumn->getIdentifier(), ".") !== FALSE) {
-						$log->debug("Column is a RelationColumn");
+						$this->log->debug("Column is a RelationColumn");
 						list($relation, $searchBy) = explode(".", $searchColumn->getIdentifier());
 						$useQueryString = "use" . $relation . "Query";
 
@@ -193,13 +213,19 @@ class dsPropelQuery {
 						->filterBy($searchBy, $extraction["query"], $extraction["comparison"])
 						->endUse();
 					} else {
-						$log->debug("Column is a normal Column");
+						$this->log->debug("Column is a normal Column");
 						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
 					}
 				}
 
 				$this->filtered = TRUE;
 			}
+		}
+	}
+
+	public function considerFilter() {
+		if ($this->filter != NULL && $this->filter instanceof dsIPropelFilter) {
+			$this->filter->buildQuery($this->queryClass);
 		}
 	}
 

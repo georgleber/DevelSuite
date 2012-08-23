@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\view\impl\flexigrid\provider\propel;
 
+use DevelSuite\view\impl\flexigrid\filter\dsIFilter;
+
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -77,8 +79,11 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 */
 	private $rendererRegistry;
 
-	private $columnFilter = array();
-	private $whereFilter = array();
+	/**
+	 * Additional filter for the table 
+	 * @var dsIFilter
+	 */
+	private $filter;
 
 	/**
 	 * Constructor
@@ -209,14 +214,12 @@ class dsPropelDataProvider implements dsIDataProvider {
 		return $this->rendererRegistry->getCellRenderer($columnType);
 	}
 
-	// FIXME
-	public function addColumnFilter(dsIColumnFilter $filter) {
-		$this->columnFilter[] = $filter;
-	}
-
-	// FIXME
-	public function addWhereFilter(dsIWhereFilter $filter) {
-		$this->whereFilter[] = $filter;
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\provider.dsIDataProvider::addFilter()
+	 */
+	public function addFilter(dsIFilter $filter) {
+		$this->filter = $filter;
 	}
 
 	/*
@@ -224,7 +227,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * @see DevelSuite\view\impl\flexigrid\provider.dsIDataProvider::loadData()
 	 */
 	public function loadData() {
-		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel);
+		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
 		$propelQuery->buildQuery();
 
 		/*

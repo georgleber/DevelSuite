@@ -6,13 +6,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\view\impl\flexigrid\filter;
+namespace DevelSuite\view\impl\flexigrid\filter\propel;
 
 /**
  * Abstract superclass for logical comparing filters (AndFilter, OrFilter)
  *
- * @package DevelSuite\view\impl\flexigrid\filter
+ * @package DevelSuite\view\impl\flexigrid\filter\propel
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsALogicFilter implements dsIFilter {}
+class dsALogicFilter implements dsIPropelFilter {}

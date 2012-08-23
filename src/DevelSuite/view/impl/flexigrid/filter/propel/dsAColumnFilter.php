@@ -6,21 +6,21 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\view\impl\flexigrid\filter;
+namespace DevelSuite\view\impl\flexigrid\filter\propel;
 
 /**
  * Abstract superclass for all user defined ColumnFilter 
  *
- * @package DevelSuite\view\impl\flexigrid\filter
+ * @package DevelSuite\view\impl\flexigrid\filter\propel
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsAColumnFilter implements dsIFilter {
+class dsAColumnFilter implements dsIPropelFilter {
 	abstract public function getColumn();
 	abstract public function getValue();
 	abstract public function getComparisonType();
 	
-	public function buildQuery() {
+	public function buildQuery($queryClass) {
 		return "'" . $this->getColumn() . " " . $this->getComparisonType() . " ?" . "," . $this->getValue() . "'";
 	}
 }
