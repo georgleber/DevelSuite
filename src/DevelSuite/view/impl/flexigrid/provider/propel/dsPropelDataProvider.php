@@ -230,40 +230,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
 		$propelQuery->buildQuery();
 
-		/*
-		 foreach ($this->columnFilter as $filter) {
-			$column = $filter->getColumn();
-			$searchQry = $filter->getQuery();
-			$comparisonType = $filter->getComparisonType() != NULL ? $filter->getComparisonType() : "=";
-
-			if (strpos($column, ".") !== FALSE) {
-			list($relation, $searchBy) = explode(".", $column);
-
-			$useQueryString = "use" . $relation . "Query";
-			$queryObject->{$useQueryString}()
-			->filterBy($searchBy, $searchQry, $comparisonType)
-			->endUse();
-			} else {
-			call_user_func_array(array($queryObject, 'filterBy' . $column), array($searchQry, $comparisonType));
-			}
-
-			$filtered = TRUE;
-			}
-
-			foreach ($this->whereFilter as $filter) {
-			$searchQry = $filter->getQuery();
-			$searchValue = $filter->getValue();
-			$join = $filter->join();
-
-			if (dsStringTools::isFilled($join)) {
-			$queryObject->join($join);
-			}
-			$queryObject->where($searchQry, $searchValue);
-
-			$filtered = TRUE;
-			}
-			*/
-
 		// retrieve ResultSet from PropelQuery
 		$resultSet = $propelQuery->query();
 

@@ -112,7 +112,7 @@ class dsPropelQuery {
 	 * @param dsIFilter $filter
 	 * 		Fitler for the table
 	 */
-	public function __construct($queryClass, array $columnModel, dsIFilter $filter) {
+	public function __construct($queryClass, array $columnModel, $filter) {
 		$this->log = new Logger("PropelQuery");
 		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 
