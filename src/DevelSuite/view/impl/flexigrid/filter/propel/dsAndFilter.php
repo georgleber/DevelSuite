@@ -38,13 +38,7 @@ class dsAndFilter extends dsALogicFilter {
 	 */
 	public function buildQuery($queryClass) {
 		foreach ($this->filterList as $filter) {
-			if ($filter instanceof dsAColumnFilter) {
-				$queryClass->where($filter->buildQuery($queryClass));
-			} else {
-				$queryClass = $filter->buildQuery($queryClass);
-			}
+			$filter->buildQuery($queryClass);
 		}
-		
-		return $queryClass;
 	}
 }
