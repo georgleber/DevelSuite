@@ -42,8 +42,10 @@ class dsOrFilter extends dsALogicFilter {
 			if ($filter instanceof dsAColumnFilter) {
 				$queryClass->where($filter->buildQuery($queryClass));
 			} else {
-				$filter->buildQuery($queryClass);
+				$queryClass = $filter->buildQuery($queryClass);
 			}
 		}
+		
+		return $queryClass;
 	}
 }
