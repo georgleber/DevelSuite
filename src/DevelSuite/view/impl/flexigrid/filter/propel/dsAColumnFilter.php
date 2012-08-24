@@ -21,6 +21,6 @@ abstract class dsAColumnFilter implements dsIPropelFilter {
 	abstract public function getComparisonType();
 	
 	public function buildQuery($queryClass) {
-		$queryClass->where('" . $this->getColumn() . " " . $this->getComparisonType() . " ?" . "," . $this->getValue() . "');
+		$queryClass->where("'" . $this->getColumn() . " " . $this->getComparisonType() . " ?" . "," . $this->getValue() . "'");
 	}
 }
