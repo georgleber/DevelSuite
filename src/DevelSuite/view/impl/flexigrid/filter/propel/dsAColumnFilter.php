@@ -19,7 +19,7 @@ abstract class dsAColumnFilter implements dsIPropelFilter {
 	abstract public function getColumn();
 	abstract public function getValue();
 
-	abstract public function getComparisonType() {
+	public function getComparisonType() {
 		return "=";
 	}
 
