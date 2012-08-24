@@ -16,13 +16,27 @@ namespace DevelSuite\view\impl\flexigrid\filter\propel;
  * @version 1.0
  */
 abstract class dsAColumnFilter implements dsIPropelFilter {
+	/**
+	 * Return column, which will be filtered
+	 */
 	abstract public function getColumn();
+
+	/**
+	 * Retrn the value which will be filtered with
+	 */
 	abstract public function getValue();
 
+	/**
+	 * Return the type of comparison (default =)
+	 */
 	public function getComparisonType() {
 		return "=";
 	}
 
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\view\impl\flexigrid\filter\propel.dsIPropelFilter::buildQuery()
+	 */
 	public function buildQuery($queryClass) {
 		$column = $this->getColumn();
 		if (strpos($column, ".") !== FALSE) {

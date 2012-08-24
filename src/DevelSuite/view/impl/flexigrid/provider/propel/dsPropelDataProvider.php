@@ -305,7 +305,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 	}
 
 	/**
-	 *
+	 * Build the column model of the specified propel entity
 	 */
 	private function buildModel() {
 		$bundle = NULL;

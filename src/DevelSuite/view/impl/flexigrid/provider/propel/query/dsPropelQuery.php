@@ -223,6 +223,9 @@ class dsPropelQuery {
 		}
 	}
 
+	/**
+	 * Build up query with filters of the table
+	 */
 	public function considerFilter() {
 		$this->log->debug("Considering filter");
 		
