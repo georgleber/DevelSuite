@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form\element\validator\impl;
 
+use DevelSuite\form\element\impl\dsFileInput;
+
 use DevelSuite\form\element\impl\dsCheckbox;
 
 use DevelSuite\form\element\impl\dsRadioButton;
@@ -54,6 +56,10 @@ class dsRequiredValidator extends dsAValidator {
 	 * @see DevelSuite\form\element\validator.dsAValidator::validate()
 	 */
 	public function validateElement() {
+		if ($this->element instanceof dsFileInput) {
+			return true;
+		}
+		
 		$result = TRUE;
 		$value = $this->element->getValue();
 

@@ -18,18 +18,6 @@ use DevelSuite\form\element\dsAElement;
  * @version 1.0
  */
 class dsFileInput extends dsAElement {
-	private $value;
-
-	/**
-	 * Set the value of this element
-	 *
-	 * @param string $value
-	 * 			Value of this element
-	 */
-	public function setValue($value) {
-		$this->value = $value;
-	}
-
 	/* (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::refillValues()
 	 */
