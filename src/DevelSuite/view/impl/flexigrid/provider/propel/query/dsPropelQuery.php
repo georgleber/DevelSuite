@@ -229,6 +229,8 @@ class dsPropelQuery {
 		if ($this->filter != NULL && $this->filter instanceof dsIPropelFilter) {
 			$this->log->debug("Building Query from filter");
 			$this->filter->buildQuery($this->queryClass);
+			
+			$this->filtered = TRUE;
 		} else {
 			$this->log->debug("Filter is NULL or it is not instance of dsIPropelFilter: " . $this->filter);
 		}	
