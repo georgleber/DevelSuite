@@ -9,7 +9,7 @@
 namespace DevelSuite\view\impl\flexigrid\filter\propel;
 
 /**
- * Abstract superclass for all user defined ColumnFilter 
+ * Abstract superclass for all user defined ColumnFilter
  *
  * @package DevelSuite\view\impl\flexigrid\filter\propel
  * @author  Georg Henkel <info@develman.de>
@@ -18,10 +18,22 @@ namespace DevelSuite\view\impl\flexigrid\filter\propel;
 abstract class dsAColumnFilter implements dsIPropelFilter {
 	abstract public function getColumn();
 	abstract public function getValue();
-	abstract public function getComparisonType();
-	
+
+	abstract public function getComparisonType() {
+		return "=";
+	}
+
 	public function buildQuery($queryClass) {
-		$query = $this->getColumn() . " " . $this->getComparisonType() . " ?";
-		call_user_func_array(array($queryClass, "where"), array($query, $this->getValue()));
+		$column = $this->getColumn();
+		if (strpos($column, ".") !== FALSE) {
+			list($relation, $searchBy) = explode(".", $column);
+
+			$useQueryString = "use" . $relation . "Query";
+			$queryClass->{$useQueryString}()
+			->filterBy($searchBy, $this->getValue(), $this->getComparisonType())
+			->endUse();
+		} else {
+			call_user_func_array(array($queryClass, 'filterBy' . $column), array($this->getValue(), $this->getComparisonType()));
+		}
 	}
 }
