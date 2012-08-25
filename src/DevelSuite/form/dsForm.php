@@ -175,7 +175,7 @@ class dsForm {
 			return NULL;
 		}
 
-		return $elem->getValue();
+		return $element->getValue();
 	}
 
 	/**
