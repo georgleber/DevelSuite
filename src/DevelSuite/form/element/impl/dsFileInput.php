@@ -8,6 +8,7 @@
  */
 namespace DevelSuite\form\element\impl;
 
+use DevelSuite\dsApp;
 use DevelSuite\form\element\dsASimpleElement;
 
 /**
