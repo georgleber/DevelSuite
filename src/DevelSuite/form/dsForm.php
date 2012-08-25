@@ -217,7 +217,7 @@ class dsForm {
 
 		if ($this->containsFieldsets) {
 			// add elements
-			foreach ($this->elements as $key => $element) {
+			foreach ($this->elementList as $key => $element) {
 				$html .= $element->buildHTML();
 			}
 		} else {
@@ -225,7 +225,7 @@ class dsForm {
 			$html .= "<ul>\n";
 				
 			// add elements
-			foreach ($this->elements as $key => $element) {
+			foreach ($this->elementList as $key => $element) {
 				$html .= "<li class='dsform-formRow'>\n";
 				$html .= $element->buildHTML();
 				$html .= "</li>\n";
@@ -239,7 +239,7 @@ class dsForm {
 		if(count($this->buttons) > 0) {
 			$html .= "<div class='dsform-buttons'>\n";
 
-			foreach ($this->buttons as $key => $button) {
+			foreach ($this->buttonList as $key => $button) {
 				$html .= $button->getHtml();
 			}
 
