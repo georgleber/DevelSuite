@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form;
 
+use DevelSuite\form\validator\impl\dsRequiredValidator;
+
 use DevelSuite\form\element\dsAElement;
 
 use DevelSuite\form\element\impl\dsHiddenInput;
@@ -207,20 +209,27 @@ class dsForm {
 			$html .= "<p class='dsform-mandatory'>Alle Felder mit einem <em>*</em> sind Pflichtfelder</p>";
 		}
 
-		if (!$this->containsFieldsets) {
-			$html .= "<fieldset>\n";
-		}
-
-		// add elements
-		foreach ($this->elements as $key => $element) {
-			$html .= $element->buildHTML();
-		}
-
 		// add a hidden input field
 		$element = new dsHiddenInput("form", $this->id);
 		$html .= $element->getHTML();
 
-		if (!$this->containsFieldsets) {
+		if ($this->containsFieldsets) {
+			// add elements
+			foreach ($this->elements as $key => $element) {
+				$html .= $element->buildHTML();
+			}
+		} else {
+			$html .= "<fieldset>\n";
+			$html .= "<ul>\n";
+				
+			// add elements
+			foreach ($this->elements as $key => $element) {
+				$html .= "<li class='dsform-formRow'>\n";
+				$html .= $element->buildHTML();
+				$html .= "</li>\n";
+			}
+				
+			$html .= "</ul>\n";
 			$html .= "</fieldset>\n";
 		}
 
@@ -231,7 +240,7 @@ class dsForm {
 			foreach ($this->buttons as $key => $button) {
 				$html .= $button->getHtml();
 			}
-			
+
 			$html .= "</div>\n";
 		}
 

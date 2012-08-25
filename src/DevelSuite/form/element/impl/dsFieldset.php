@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form\element\impl;
 
+use DevelSuite\form\validator\impl\dsRequiredValidator;
+
 use DevelSuite\form\element\dsACompositeElement;
 use DevelSuite\util\dsStringTools;
 
@@ -117,7 +119,7 @@ class dsFieldset extends dsACompositeElement {
 
 		// add html of childElements
 		foreach ($this->childElements as $child) {
-			$html .= "<li class='formRow'>";
+			$html .= "<li class='dsform-formRow'>\n";
 			$html .= $child->buildHTML();
 			$html .= "</li>\n";
 		}
