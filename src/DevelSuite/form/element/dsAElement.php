@@ -148,6 +148,13 @@ abstract class dsAElement {
 	}
 
 	/**
+	 * Returns the name of this element
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
 	 * Returns the value of this element.
 	 */
 	public function getValue() {
