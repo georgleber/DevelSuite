@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form\element;
 
+use DevelSuite\form\validator\dsValidatorChain;
+
 use DevelSuite\form\validator\dsAValidator;
 
 use DevelSuite\dsApp;
@@ -79,6 +81,8 @@ abstract class dsAElement {
 	public function __construct($caption, $name) {
 		$this->caption = $caption;
 		$this->name = $name;
+
+		$this->validatorChain = new dsValidatorChain();
 	}
 
 	/**
@@ -135,7 +139,7 @@ abstract class dsAElement {
 		$this->cssClass[] = $class;
 		return $this;
 	}
-	
+
 	/**
 	 * Returns the caption of this element
 	 */
