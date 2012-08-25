@@ -81,7 +81,7 @@ class dsTextInput extends dsASimpleElement {
 	 */
 	protected function getHTML() {
 		// create HTML
-		$html = "<input type='file'";
+		$html = "<input type='text'";
 
 		// set CSS class
 		if (!empty($this->cssClass)) {
