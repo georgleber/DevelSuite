@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form\button;
 
+use DevelSuite\i18n\dsResourceBundle;
+
 /**
  * Abstract superclass for all button elements.
  *
@@ -15,9 +17,7 @@ namespace DevelSuite\form\button;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-use DevelSuite\i18n\dsResourceBundle;
-
-class dsAButton {
+abstract class dsAButton {
 	/**
 	 * Name of the button
 	 * @var string
