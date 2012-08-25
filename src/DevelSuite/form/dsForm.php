@@ -213,7 +213,7 @@ class dsForm {
 
 		// add a hidden input field
 		$element = new dsHiddenInput("form", $this->id);
-		$html .= $element->getHTML();
+		$html .= $element->buildHTML();
 
 		if ($this->containsFieldsets) {
 			// add elements

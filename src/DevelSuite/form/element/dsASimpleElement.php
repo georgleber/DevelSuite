@@ -65,7 +65,7 @@ abstract class dsASimpleElement extends dsAElement {
 	/**
 	 * Add a span element for error messages
 	 */
-	private function addErrorSpan() {
+	protected function addErrorSpan() {
 		$html = "<span class='dsform-errorMsg'>";
 
 		if (!$this->isValid()) {

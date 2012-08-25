@@ -63,4 +63,20 @@ class dsHiddenInput extends dsASimpleElement {
 		$html = "<input type='hidden' name='" . $this->name . "' value='" . $this->value . "' />\n";
 		return $html;
 	}
+
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsASimpleElement::addLabel()
+	 */
+	protected function addLabel() {
+		return "";
+	}
+
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsASimpleElement::addErrorSpan()
+	 */
+	protected function addErrorSpan() {
+		return "";
+	}
 }
