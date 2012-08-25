@@ -84,7 +84,7 @@ abstract class dsACompositeElement extends dsAElement {
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::populate()
 	 */
-	protected function populate() {
+	public function populate() {
 		foreach ($this->childElements as $child) {
 			$child->populate();
 		}

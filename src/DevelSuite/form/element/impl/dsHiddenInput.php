@@ -50,7 +50,7 @@ class dsHiddenInput extends dsASimpleElement {
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::populate()
 	 */
-	protected function populate() {
+	public function populate() {
 		// do nothing
 	}
 

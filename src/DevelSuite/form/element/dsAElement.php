@@ -192,7 +192,7 @@ abstract class dsAElement {
 	/**
 	 * Populates the form data after an unseccessfull commit
 	 */
-	abstract protected function populate();
+	abstract public function populate();
 
 	/**
 	 * Build up the HTML of the elements

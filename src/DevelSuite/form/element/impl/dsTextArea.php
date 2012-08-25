@@ -100,7 +100,7 @@ class dsTextArea extends dsASimpleElement {
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::populate()
 	 */
-	protected function populate() {
+	public function populate() {
 		$this->content = $this->getValue();
 	}
 
