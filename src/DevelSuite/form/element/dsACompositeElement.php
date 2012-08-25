@@ -51,7 +51,7 @@ abstract class dsACompositeElement extends dsAElement {
 		$log = new Logger("CompositeElement");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 
-		if (empty($this->allowedElements) || array_key_exists($class, $this->allowedElements)) {
+		if (empty($this->allowedElements) || array_search($class, $this->allowedElements) !== FALSE) {
 			$this->childElements[] = $child;
 			$log->debug("adding child: " . $class);
 		} else {
