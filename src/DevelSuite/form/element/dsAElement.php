@@ -136,7 +136,7 @@ abstract class dsAElement {
 	 * 			CSS class name for this element
 	 */
 	public function addCssClass($class) {
-		$this->$cssClasses[] = $class;
+		$this->cssClasses[] = $class;
 		return $this;
 	}
 
