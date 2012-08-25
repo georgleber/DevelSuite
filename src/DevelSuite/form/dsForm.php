@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form;
 
+use DevelSuite\form\element\dsAElement;
+
 use DevelSuite\form\element\impl\dsHiddenInput;
 
 use DevelSuite\form\element\impl\dsFieldset;
