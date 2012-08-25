@@ -97,8 +97,8 @@ class dsCheckbox extends dsASimpleElement {
 		$html = "<input type='checkbox'";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " class='" . implode(" ", $this->cssClass) . "'";
+		if (!empty($this->cssClasses)) {
+			$html .= " class='" . implode(" ", $this->cssClasses) . "'";
 		}
 
 		// set name of group

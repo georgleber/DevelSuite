@@ -35,7 +35,7 @@ class dsTextInput extends dsASimpleElement {
 	 * Enable / disable autocomplete for this element
 	 * @var bool
 	 */
-	private $autoComplete;
+	private $autoComplete = TRUE;
 
 	/**
 	 * Set the value of this element
@@ -80,12 +80,14 @@ class dsTextInput extends dsASimpleElement {
 	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
 	 */
 	protected function getHTML() {
+		$this->addCssClass("text");
+		
 		// create HTML
 		$html = "<input type='text'";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " class='" . implode(" ", $this->cssClass) . "'";
+		if (!empty($this->cssClasses)) {
+			$html .= " class='" . implode(" ", $this->cssClasses) . "'";
 		}
 
 		$html .= " name='" . $this->name . "'";

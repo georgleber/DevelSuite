@@ -86,8 +86,8 @@ class dsOption extends dsASimpleElement {
 		$html = "<option";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " class='" . implode(" ", $this->cssClass) . "'";
+		if (!empty($this->cssClasses)) {
+			$html .= " class='" . implode(" ", $this->cssClasses) . "'";
 		}
 
 		// set value

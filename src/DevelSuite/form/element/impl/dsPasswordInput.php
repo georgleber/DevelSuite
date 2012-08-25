@@ -35,8 +35,8 @@ class dsPasswordInput extends dsASimpleElement {
 		$html = "<input type='password'";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " class='" . implode(" ", $this->cssClass) . "'";
+		if (!empty($this->cssClasses)) {
+			$html .= " class='" . implode(" ", $this->cssClasses) . "'";
 		}
 
 		$html .= " name='" . $this->name . "' />\n";

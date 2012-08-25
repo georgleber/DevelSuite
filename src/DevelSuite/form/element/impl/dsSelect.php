@@ -80,8 +80,8 @@ class dsSelect extends dsACompositeElement {
 		$html .= "<select";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " class='" . implode(" ", $this->cssClass) . "'";
+		if (!empty($this->cssClasses)) {
+			$html .= " class='" . implode(" ", $this->cssClasses) . "'";
 		}
 
 		if ($this->size == 1) {

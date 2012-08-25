@@ -71,8 +71,8 @@ class dsRadioButtonGroup extends dsACompositeElement {
 		$html = "<div class='dsform-radioGrp";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " " . implode(" ", $this->cssClass);
+		if (!empty($this->cssClasses)) {
+			$html .= " " . implode(" ", $this->cssClasses);
 		}
 
 		$html .= ">\n";

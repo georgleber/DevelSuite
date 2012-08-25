@@ -110,8 +110,8 @@ class dsFieldset extends dsACompositeElement {
 		$html = "<fieldset";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " class='" . implode(" ", $this->cssClass) . "'";
+		if (!empty($this->cssClasses)) {
+			$html .= " class='" . implode(" ", $this->cssClasses) . "'";
 		}
 		$html .= ">\n";
 		$html .= "<legend>" . $this->caption . "</legend>\n";

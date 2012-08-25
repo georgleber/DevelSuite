@@ -62,8 +62,8 @@ class dsCheckboxGroup extends dsACompositeElement {
 		$html = "<div class='dsform-chkGrp";
 
 		// set CSS class
-		if (!empty($this->cssClass)) {
-			$html .= " " . implode(" ", $this->cssClass);
+		if (!empty($this->cssClasses)) {
+			$html .= " " . implode(" ", $this->cssClasses);
 		}
 
 		$html .= ">\n";
