@@ -138,7 +138,7 @@ class dsForm {
 
 			// set old values of the form elements
 			if ($isSend)  {
-				foreach ($this->elements as $element) {
+				foreach ($this->elementList as $element) {
 					$element->populate();
 				}
 			}
@@ -153,7 +153,7 @@ class dsForm {
 	public function isValid() {
 		$retVal = TRUE;
 
-		foreach ($this->elements as $element) {
+		foreach ($this->elementList as $element) {
 			if (!$element->validate()) {
 				$retVal = FALSE;
 			}
@@ -182,7 +182,7 @@ class dsForm {
 	 * Clears all values of the form
 	 */
 	public function clear() {
-		foreach ($this->elements as $element) {
+		foreach ($this->elementList as $element) {
 			if ($element instanceof dsFieldset) {
 				$element->clear();
 			} else {
