@@ -15,6 +15,10 @@ namespace DevelSuite\form\element;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 abstract class dsACompositeElement extends dsAElement {
 	/**
 	 * Contains all child elements
@@ -44,8 +48,14 @@ abstract class dsACompositeElement extends dsAElement {
 	public function addChild(dsAElement $child) {
 		$class = get_class($child);
 
+		$log = new Logger("CompositeElement");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+
 		if (empty($this->allowedElements) || array_key_exists($class, $this->allowedElements)) {
 			$this->childElements[] = $child;
+			$log->debug("adding child: " . $class);
+		} else {
+			$log->debug("Could not add child: " . $class . ", because it is not in allowed list: " . implode(", ", $this->allowedElements));
 		}
 
 		// FIXME:
@@ -70,7 +80,7 @@ abstract class dsACompositeElement extends dsAElement {
 		return TRUE;
 	}
 
-	/* 
+	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::populate()
 	 */
