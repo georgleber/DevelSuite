@@ -133,6 +133,13 @@ abstract class dsAElement {
 		$this->cssClass[] = $class;
 		return $this;
 	}
+	
+	/**
+	 * Returns the caption of this element
+	 */
+	public function getCaption() {
+		return $this->caption;
+	}
 
 	/**
 	 * Returns the value of this element.
