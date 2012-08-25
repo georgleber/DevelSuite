@@ -15,6 +15,8 @@ namespace DevelSuite\form\element;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
+use DevelSuite\util\dsStringTools;
+
 use DevelSuite\form\validator\dsAValidator;
 
 abstract class dsASimpleElement extends dsAElement {
@@ -68,7 +70,7 @@ abstract class dsASimpleElement extends dsAElement {
 	protected function addErrorSpan() {
 		$html = "<span class='dsform-errorMsg'>";
 
-		if (!$this->isValid()) {
+		if (dsStringTools::isFilled($this->errorMessage)) {
 			$html .= $this->errorMessage;
 		}
 
