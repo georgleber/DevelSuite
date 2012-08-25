@@ -46,7 +46,7 @@ abstract class dsACompositeElement extends dsAElement {
 	 * 			The child to add
 	 */
 	public function addChild(dsAElement $child) {
-		$class = get_class($child);
+		$class = $this->parseClassname(get_class($child));
 
 		$log = new Logger("CompositeElement");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
@@ -87,6 +87,18 @@ abstract class dsACompositeElement extends dsAElement {
 	protected function populate() {
 		foreach ($this->childElements as $child) {
 			$child->populate();
+		}
+	}
+
+	/**
+	 * Parses the name of the class without namespace
+	 * 
+	 * @param string $name
+	 * 		Name of the class
+	 */
+	private function parseClassname($name) {
+		if(strrpos($name, '\\')) {
+			return substr($name, strrpos($name, '\\') + 1);
 		}
 	}
 }
