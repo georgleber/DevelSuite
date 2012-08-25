@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form;
 
+use DevelSuite\form\button\dsAButton;
+
 use DevelSuite\form\validator\impl\dsRequiredValidator;
 
 use DevelSuite\form\element\dsAElement;
