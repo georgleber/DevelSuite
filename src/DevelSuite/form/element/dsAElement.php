@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form\element;
 
+use DevelSuite\form\validator\dsAValidator;
+
 use DevelSuite\dsApp;
 
 /**
