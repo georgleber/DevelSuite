@@ -9,6 +9,7 @@
 namespace DevelSuite\form\element\impl;
 
 use DevelSuite\form\element\dsASimpleElement;
+use DevelSuite\util\dsStringTools;
 
 /**
  * Represents a text input element.
