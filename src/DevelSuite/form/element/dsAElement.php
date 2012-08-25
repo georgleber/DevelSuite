@@ -197,5 +197,5 @@ abstract class dsAElement {
 	/**
 	 * Build up the HTML of the elements
 	 */
-	abstract protected function buildHTML();
+	abstract public function buildHTML();
 }

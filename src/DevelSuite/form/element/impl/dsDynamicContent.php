@@ -54,7 +54,7 @@ class dsDynamicContent extends dsASimpleElement {
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
 	 */
-	public function getHTML() {
+	protected function getHTML() {
 		return $this->content;
 	}
 }

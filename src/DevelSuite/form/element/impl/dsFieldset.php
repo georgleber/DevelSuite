@@ -105,7 +105,7 @@ class dsFieldset extends dsACompositeElement {
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::buildHTML()
 	 */
-	protected function buildHTML() {
+	public function buildHTML() {
 		// generate HTML
 		$html = "<fieldset";
 

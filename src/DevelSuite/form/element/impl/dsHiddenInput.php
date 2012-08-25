@@ -58,7 +58,7 @@ class dsHiddenInput extends dsASimpleElement {
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
 	 */
-	public function getHTML() {
+	protected function getHTML() {
 		// create HTML
 		$html = "<input type='hidden' name='" . $this->name . "' value='" . $this->value . "' />\n";
 		return $html;
