@@ -236,7 +236,7 @@ class dsForm {
 		}
 
 		// add buttons
-		if(count($this->buttons) > 0) {
+		if(count($this->buttonList) > 0) {
 			$html .= "<div class='dsform-buttons'>\n";
 
 			foreach ($this->buttonList as $key => $button) {
