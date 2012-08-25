@@ -85,7 +85,7 @@ class dsForm {
 			}
 		}
 
-		$this->$elementList[] = $element;
+		$this->elementList[] = $element;
 		if ($element instanceof dsFieldset) {
 			$this->containsFieldsets = TRUE;
 			if ($element->containsFileInput()) {
