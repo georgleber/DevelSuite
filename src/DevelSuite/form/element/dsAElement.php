@@ -55,6 +55,18 @@ abstract class dsAElement {
 	protected $cssClasses = array();
 
 	/**
+	 * Error message if validation failed
+	 * @var string
+	 */
+	protected $errorMessage;
+
+	/**
+	 * Chain of all valdiators of this element
+	 * @var array
+	 */
+	private $validatorChain = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param string $caption
@@ -134,6 +146,34 @@ abstract class dsAElement {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Add a validator to the ValidatorChain, which will be
+	 * processed after submit of the form.
+	 *
+	 * @param dsAValidator $validator
+	 * 			The new validator
+	 */
+	public function addValidator(dsAValidator $validator) {
+		$this->validatorChain->addValidator($validator);
+	}
+
+	/**
+	 * Runs all validators of this element
+	 */
+	public function validate() {
+		return $this->validatorChain->processValidator();
+	}
+
+	/**
+	 * Set a error message to the element.
+	 *
+	 * @param string $errorMessage
+	 * 			The error message
+	 */
+	public function setErrorMessage($errorMessage) {
+		$this->errorMessage = $errorMessage;
 	}
 
 	/**

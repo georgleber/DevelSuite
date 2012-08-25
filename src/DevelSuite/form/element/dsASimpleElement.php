@@ -9,18 +9,25 @@
 namespace DevelSuite\form\element;
 
 /**
- * Superclass for all simple form elements 
+ * Superclass for all simple form elements
  *
  * @package DevelSuite\form\element
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
+use DevelSuite\form\validator\dsAValidator;
+
 abstract class dsASimpleElement extends dsAElement {
 	/**
 	 * Append the caption of the elements
 	 * @var bool
 	 */
 	protected $appendLabel = FALSE;
+
+	/**
+	 * Get the HTML code of the specific form element
+	 */
+	abstract protected function getHTML();
 
 	/*
 	 * (non-PHPdoc)
@@ -41,11 +48,6 @@ abstract class dsASimpleElement extends dsAElement {
 	}
 
 	/**
-	 * Get the HTML code of the specific form element
-	 */
-	abstract protected function getHTML();
-
-	/**
 	 * Add a label element as caption
 	 */
 	protected function addLabel() {
@@ -64,10 +66,10 @@ abstract class dsASimpleElement extends dsAElement {
 	 * Add a span element for error messages
 	 */
 	private function addErrorSpan() {
-		$html = "<span class='errorMessage'>";
+		$html = "<span class='dsform-errorMsg'>";
 
 		if (!$this->isValid()) {
-			$html .= $this->getErrorMessage();
+			$html .= $this->errorMessage;
 		}
 
 		$html .= "</span>";

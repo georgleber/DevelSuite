@@ -40,6 +40,14 @@ class dsHiddenInput extends dsASimpleElement {
 
 	/*
 	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::validate()
+	 */
+	public function validate() {
+		return TRUE;
+	}
+
+	/*
+	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::populate()
 	 */
 	protected function populate() {
