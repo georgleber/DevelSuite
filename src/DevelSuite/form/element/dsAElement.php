@@ -23,7 +23,7 @@ abstract class dsAElement {
 	 * @var string
 	 */
 	protected $name;
-	
+
 	/**
 	 * Caption of the element
 	 * @var string
@@ -35,19 +35,19 @@ abstract class dsAElement {
 	 * @var bool
 	 */
 	protected $mandatory;
-	
+
 	/**
 	 * Is the element disabled
 	 * @var bool
 	 */
 	protected $disabled;
-	
+
 	/**
 	 * Tab index of the element (index has to be > 0)
 	 * @var int
 	 */
 	protected $tabIndex;
-	
+
 	/**
 	 * Additional css classes for the element
 	 * @var array
@@ -76,6 +76,13 @@ abstract class dsAElement {
 	public function setMandatory($mandatory = TRUE) {
 		$this->mandatory = $mandatory;
 		return $this;
+	}
+
+	/**
+	 * Returns if this element is mandatory
+	 */
+	public function isMandatory() {
+		return $this->mandatory;
 	}
 
 	/**
