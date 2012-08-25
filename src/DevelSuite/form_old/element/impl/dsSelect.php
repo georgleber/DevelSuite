@@ -6,9 +6,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\form\element\impl;
+namespace DevelSuite\form_old\element\impl;
 
-use DevelSuite\form\element\dsACompositeElement;
+use DevelSuite\form\element\dsCompositeElement;
 
 /**
  * Represents a select element.
@@ -17,32 +17,9 @@ use DevelSuite\form\element\dsACompositeElement;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsSelect extends dsACompositeElement {
-	/**
-	 * Allow multiple selection
-	 * @var bool
-	 */
+class dsSelect extends dsCompositeElement {
 	private $multiple;
-
-	/**
-	 * Size of the list
-	 * @var int
-	 */
 	private $size = 1;
-
-	/**
-	 * Constructor
-	 *
-	 * @param string $caption
-	 * 		Caption for this element
-	 * @param string $name
-	 * 		Name of this element
-	 */
-	public function __construct($caption, $name) {
-		parent::__construct($caption, $name);
-
-		$this->allowedElements = array("dsOption", "dsOptGroup");
-	}
 
 	/**
 	 * Set number of visible entries
@@ -69,15 +46,12 @@ class dsSelect extends dsACompositeElement {
 		return $this;
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::buildHTML()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsCompositeElement::getHTML()
 	 */
-	protected function buildHTML() {
-		$html = $this->addLabel();
-		
+	public function getHTML() {
 		// generate HTML
-		$html .= "<select";
+		$html = "<select";
 
 		// set CSS class
 		if (!empty($this->cssClass)) {
@@ -85,43 +59,40 @@ class dsSelect extends dsACompositeElement {
 		}
 
 		if ($this->size == 1) {
-			$html .= " name='" . $this->name . "' size='" . $this->size . "'";
+			$html .= " id='" . $this->name ."' name='" . $this->name . "' size='" . $this->size . "' ";
 		} else {
-			$html .= " name='" . $this->name . "[]' size='" . $this->size . "'";
+			$html .= " id='" . $this->name ."' name='" . $this->name . "[]' size='" . $this->size . "' ";
 		}
 
 		// set disabled
 		if ($this->disabled) {
-			$html .= " disabled='disabled'";
+			$html .= "disabled='disabled' ";
 		}
 
 		// set multiple
 		if ($this->multiple) {
-			$html .= " multiple='multiple'";
+			$html .= "multiple='multiple'";
 		}
 		$html .= ">\n";
 
 		// add html of childElements
 		foreach ($this->childElements as $child) {
-			$html .= $child->buildHTML();
+			$html .= $child->getHTML();
 		}
-
 		$html .= "</select>\n";
-		return $html;
-	}
 
-	/**
-	 * Add a label to this composite element
-	 */
-	private function addLabel() {
-		$label = "<label for='" . $this->name . "'>" . $this->caption;
-
-		// set mandatory
-		if($this->mandatory) {
-			$label .= "<em>*</em>";
+		$code = "<div class='dsform-type-select";
+		// set error message
+		if (!$this->isValid()) {
+			$code .= "error'>\n";
+			$code .= "<strong class='dsform-message'>" . $this->getErrorMessage() . "</strong>\n";
+		} else {
+			$code .= "'>\n";
 		}
 
-		$label .= "</label>\n";
-		return $label;
+		$code .= $this->addLabel($html);
+		$code .= "</div>\n";
+
+		return $code;
 	}
 }

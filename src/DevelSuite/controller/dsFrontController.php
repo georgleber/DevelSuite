@@ -133,7 +133,7 @@ class dsFrontController {
 			// set it in the repsonse object, otherwise call the render method to load
 			// the full design
 			$request = dsApp::getRequest();
-			if($request->isAjaxRequest() || $request['ajaxFileUpload']) {
+			if($request->isAjaxRequest()) {
 				$this->log->debug("rendering ajax request");
 				$this->rootView->render();
 			} else {

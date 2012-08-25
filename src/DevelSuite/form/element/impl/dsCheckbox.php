@@ -8,7 +8,7 @@
  */
 namespace DevelSuite\form\element\impl;
 
-use DevelSuite\form\element\dsAElement;
+use DevelSuite\form\element\dsASimpleElement;
 
 /**
  * Represents a checkbox element.
@@ -17,24 +17,34 @@ use DevelSuite\form\element\dsAElement;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsCheckbox extends dsAElement {
+class dsCheckbox extends dsASimpleElement {
+	/**
+	 * Value fo the checkbox
+	 * @var string
+	 */
 	private $value;
+
+	/**
+	 * Group of checkbox
+	 * @var dsCheckboxGroup
+	 */
 	private $group;
+
+	/**
+	 * Is the checkbox checked
+	 * @var bool
+	 */
 	private $checked = FALSE;
 
 	/**
-	 * Class constructor
+	 * Constructor
 	 *
 	 * @param string $caption
 	 * 			Caption of the element
 	 * @param string $name
 	 * 			Name of the element
 	 * @param string $value
-	 * 			Content of the element
-	 * @param bool $mandatory
-	 * 			TRUE if element should be mandatory [optional]
-	 * @param bool $readOnly
-	 * 			TRUE if element should be readOnly [optional]
+	 * 			Value of the element
 	 */
 	public function __construct($caption, $name, $value = NULL) {
 		parent::__construct($caption, $name);
@@ -47,18 +57,6 @@ class dsCheckbox extends dsAElement {
 	}
 
 	/**
-	 * Set the name of the checkbox.
-	 * In case of a checkbox group this is set
-	 * by the surrounding group element.
-	 *
-	 * @param string $name
-	 * 			The name of the checkbox
-	 */
-	public function setGroup(dsCheckboxGroup $group) {
-		$this->group = $group;
-	}
-
-	/**
 	 * Set the checkbox checked
 	 *
 	 * @param bool $checked
@@ -66,20 +64,33 @@ class dsCheckbox extends dsAElement {
 	 */
 	public function setChecked($checked = TRUE) {
 		$this->checked = $checked;
+		return $this;
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::refillValues()
+	/**
+	 * Set a cehckbox group
+	 *
+	 * @param dsCheckboxGroup group
+	 * 			The group of the checkbox
 	 */
-	public function refillValues() {
+	public function setGroup($group) {
+		$this->group = $group;
+	}
+
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::populate()
+	 */
+	protected function populate() {
 		$value = $this->getValue();
 		if (isset($value)) {
 			$this->setChecked();
 		}
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::getHTML()
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
 	 */
 	public function getHTML() {
 		// generate HTML
@@ -89,7 +100,6 @@ class dsCheckbox extends dsAElement {
 		if (!empty($this->cssClass)) {
 			$html .= " class='" . implode(" ", $this->cssClass) . "'";
 		}
-		$html .= " id='" . $this->name . "'";
 
 		// set name of group
 		if (isset($this->group)) {
@@ -112,8 +122,8 @@ class dsCheckbox extends dsAElement {
 		if ($this->disabled) {
 			$html .= " disabled='disabled'";
 		}
-		$html .= "/>\n";
 
-		return "<div class='dsform-type-check'>" . $this->addLabel($html) . "</div>\n";
+		$html .= "/>\n";
+		return $html;
 	}
 }

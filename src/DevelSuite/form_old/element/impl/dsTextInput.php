@@ -6,9 +6,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\form\element\impl;
+namespace DevelSuite\form_old\element\impl;
 
-use DevelSuite\form\element\dsASimpleElement;
+use DevelSuite\util\dsStringTools;
+
+use DevelSuite\form\element\dsAElement;
 
 /**
  * Represents a text input element.
@@ -17,24 +19,9 @@ use DevelSuite\form\element\dsASimpleElement;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsTextInput extends dsASimpleElement {
-	/**
-	 * Value of this element
-	 * @var string
-	 */
+class dsTextInput extends dsAElement {
 	private $value;
-	
-	/**
-	 * Set this element readOnly
-	 * @var bool
-	 */
-	private $readOnly;
-	
-	/**
-	 * Enable / disable autocomplete for this element
-	 * @var bool
-	 */
-	private $autoComplete;
+	private $autoComplete = TRUE;
 
 	/**
 	 * Set the value of this element
@@ -44,18 +31,6 @@ class dsTextInput extends dsASimpleElement {
 	 */
 	public function setValue($value) {
 		$this->value = $value;
-		return $this;
-	}
-
-	/**
-	 * Set this element readOnly
-	 *
-	 * @param bool $readOnly
-	 * 			TRUE, if this element should be readOnly
-	 */
-	public function setReadOnly($readOnly = TRUE) {
-		$this->readOnly = $readOnly;
-		return $this;
 	}
 
 	/**
@@ -66,28 +41,25 @@ class dsTextInput extends dsASimpleElement {
 		return $this;
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::populate()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::refillValues()
 	 */
-	protected function populate() {
+	public function refillValues() {
 		$this->value = $this->getValue();
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::getHTML()
 	 */
 	public function getHTML() {
-		// create HTML
-		$html = "<input type='file'";
+		// generate HTML
+		$html = "<input type='text'";
 
 		// set CSS class
 		if (!empty($this->cssClass)) {
 			$html .= " class='" . implode(" ", $this->cssClass) . "'";
 		}
-
-		$html .= " name='" . $this->name . "'";
+		$html .= " id='" . $this->name . "' name='" . $this->name . "' ";
 
 		// set value
 		if (dsStringTools::isFilled($this->value)) {
@@ -108,8 +80,20 @@ class dsTextInput extends dsASimpleElement {
 		if ($this->autoComplete == FALSE) {
 			$html .= "autocomplete='off' ";
 		}
-
 		$html .= "/>\n";
-		return $html;
+
+		$code = "<div class='dsform-type-text";
+		// set error message
+		if (!$this->isValid()) {
+			$code .= " error'>\n";
+			$code .= "<strong class='dsform-message'>" . $this->getErrorMessage() . "</strong>\n";
+		} else {
+			$code .= "'>\n";
+		}
+
+		$code .= $this->addLabel($html);
+		$code .= "</div>\n";
+
+		return $code;
 	}
 }

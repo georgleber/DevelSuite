@@ -6,9 +6,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\form\element\impl;
+namespace DevelSuite\form_old\element\impl;
 
-use DevelSuite\form\element\dsASimpleElement;
+use DevelSuite\form\element\dsAElement;
 
 /**
  * Represents a radio button element.
@@ -17,34 +17,22 @@ use DevelSuite\form\element\dsASimpleElement;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsRadioButton extends dsASimpleElement {
-	/**
-	 * Value fo the radio button
-	 * @var string
-	 */
+class dsRadioButton extends dsAElement {
 	private $value;
-
-	/**
-	 * Group of radio button
-	 * @var dsRadioButtonGroup
-	 */
 	private $group;
-
-	/**
-	 * Is the radio button checked
-	 * @var bool
-	 */
 	private $checked = FALSE;
 
 	/**
 	 * Class constructor
 	 *
-	 * @param string $caption
-	 * 			Caption of the element
 	 * @param string $name
 	 * 			Name of the element
-	 * @param string $value
-	 * 			Value of the element
+	 * @param string $content
+	 * 			Content of the element
+	 * @param bool $mandatory
+	 * 			TRUE if element should be mandatory [optional]
+	 * @param bool $readOnly
+	 * 			TRUE if element should be readOnly [optional]
 	 */
 	public function __construct($caption, $name, $value = NULL) {
 		parent::__construct($caption, $name);
@@ -68,29 +56,45 @@ class dsRadioButton extends dsASimpleElement {
 	}
 
 	/**
-	 * Set a radio button group
+	 * Returns if the element is checked or not
 	 *
-	 * @param dsRadioButtonGroup group
-	 * 			The group of the radio button
+	 * @return TRUE if element is checked
+	 */
+	public function getChecked() {
+		return $this->checked;
+	}
+	
+	/**
+	 * @return Value of this element
+	 */
+	public function getElementValue() {
+		return $this->value;
+	}
+
+	/**
+	 * Set the name of the checkbox.
+	 * In case of a checkbox group this is set
+	 * by the surrounding group element.
+	 *
+	 * @param string $name
+	 * 			The name of the checkbox
 	 */
 	public function setGroup($group) {
 		$this->group = $group;
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::populate()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::refillValues()
 	 */
-	protected function populate() {
+	public function refillValues() {
 		$value = $this->getValue();
 		if (isset($value)) {
 			$this->setChecked();
 		}
 	}
 
-	/* 
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::getHTML()
 	 */
 	public function getHTML() {
 		// generate HTML
@@ -100,6 +104,7 @@ class dsRadioButton extends dsASimpleElement {
 		if (!empty($this->cssClass)) {
 			$html .= " class='" . implode(" ", $this->cssClass) . "'";
 		}
+		$html .= " id='" . $this->name . "'";
 
 		// set name of group
 		if (isset($this->group)) {
@@ -117,8 +122,8 @@ class dsRadioButton extends dsASimpleElement {
 		if ($this->checked) {
 			$html .= " checked='checked'";
 		}
-
 		$html .= "/>\n";
-		return $html;
+
+		return "<div class='dsform-type-check'>" . $this->addLabel($html) . "</div>\n";
 	}
 }

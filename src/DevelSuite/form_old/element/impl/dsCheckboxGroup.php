@@ -6,45 +6,39 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\form\element\impl;
+namespace DevelSuite\form_old\element\impl;
 
-use DevelSuite\form\element\dsACompositeElement;
+use DevelSuite\form\element\dsCompositeElement;
+use DevelSuite\form\element\dsAElement;
 
 /**
- * Represents a checkbox group element.
+ * Represents a group of checkbox elements.
  *
  * @package DevelSuite\form\element\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsCheckboxGroup extends dsACompositeElement {
+class dsCheckboxGroup extends dsCompositeElement {
 	/**
-	 * Constructor
+	 * Retrieve the name attribute of this element
 	 *
-	 * @param string $caption
-	 * 		Caption for this element
-	 * @param string $name
-	 * 		Name for this element
+	 * @return Name of this element
 	 */
-	public function __construct($caption, $name) {
-		parent::__construct($caption, $name);
-
-		$this->allowedElements = array("dsCheckbox");
+	public function getName() {
+		return $this->name;
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsACompositeElement::addChild()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsCompositeElement::addChild()
 	 */
 	public function addChild(dsAElement $child) {
 		if ($child instanceof dsCheckbox) {
 			$child->setGroup($this);
-			
 			// set readonly if group is set to readonly
 			if ($this->readOnly) {
 				$child->setReadOnly($this->readOnly);
 			}
-				
+			
 			if ($this->disabled) {
 				$child->setDisabled();
 			}
@@ -53,32 +47,29 @@ class dsCheckboxGroup extends dsACompositeElement {
 		}
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::buildHTML()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::getHTML()
 	 */
-	public function buildHTML() {
+	public function getHTML() {
 		// generate HTML
-		$html = "<div class='dsform-chkGrp";
-
+		$html = "<div class='dsform-type-chkgrp";
+		
 		// set CSS class
 		if (!empty($this->cssClass)) {
 			$html .= " " . implode(" ", $this->cssClass);
 		}
-
-		$html .= ">\n";
+		
+		$html .= "' id='" . $this->name . "'>\n";
 		$html .= "<p>" . $this->caption;
-
 		// set mandatory
 		if ($this->mandatory) {
 			$html .= "<em>*</em>";
 		}
-
 		$html .= "</p>\n";
 
 		// add html of childElements
 		foreach ($this->childElements as $child) {
-			$html .= $child->buildHTML();
+			$html .= $child->getHTML();
 		}
 
 		$html .= "</div>\n";

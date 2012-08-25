@@ -31,7 +31,7 @@ class dsRequest implements \ArrayAccess {
 	 * reference to the $_FILE data
 	 * @var array
 	 */
-	private $file;
+	private $files = array();
 
 	/**
 	 * containing data of $_SERVER array
@@ -218,7 +218,7 @@ class dsRequest implements \ArrayAccess {
 	 * @return TRUE if key is set in the file parameters
 	 */
 	public function issetFile($key) {
-		return (isset($this->file[$key]));
+		return (isset($this->files[$key]));
 	}
 
 	/**
@@ -231,7 +231,7 @@ class dsRequest implements \ArrayAccess {
 	 */
 	public function getFile($key) {
 		if($this->issetFile($key)) {
-			return $this->file[$key];
+			return $this->files[$key];
 		} else {
 			return NULL;
 		}
@@ -245,7 +245,7 @@ class dsRequest implements \ArrayAccess {
 	 * @return TRUE, if file was uploaded successfully
 	 */
 	public function uploadFileSuccess($key) {
-		return $this->issetFile($key) && $this->file[$key]["error"] == UPLOAD_ERR_OK;
+		return $this->issetFile($key) && $this->files[$key]["error"] == UPLOAD_ERR_OK;
 	}
 
 	/**

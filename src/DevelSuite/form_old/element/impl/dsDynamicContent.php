@@ -6,26 +6,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\form\element\impl;
+namespace DevelSuite\form_old\element\impl;
 
-use DevelSuite\form\element\dsASimpleElement;
+use DevelSuite\form\element\dsAElement;
 
 /**
- * Represents a dynamic content element for adding addtional HTML code
+ * Represents a element for dynamic content.
  *
- * @package DevelSuite\form\element\impl;
+ * @package DevelSuite\form\element\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsDynamicContent extends dsASimpleElement {
-	/**
-	 * HTML content of this element
-	 * @var string
-	 */
+class dsDynamicContent extends dsAElement {
 	private $content;
 
 	/**
-	 * Constructor
+	 * Class constructor
 	 *
 	 * @param string $content
 	 * 			Content to add to the form
@@ -34,17 +30,15 @@ class dsDynamicContent extends dsASimpleElement {
 		$this->content = $content;
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::populate()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::refillValues()
 	 */
-	protected function populate() {
+	public function refillValues() {
 		// do nothing
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::getHTML()
 	 */
 	public function getHTML() {
 		return $this->content;

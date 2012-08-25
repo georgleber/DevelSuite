@@ -8,14 +8,7 @@
  */
 namespace DevelSuite\form\element;
 
-use DevelSuite\registry\dsRegistry;
-
-use DevelSuite\form\element\impl\dsDynamicContent;
-
-use DevelSuite\util\dsStringTools;
-use DevelSuite\http\dsRequest;
-use DevelSuite\form\element\validator\dsAValidator;
-use DevelSuite\form\element\validator\dsValidatorChain;
+use DevelSuite\dsApp;
 
 /**
  * Abstract Superclass for all form elements.
@@ -25,38 +18,53 @@ use DevelSuite\form\element\validator\dsValidatorChain;
  * @version 1.0
  */
 abstract class dsAElement {
-	protected $caption;
+	/**
+	 * Name of the element
+	 * @var string
+	 */
 	protected $name;
-	protected $disabled;
-
-	protected $mandatory;
-	protected $readOnly;
-	protected $tabIndex = NULL;
-
-	protected $cssClass = array();
-	protected $appendLabel = FALSE;
-	protected $request;
-
-	private $valid = TRUE;
-	private $validatorChain;
-	private $errorMessage;
+	
+	/**
+	 * Caption of the element
+	 * @var string
+	 */
+	protected $caption;
 
 	/**
-	 * Class constructor
+	 * Is this element mandatory
+	 * @var bool
+	 */
+	protected $mandatory;
+	
+	/**
+	 * Is the element disabled
+	 * @var bool
+	 */
+	protected $disabled;
+	
+	/**
+	 * Tab index of the element (index has to be > 0)
+	 * @var int
+	 */
+	protected $tabIndex;
+	
+	/**
+	 * Additional css classes for the element
+	 * @var array
+	 */
+	protected $cssClasses = array();
+
+	/**
+	 * Constructor
 	 *
 	 * @param string $caption
-	 * 			caption of this element
+	 * 			Caption of this element
 	 * @param string $name
-	 * 			name of this element
-	 * @param bool $mandatory
-	 * 			TRUE, if this element is mandatory
-	 * @param bool $readOnly
-	 * 			TRUE, if this element is readOnly
+	 * 			Name of this element
 	 */
 	public function __construct($caption, $name) {
 		$this->caption = $caption;
 		$this->name = $name;
-		$this->validatorChain = new dsValidatorChain();
 	}
 
 	/**
@@ -71,38 +79,6 @@ abstract class dsAElement {
 	}
 
 	/**
-	 * Set this element readOnly
-	 *
-	 * @param bool $readOnly
-	 * 			TRUE, if this element should be readOnly
-	 */
-	public function setReadOnly($readOnly = TRUE) {
-		$this->readOnly = $readOnly;
-		return $this;
-	}
-
-	/**
-	 * Set a tabIndex for this element
-	 *
-	 * @param int $tabIndex
-	 * 			TabIndex for this element
-	 */
-	public function setTabIndex($tabIndex) {
-		$this->tabIndex = $tabIndex;
-		return $this;
-	}
-
-	/**
-	 * Set the request object.
-	 *
-	 * @param dsRequest $request
-	 * 			The request object.
-	 */
-	public function setRequest(dsRequest $request) {
-		$this->request = $request;
-	}
-
-	/**
 	 * Set the element disabled
 	 *
 	 * @param bool $disabled
@@ -114,101 +90,18 @@ abstract class dsAElement {
 	}
 
 	/**
-	 * Change the default behavior of prepending labels to the element
-	 * to appending labels.
+	 * Set a tabIndex for this element
 	 *
-	 * @param bool $appendLabel
-	 * 			TRUE if labels should be appended
+	 * @param int $tabIndex
+	 * 			TabIndex for this element
 	 */
-	public function appendLabel() {
-		$this->appendLabel = TRUE;
+	public function setTabIndex($tabIndex) {
+		if ($tabIndex <= 0) {
+			return $this;
+		}
+
+		$this->tabIndex = $tabIndex;
 		return $this;
-	}
-
-	/**
-	 * If this element is mandatory or a value is set,
-	 * the validator chain is called to run he validators.
-	 *
-	 * @return TRUE, if element is valid
-	 */
-	public function validate() {
-		if ($this instanceof dsDynamicContent) {
-			return TRUE;
-		}
-
-		$result = TRUE;
-		$result = $this->validatorChain->processValidator();
-
-		if (!$result) {
-			$this->setInvalid();
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @return TRUE, if the element is valid
-	 */
-	public function isValid() {
-		return $this->valid;
-	}
-
-	/**
-	 * Set element invalid to show up error
-	 */
-	public function setInvalid() {
-		$this->valid = FALSE;
-	}
-
-	/**
-	 * Set a error message to the element.
-	 *
-	 * @param string $errorMessage
-	 * 			The error message
-	 */
-	public function setErrorMessage($errorMessage) {
-		$this->errorMessage = $errorMessage;
-	}
-
-	/**
-	 * @return The error message of this element
-	 */
-	public function getErrorMessage() {
-		return $this->errorMessage;
-	}
-
-	/**
-	 * @return The value of this element.
-	 */
-	public function getValue() {
-		$result = NULL;
-		
-		if (isset($this->request[$this->name])) {
-			$result = $this->request[$this->name];
-		}
-
-		return $result;
-	}
-
-	/**
-	 * @return The name of this element.
-	 */
-	public function getName() {
-		return $this->name;
-	}
-
-	/**
-	 * @return The caption of this element.
-	 */
-	public function getCaption() {
-		return $this->caption;
-	}
-
-	/**
-	 * @return TRUE, if this element is mandatory
-	 */
-	public function isMandatory() {
-		return $this->mandatory;
 	}
 
 	/**
@@ -223,46 +116,26 @@ abstract class dsAElement {
 	}
 
 	/**
-	 * Add a validator to the ValidatorChain, which will be
-	 * processed after submit of the form.
-	 *
-	 * @param dsAValidator $validator
-	 * 			The new validator
+	 * Returns the value of this element.
 	 */
-	public function addValidator(dsAValidator $validator) {
-		$this->validatorChain->addValidator($validator);
+	public function getValue() {
+		$result = NULL;
+		$request = dsApp::getRequest();
+
+		if (isset($request[$this->name])) {
+			$result = $request[$this->name];
+		}
+
+		return $result;
 	}
 
 	/**
-	 * Creates a the label and appends / prepends it to the elements html
-	 *
-	 * @param string $html
-	 * 			HTML of the element
-	 * @return string $html
-	 * 			HTML of the element with appended / prepended label
+	 * Populates the form data after an unseccessfull commit
 	 */
-	protected function addLabel($html) {
-		// generate label HTML
-		$label = "<label for='" . $this->name . "'>" . $this->caption;
-
-		// set mandatory
-		if($this->mandatory) {
-			$label .= "<em>*</em>";
-		}
-		$label .= "</label>\n";
-
-		// append / prepend label
-		if($this->appendLabel) {
-			$html .= $label;
-		} else {
-			$html = $label . $html;
-		}
-
-		return $html;
-	}
+	abstract protected function populate();
 
 	/**
-	 * After an error occurs reset element values to show up in form again
+	 * Build up the HTML of the elements
 	 */
-	public abstract function refillValues();
+	abstract protected function buildHTML();
 }

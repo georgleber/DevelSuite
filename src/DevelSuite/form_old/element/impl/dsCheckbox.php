@@ -6,34 +6,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\form\element\impl;
+namespace DevelSuite\form_old\element\impl;
 
-use DevelSuite\form\element\dsASimpleElement;
+use DevelSuite\form\element\dsAElement;
 
 /**
- * Represents a radio button element.
+ * Represents a checkbox element.
  *
  * @package DevelSuite\form\element\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsRadioButton extends dsASimpleElement {
-	/**
-	 * Value fo the radio button
-	 * @var string
-	 */
+class dsCheckbox extends dsAElement {
 	private $value;
-
-	/**
-	 * Group of radio button
-	 * @var dsRadioButtonGroup
-	 */
 	private $group;
-
-	/**
-	 * Is the radio button checked
-	 * @var bool
-	 */
 	private $checked = FALSE;
 
 	/**
@@ -44,7 +30,11 @@ class dsRadioButton extends dsASimpleElement {
 	 * @param string $name
 	 * 			Name of the element
 	 * @param string $value
-	 * 			Value of the element
+	 * 			Content of the element
+	 * @param bool $mandatory
+	 * 			TRUE if element should be mandatory [optional]
+	 * @param bool $readOnly
+	 * 			TRUE if element should be readOnly [optional]
 	 */
 	public function __construct($caption, $name, $value = NULL) {
 		parent::__construct($caption, $name);
@@ -57,53 +47,53 @@ class dsRadioButton extends dsASimpleElement {
 	}
 
 	/**
-	 * Set the radio button checked
+	 * Set the name of the checkbox.
+	 * In case of a checkbox group this is set
+	 * by the surrounding group element.
 	 *
-	 * @param bool $checked
-	 * 			TRUE if radio button should be checked (must be bool)
+	 * @param string $name
+	 * 			The name of the checkbox
 	 */
-	public function setChecked($checked = TRUE) {
-		$this->checked = $checked;
-		return $this;
-	}
-
-	/**
-	 * Set a radio button group
-	 *
-	 * @param dsRadioButtonGroup group
-	 * 			The group of the radio button
-	 */
-	public function setGroup($group) {
+	public function setGroup(dsCheckboxGroup $group) {
 		$this->group = $group;
 	}
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::populate()
+	/**
+	 * Set the checkbox checked
+	 *
+	 * @param bool $checked
+	 * 			TRUE if checkbox should be checked (must be bool)
 	 */
-	protected function populate() {
+	public function setChecked($checked = TRUE) {
+		$this->checked = $checked;
+	}
+
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::refillValues()
+	 */
+	public function refillValues() {
 		$value = $this->getValue();
 		if (isset($value)) {
 			$this->setChecked();
 		}
 	}
 
-	/* 
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
+	/* (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::getHTML()
 	 */
 	public function getHTML() {
 		// generate HTML
-		$html = "<input type='radio'";
+		$html = "<input type='checkbox'";
 
 		// set CSS class
 		if (!empty($this->cssClass)) {
 			$html .= " class='" . implode(" ", $this->cssClass) . "'";
 		}
+		$html .= " id='" . $this->name . "'";
 
 		// set name of group
 		if (isset($this->group)) {
-			$html .= " name='" . $this->group->getName() . "'";
+			$html .= " name='" . $this->group->getName() . "[]'";
 		} else {
 			$html .= " name='" . $this->name . "'";
 		}
@@ -118,7 +108,12 @@ class dsRadioButton extends dsASimpleElement {
 			$html .= " checked='checked'";
 		}
 
+		// set checked
+		if ($this->disabled) {
+			$html .= " disabled='disabled'";
+		}
 		$html .= "/>\n";
-		return $html;
+
+		return "<div class='dsform-type-check'>" . $this->addLabel($html) . "</div>\n";
 	}
 }

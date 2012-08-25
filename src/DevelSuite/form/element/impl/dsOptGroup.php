@@ -8,40 +8,48 @@
  */
 namespace DevelSuite\form\element\impl;
 
-use DevelSuite\form\element\dsCompositeElement;
+use DevelSuite\form\element\dsACompositeElement;
 
 /**
- * Represents an option group of a select element.
+ * Represents a optgroup element.
  *
- * @package DevelSuite\form\element
+ * @package DevelSuite\form\element\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsOptGroup extends dsCompositeElement {
-	private $label;
-
+class dsOptGroup extends dsACompositeElement {
 	/**
-	 * Class constructor
+	 * Constructor
 	 *
-	 * @param string $label
-	 * 			Label of the group
+	 * @param string $caption
+	 * 		Caption for this element
 	 */
-	public function __construct($label) {
-		$this->label = $label;
+	public function __construct($caption) {
+		parent::__construct($caption, NULL);
+		
+		$this->allowedElements = array("dsOption");
 	}
 
-	/* (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::getHTML()
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsAElement::buildHTML()
 	 */
-	public function getHTML() {
+	public function buildHTML() {
 		// generate HTML
-		$html = "<optgroup label='" . $this->label . "'>";
+		$html = "<optgroup";
+
+		// set CSS class
+		if (!empty($this->cssClass)) {
+			$html .= " class='" . implode(" ", $this->cssClass) . "'";
+		}
+
+		$html .= " label='" . $this->caption . "'>\n";
 
 		// add html of childElements
 		foreach ($this->childElements as $child) {
-			$html .= $child->getHTML();
+			$html .= $child->buildHTML();
 		}
-
+		
 		$html .= "</optgroup>\n";
 		return $html;
 	}
