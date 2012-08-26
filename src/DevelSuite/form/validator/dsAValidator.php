@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\form\validator;
 
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\form\element\dsAElement;
 
 /**
@@ -44,12 +48,12 @@ abstract class dsAValidator {
 		if (isset($errorMessage)) {
 			$this->errorMessage = $errorMessage;
 		}
-		
+
 		$this->init();
 	}
 
 	/**
-	 * Can be used to initialize further information 
+	 * Can be used to initialize further information
 	 */
 	protected function init() {}
 
@@ -61,7 +65,13 @@ abstract class dsAValidator {
 	public function validate() {
 		$result = $this->validateElement();
 
+		$log = new Logger("AValidator");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+			
 		if ($result === FALSE) {
+			$log->debug("Vaidation is false, setting error message: " . $this->errorMessage);
+				
+				
 			$this->element->setErrorMessage($this->errorMessage);
 		}
 
