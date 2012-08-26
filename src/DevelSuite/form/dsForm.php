@@ -18,8 +18,6 @@ use DevelSuite\form\element\dsAElement;
 
 use DevelSuite\form\element\impl\dsHiddenInput;
 
-use DevelSuite\form\element\impl\dsFieldset;
-
 use DevelSuite\util\dsStringTools;
 
 use DevelSuite\form\constants\dsButtonNameConstants;
@@ -87,25 +85,16 @@ class dsForm {
 	public function addElement(dsAElement $element) {
 		if ($element->isMandatory()) {
 			$this->showMandatory = TRUE;
+			$element->addValidator(new dsRequiredValidator($element));
+		}
 
-			if (!($element instanceof dsFieldset)) {
-				$element->addValidator(new dsRequiredValidator($element));
-			}
+		if ($this->disabled) {
+			$element->setDisabled();
 		}
 
 		$this->elementList[] = $element;
-		if ($element instanceof dsFieldset) {
-			if ($element->containsFileInput()) {
-				$this->enctype = "multipart/form-data";
-			}
-		} else {
-			if ($this->disabled) {
-				$element->setDisabled();
-			}
-
-			if($element instanceof dsFileInput) {
-				$this->enctype = "multipart/form-data";
-			}
+		if($element instanceof dsFileInput) {
+			$this->enctype = "multipart/form-data";
 		}
 	}
 
@@ -183,19 +172,6 @@ class dsForm {
 		}
 
 		return $element->getValue();
-	}
-
-	/**
-	 * Clears all values of the form
-	 */
-	public function clear() {
-		foreach ($this->elementList as $element) {
-			if ($element instanceof dsFieldset) {
-				$element->clear();
-			} else {
-				$element->setValue(NULL);
-			}
-		}
 	}
 
 	/**
@@ -302,25 +278,18 @@ class dsForm {
 			$element = new dsHiddenInput("form", $this->id);
 			$html .= $element->buildHTML();
 
-			if ($this->elementList[0] instanceof dsFieldset) {
-				// add elements
-				foreach ($this->elementList as $key => $element) {
-					$html .= $element->buildHTML();
-				}
-			} else {
-				$html .= "<fieldset>\n";
-				$html .= "<ul>\n";
+			$html .= "<fieldset>\n";
+			$html .= "<ul>\n";
 
-				// add elements
-				foreach ($this->elementList as $key => $element) {
-					$html .= "<li class='dsform-formRow'>\n";
-					$html .= $element->buildHTML();
-					$html .= "</li>\n";
-				}
-
-				$html .= "</ul>\n";
-				$html .= "</fieldset>\n";
+			// add elements
+			foreach ($this->elementList as $key => $element) {
+				$html .= "<li class='dsform-formRow'>\n";
+				$html .= $element->buildHTML();
+				$html .= "</li>\n";
 			}
+
+			$html .= "</ul>\n";
+			$html .= "</fieldset>\n";
 
 			// add buttons
 			if(count($this->buttonList) > 0) {
@@ -346,15 +315,8 @@ class dsForm {
 	 */
 	private function findElement($elementName) {
 		foreach ($this->elementList as $element) {
-			if ($element instanceof dsFieldset) {
-				$elem = $element->findElement($elementName);
-				if ($elem != NULL) {
-					return $elem;
-				}
-			} else {
-				if ($element->getName() == $elementName) {
-					return $element;
-				}
+			if ($element->getName() == $elementName) {
+				return $element;
 			}
 		}
 

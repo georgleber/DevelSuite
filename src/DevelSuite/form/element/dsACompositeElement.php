@@ -92,7 +92,7 @@ abstract class dsACompositeElement extends dsAElement {
 
 	/**
 	 * Parses the name of the class without namespace
-	 * 
+	 *
 	 * @param string $name
 	 * 		Name of the class
 	 */

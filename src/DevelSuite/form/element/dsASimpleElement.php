@@ -48,7 +48,7 @@ abstract class dsASimpleElement extends dsAElement {
 		$html .= $this->addErrorSpan();
 		return $html;
 	}
-
+	
 	/**
 	 * Add a label element as caption
 	 */
