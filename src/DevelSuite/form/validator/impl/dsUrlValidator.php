@@ -18,7 +18,7 @@ use DevelSuite\util\dsStringTools;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsurlValidator extends dsAValidator {
+class dsUrlValidator extends dsAValidator {
 	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\validator.dsAValidator::validateElement()
