@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form;
 
+use DevelSuite\i18n\dsResourceBundle;
+
 use DevelSuite\form\button\dsAButton;
 
 use DevelSuite\form\validator\impl\dsRequiredValidator;
@@ -43,6 +45,9 @@ class dsForm {
 	private $disabled = FALSE;
 	private $showMandatory = FALSE;
 	private $containsFieldsets = FALSE;
+
+	private $showErrors = FALSE;
+	private $errorMessage;
 
 	public function __construct($action, $method = NULL) {
 		$this->action = $action;
@@ -192,62 +197,143 @@ class dsForm {
 	}
 
 	/**
+	 * Set a error message, with can not be set by a validator
+	 *
+	 * @param string $errorMessage
+	 * 			The error message
+	 */
+	public function setErrorMessage($errorMessage) {
+		$this->errorMessage = $errorMessage;
+		$this->showErrors = TRUE;
+	}
+
+	/**
+	 * Call method to show errors
+	 */
+	public function showErrors() {
+		$this->showErrors = TRUE;
+	}
+
+	/**
 	 * Generates the HTML of this form.
 	 *
 	 * @return HTML of this form
 	 */
 	public function render() {
-		// generate HTML
-		$html = "<form class='dsform' id ='" . $this->id . "' action='" . $this->action . "' method='" . $this->method . "'";
+		$request = dsApp::getRequest();
 
-		// set enctype
-		if (isset($this->enctype)) {
-			$html .= " enctype='" . $this->enctype . "'";
-		}
+		// send HTML or JSON response depending on following information
+		// AJAX request and form is send: send JSON
+		// form is not send or request is not AJAX: send HTML
+		if ($request->isAjaxRequest() && $this->isSend()) {
+			$response = array();
 
-		$html .= ">\n";
+			// send JSON without errors
+			if ($this->isValid && !$this->showErrors) {
+				$response["valid"] = TRUE;
+				$response["errors"] = NULL;
+			} else {
+				$response["valid"] = FALSE;
 
-		if ($this->showMandatory) {
-			$html .= "<p class='dsform-mandatory'>Alle Felder mit einem <em>*</em> sind Pflichtfelder</p>";
-		}
-
-		// add a hidden input field
-		$element = new dsHiddenInput("form", $this->id);
-		$html .= $element->buildHTML();
-
-		if ($this->containsFieldsets) {
-			// add elements
-			foreach ($this->elementList as $key => $element) {
-				$html .= $element->buildHTML();
+				$errors = array();
+				// collect global error
+				if (isset($this->errorMessage)) {
+					$errors["form"] = $this->errorMessage;
+				}
+				// collect validation error
+				else {
+					foreach ($this->elementList as $element) {
+						if (!$element->isValid()) {
+							$errors[$element->getName()] = $element->getErrorMessage();
+						}
+					}
+				}
+				$response["errors"] = $errors;
 			}
+
+			return $response;
 		} else {
-			$html .= "<fieldset>\n";
-			$html .= "<ul>\n";
-				
-			// add elements
-			foreach ($this->elementList as $key => $element) {
-				$html .= "<li class='dsform-formRow'>\n";
-				$html .= $element->buildHTML();
-				$html .= "</li>\n";
-			}
-				
-			$html .= "</ul>\n";
-			$html .= "</fieldset>\n";
-		}
+			// generate HTML
+			$html = "<form class='dsform' id ='" . $this->id . "' action='" . $this->action . "' method='" . $this->method . "'";
 
-		// add buttons
-		if(count($this->buttonList) > 0) {
-			$html .= "<div class='dsform-buttons'>\n";
-
-			foreach ($this->buttonList as $key => $button) {
-				$html .= $button->getHtml();
+			// set enctype
+			if (isset($this->enctype)) {
+				$html .= " enctype='" . $this->enctype . "'";
 			}
 
-			$html .= "</div>\n";
-		}
+			$html .= ">\n";
 
-		$html .= "</form>\n";
-		return $html;
+			// set errors
+			if (!$this->isValid || $this->showErrors) {
+				// load text for form error message
+				$bundle = dsResourceBundle::getBundle(dirname(__FILE__), "form");
+				$errorText = $bundle['Form.formErrors'];
+					
+				// collect global error
+				if (isset($this->errorMessage)) {
+					$html .= "<div class='dsform-errors'>\n";
+					$html .= "<p>" . $errorText . "</p>\n";
+					$html .= "<ul><li>" . $this->errorMessage . "</li></ul>\n</div>\n";
+				} 
+				// collect validation error
+				else {
+					// load header text for element error message
+					$html .= "<div class='dsform-errors'>\n";
+					$html .= "<p>" . $errorText . "</p>\n";
+
+					$html .= "<ul>\n";
+					foreach ($this->elementList as $element) {
+						if (!$element->isValid()) {
+							$error = $element->getErrorMessage();
+							$html .= "<li>" . $error . "</li>\n";
+						}
+					}
+					$html .= "</ul></div>\n";
+				}
+			}
+
+			if ($this->showMandatory) {
+				$html .= "<p class='dsform-mandatory'>Alle Felder mit einem <em>*</em> sind Pflichtfelder</p>";
+			}
+
+			// add a hidden input field
+			$element = new dsHiddenInput("form", $this->id);
+			$html .= $element->buildHTML();
+
+			if ($this->containsFieldsets) {
+				// add elements
+				foreach ($this->elementList as $key => $element) {
+					$html .= $element->buildHTML();
+				}
+			} else {
+				$html .= "<fieldset>\n";
+				$html .= "<ul>\n";
+
+				// add elements
+				foreach ($this->elementList as $key => $element) {
+					$html .= "<li class='dsform-formRow'>\n";
+					$html .= $element->buildHTML();
+					$html .= "</li>\n";
+				}
+
+				$html .= "</ul>\n";
+				$html .= "</fieldset>\n";
+			}
+
+			// add buttons
+			if(count($this->buttonList) > 0) {
+				$html .= "<div class='dsform-buttons'>\n";
+
+				foreach ($this->buttonList as $key => $button) {
+					$html .= $button->getHtml();
+				}
+
+				$html .= "</div>\n";
+			}
+
+			$html .= "</form>\n";
+			return $html;
+		}
 	}
 
 	/**

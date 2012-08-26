@@ -70,6 +70,13 @@ abstract class dsAElement {
 	 */
 	private $validatorChain = array();
 
+
+	/**
+	 * Check if element is valid
+	 * @var bool
+	 */
+	private $valid = TRUE;
+
 	/**
 	 * Constructor
 	 *
@@ -183,7 +190,15 @@ abstract class dsAElement {
 	 * Runs all validators of this element
 	 */
 	public function validate() {
-		return $this->validatorChain->processValidator();
+		$this->valid = $this->validatorChain->processValidator();
+		return $this->valid;
+	}
+
+	/**
+	 * Returns if the element is valid
+	 */
+	public function isValid() {
+		return $this->valid;
 	}
 
 	/**
@@ -194,6 +209,13 @@ abstract class dsAElement {
 	 */
 	public function setErrorMessage($errorMessage) {
 		$this->errorMessage = $errorMessage;
+	}
+
+	/**
+	 * Returns the error message of this element
+	 */
+	public function getErrorMessage() {
+		return $this->errorMessage;
 	}
 
 	/**
