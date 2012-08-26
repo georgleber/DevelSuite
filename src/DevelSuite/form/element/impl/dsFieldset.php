@@ -51,7 +51,7 @@ class dsFieldset extends dsACompositeElement {
 	 * 		Name of the element
 	 */
 	public function findElement($elementName) {
-		foreach ($this->elementList as $element) {
+		foreach ($this->$childElements as $element) {
 			if ($element instanceof dsFieldset) {
 				$elem = $element->findElement($elementName);
 				if ($elem != NULL) {
