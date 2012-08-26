@@ -58,15 +58,15 @@ class dsUsernameValidator extends dsAValidator {
 	public function validateElement() {
 		$userName = $this->element->getValue();
 
-		$return = TRUE;
+		$result = TRUE;
 		if(strlen($userName) < $this->minLength || strlen($userName) > $this->maxLength) {
-			$return = FALSE;
+			$result = FALSE;
 		}
 
 		if(!preg_match("/^[a-z0-9äöüÄÖÜß_\.\-@\s]+$/i", $userName)) {
-			$return = FALSE;
+			$result = FALSE;
 		}
 
-		return $return;
+		return $result;
 	}
 }
