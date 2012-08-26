@@ -270,7 +270,7 @@ class dsForm {
 				$errorText = $bundle['Form.formErrors'];
 					
 				// collect global error
-				if (isset($this->errorMessage)) {
+				if (dsStringTools::isFilled($this->errorMessage)) {
 					$html .= "<div class='dsform-errors'>\n";
 					$html .= "<p>" . $errorText . "</p>\n";
 					$html .= "<ul><li>" . $this->errorMessage . "</li></ul>\n</div>\n";
