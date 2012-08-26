@@ -156,15 +156,19 @@ class dsForm {
 	 * Checks if the form elements are valid.
 	 */
 	public function isValid() {
-		$retVal = TRUE;
+		$validResult = TRUE;
 
 		foreach ($this->elementList as $element) {
 			if (!$element->validate()) {
-				$retVal = FALSE;
+				$validResult = FALSE;
 			}
 		}
 
-		return $retVal;
+		if ($validResult === FALSE) {
+			$this->showErrors = TRUE;
+		}
+
+		return $validResult;
 	}
 
 	/**
@@ -229,7 +233,7 @@ class dsForm {
 			$response = array();
 
 			// send JSON without errors
-			if ($this->isValid() && !$this->showErrors) {
+			if (!$this->showErrors) {
 				$response["valid"] = TRUE;
 				$response["errors"] = NULL;
 			} else {
@@ -264,7 +268,7 @@ class dsForm {
 			$html .= ">\n";
 
 			// set errors
-			if ($this->isSend() && (!$this->isValid() || $this->showErrors)) {
+			if ($this->isSend() && $this->showErrors) {
 				// load text for form error message
 				$bundle = dsResourceBundle::getBundle(dirname(__FILE__), "form");
 				$errorText = $bundle['Form.formErrors'];
@@ -274,7 +278,7 @@ class dsForm {
 					$html .= "<div class='dsform-errors'>\n";
 					$html .= "<p>" . $errorText . "</p>\n";
 					$html .= "<ul><li>" . $this->errorMessage . "</li></ul>\n</div>\n";
-				} 
+				}
 				// collect validation error
 				else {
 					// load header text for element error message
