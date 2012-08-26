@@ -29,6 +29,7 @@ class dsUrlValidator extends dsAValidator {
 
 		if (dsStringTools::isFilled($url)) {
 			$matches = preg_match("!^(http|https)+(://)+(www\.)?([a-z0-9\.-]{3,})\.[a-z]{2,4}(/?.*)?$!i", $url);
+			$this->log->debug("Url Validation: found matches: [" . $matches . "]");
 			if ($matches == 0) {
 				$result = FALSE;
 			} 
