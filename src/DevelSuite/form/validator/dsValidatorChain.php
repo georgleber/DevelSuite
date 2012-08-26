@@ -15,6 +15,10 @@ namespace DevelSuite\form\validator;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 class dsValidatorChain {
 	/**
 	 * List of all validators
@@ -38,10 +42,15 @@ class dsValidatorChain {
 	 * @return TRUE, if all validators run without errors.
 	 */
 	public function processValidator() {
+		$log = new Logger("ValidatorChain");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+		
 		$validationResult = TRUE;
 		
 		// process validators
 		foreach ($this->validators as $validator) {
+			$log->debug("using validator: " . get_class($validator));
+			
 			$result = $validator->validate();
 			
 			if ($result === FALSE) {
