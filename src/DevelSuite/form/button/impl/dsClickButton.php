@@ -23,6 +23,8 @@ class dsClickButton extends dsAButton {
 	/**
 	 * Constructor
 	 *
+	 * @param string $name
+	 * 			Name of this button
 	 * @param string $value
 	 * 			Value of this button [optional]
 	 */
