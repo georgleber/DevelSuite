@@ -23,6 +23,12 @@ use DevelSuite\form\element\dsAElement;
  */
 abstract class dsAValidator {
 	/**
+	 * Logger instance
+	 * @var Logger
+	 */
+	protected $log;
+
+	/**
 	 * Element to validate
 	 * @var dsAElement
 	 */
@@ -32,7 +38,7 @@ abstract class dsAValidator {
 	 * Error message which will be set, if validation fails
 	 * @var string
 	 */
-	private $errorMessage;
+	protected $errorMessage;
 
 	/**
 	 * Constructor
@@ -43,6 +49,9 @@ abstract class dsAValidator {
 	 *		ErrorMessage, which will be shown if element is not valid
 	 */
 	public function __construct(dsAElement $element, $errorMessage = NULL) {
+		$this->log = new Logger("AValidator");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+
 		$this->element = $element;
 
 		if (isset($errorMessage)) {
@@ -65,13 +74,8 @@ abstract class dsAValidator {
 	public function validate() {
 		$result = $this->validateElement();
 
-		$log = new Logger("AValidator");
-		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-			
 		if ($result === FALSE) {
-			$log->debug("Vaidation is false, setting error message: " . $this->errorMessage);
-				
-				
+			$this->log->debug("Validation is FALSE, setting error message: " . $this->errorMessage);
 			$this->element->setErrorMessage($this->errorMessage);
 		}
 
