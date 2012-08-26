@@ -48,7 +48,7 @@ class dsButtonElement extends dsASimpleElement {
 	 */
 	public function getHTML() {
 		// generate HTML
-		$html .= "<input";
+		$html = "<input";
 
 		// set CSS class
 		if (!empty($this->cssClass)) {
