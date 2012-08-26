@@ -44,7 +44,6 @@ class dsForm {
 
 	private $disabled = FALSE;
 	private $showMandatory = FALSE;
-	private $containsFieldsets = FALSE;
 
 	private $showErrors = FALSE;
 	private $errorMessage = NULL;
@@ -303,7 +302,7 @@ class dsForm {
 			$element = new dsHiddenInput("form", $this->id);
 			$html .= $element->buildHTML();
 
-			if ($this->containsFieldsets) {
+			if ($this->elementList[0] instanceof dsFieldset) {
 				// add elements
 				foreach ($this->elementList as $key => $element) {
 					$html .= $element->buildHTML();
