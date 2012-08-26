@@ -47,7 +47,7 @@ class dsForm {
 	private $containsFieldsets = FALSE;
 
 	private $showErrors = FALSE;
-	private $errorMessage;
+	private $errorMessage = NULL;
 
 	public function __construct($action, $method = NULL) {
 		$this->action = $action;
