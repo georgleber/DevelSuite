@@ -29,9 +29,7 @@ class dsUrlValidator extends dsAValidator {
 
 		if (dsStringTools::isFilled($url)) {
 			if (!preg_match("#((http|https)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie", $url)) {
-				if ($matches == 0) {
-					$result = FALSE;
-				}
+				$result = FALSE;
 			}
 		}
 
