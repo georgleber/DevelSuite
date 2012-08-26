@@ -29,7 +29,6 @@ class dsUrlValidator extends dsAValidator {
 
 		if (dsStringTools::isFilled($url)) {
 			if (!preg_match("#((http|https)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie", $url)) {
-				$this->log->debug("Url Validation: found matches: [" . $matches . "]");
 				if ($matches == 0) {
 					$result = FALSE;
 				}
