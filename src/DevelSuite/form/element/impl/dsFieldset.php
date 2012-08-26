@@ -68,6 +68,21 @@ class dsFieldset extends dsACompositeElement {
 	}
 
 	/**
+	 * Checks if the form elements are valid.
+	 */
+	public function validate() {
+		$validResult = TRUE;
+
+		foreach ($this->childElements as $element) {
+			if (!$element->validate()) {
+				$validResult = FALSE;
+			}
+		}
+
+		return $validResult;
+	}
+
+	/**
 	 * Clears all values of the form
 	 */
 	public function clear() {
