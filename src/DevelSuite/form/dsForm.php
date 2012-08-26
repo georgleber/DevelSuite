@@ -229,7 +229,7 @@ class dsForm {
 			$response = array();
 
 			// send JSON without errors
-			if ($this->isValid && !$this->showErrors) {
+			if ($this->isValid() && !$this->showErrors) {
 				$response["valid"] = TRUE;
 				$response["errors"] = NULL;
 			} else {
@@ -264,7 +264,7 @@ class dsForm {
 			$html .= ">\n";
 
 			// set errors
-			if (!$this->isValid || $this->showErrors) {
+			if (!$this->isValid() || $this->showErrors) {
 				// load text for form error message
 				$bundle = dsResourceBundle::getBundle(dirname(__FILE__), "form");
 				$errorText = $bundle['Form.formErrors'];
