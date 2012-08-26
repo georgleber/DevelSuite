@@ -141,7 +141,7 @@ class dsFrontController {
 			}
 		} catch(dsDispatchException $e) {
 			$this->log->err("DispatchException occured during request dispatching, error: " . $e);
-			
+				
 			$event = new dsExceptionEvent("system.dispatching.exception", get_class($this), $e);
 			dsApp::getEventBus()->publish("system.dispatching.exception", $event);
 
@@ -236,7 +236,12 @@ class dsFrontController {
 	public function includeJavaScripts() {
 		$code = "";
 
-		$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>";
+		$env = dsConfig::read('app.environment', dsApp::ENV_PRODUCTION);
+		if ($env == dsApp::ENV_DEVELOPMENT) {
+			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.js'></script>";
+		} else {
+			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>";
+		}
 		$code .= "<script>window.jQuery || document.write('<script src=\"/public/scripts/jquery.min.js\"><\/script>')</script>";
 
 		foreach($this->javascripts as $script) {
