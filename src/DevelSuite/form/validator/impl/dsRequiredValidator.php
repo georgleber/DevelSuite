@@ -58,9 +58,9 @@ class dsRequiredValidator extends dsAValidator {
 	 * @see DevelSuite\form\validator.dsAValidator::validateElement()
 	 */
 	public function validateElement() {
-		if ($this->element instanceof dsFileInput) {
-			return TRUE;
-		}
+		#if ($this->element instanceof dsFileInput) {
+		#	return TRUE;
+		#}
 
 		$result = TRUE;
 		$value = $this->element->getValue();
