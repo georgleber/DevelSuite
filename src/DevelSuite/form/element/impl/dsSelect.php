@@ -74,6 +74,7 @@ class dsSelect extends dsACompositeElement {
 	 * @see DevelSuite\form\element.dsAElement::buildHTML()
 	 */
 	public function buildHTML() {
+		$this->addCssClass("select");
 		$html = $this->addLabel();
 		
 		// generate HTML
