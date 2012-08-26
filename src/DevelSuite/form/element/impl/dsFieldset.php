@@ -8,8 +8,8 @@
  */
 namespace DevelSuite\form\element\impl;
 
+use DevelSuite\form\element\dsAElement;
 use DevelSuite\form\validator\impl\dsRequiredValidator;
-
 use DevelSuite\form\element\dsACompositeElement;
 use DevelSuite\util\dsStringTools;
 
