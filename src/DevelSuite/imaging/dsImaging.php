@@ -75,9 +75,17 @@ class dsImaging {
 	 * 		New height of the image
 	 * @param int $option
 	 * 		Type of resizing
-	 *
+	 * @param bool $enlarge
+	 * 		Enlargement of image allowed?
 	 */
-	public function resizeImage($newWidth, $newHeight, $option = self::OPTION_AUTO) {
+	public function resizeImage($newWidth, $newHeight, $option = self::OPTION_AUTO, $enlarge = TRUE) {
+		// prevent enlarging image 
+		if ($enlarge === FALSE) {
+			if ($this->width < $newWidth && $this->height < $newHeight) {
+				return;
+			}
+		}
+
 		// Get optimal width and height - based on $option
 		$optionArray = $this->calculateDimensions($newWidth, $newHeight, $option);
 
