@@ -29,6 +29,12 @@ class dsImaging {
 	private $image;
 
 	/**
+	 * MIME Type of the image
+	 * @var string
+	 */
+	private $imageType;
+
+	/**
 	 * Width of the image
 	 * @var double
 	 */
@@ -96,20 +102,26 @@ class dsImaging {
 	 * @param string $imageQuality
 	 * 		Quality of the image
 	 */
-	public function saveImage($savePath, $imageQuality = "100") {
+	public function saveImage($savePath = NULL, $imageQuality = "100") {
 		// Get extension
-		$extension = strrchr($savePath, '.');
-		$extension = strtolower($extension);
+		$size = getimagesize($imageName);
+		$extension = $size["mime"];
 
-		if($extension === (".jpeg" || ".jpg")) {
+		if ($savePath != NULL) {
+			$h = fopen($savePath, 'w');
+			fclose($h);
+			chmod($savePath, 0777);
+		}
+
+		if ($this->imageType === "image/jpeg") {
 			if (imagetypes() & IMG_JPG) {
 				imagejpeg($this->imageResized, $savePath, $imageQuality);
 			}
-		} else if ($extension === ".gif") {
+		} else if ($this->imageType === "image/gif") {
 			if (imagetypes() & IMG_GIF) {
 				imagegif($this->imageResized, $savePath);
 			}
-		} else if ($extension === ".png") {
+		} else if ($this->imageType === "image/png") {
 			// Scale quality from 0-100 to 0-9 and invert it (0 is best)
 			$scaleQuality = round(($imageQuality / 100) * 9);
 			$invertScaleQuality = 9 - $scaleQuality;
@@ -131,15 +143,15 @@ class dsImaging {
 	private function openImage($imageName) {
 		// Get extension
 		$size = getimagesize($imageName);
-		$extension = $size["mime"];
+		$this->imageType = $size["mime"];
 
 		$image = NULL;
 		// depending on extension load image
-		if ($extension === "image/jpeg") {
+		if ($this->imageType === "image/jpeg") {
 			$image = @imagecreatefromjpeg($imageName);
-		} else if ($extension === "image/gif") {
+		} else if ($this->imageType === "image/gif") {
 			$image = @imagecreatefromgif($imageName);
-		} else if ($extension === "image/png") {
+		} else if ($this->imageType === "image/png") {
 			$image = @imagecreatefrompng($imageName);
 		} else {
 			$image = NULL;
@@ -183,7 +195,7 @@ class dsImaging {
 				$optimalWidth = $newWidth;
 				$optimalHeight= $this->getSizeByFixedWidth($newWidth);
 				break;
-					
+
 			case self::OPTION_CROP:
 				$optionArray = $this->getOptimalCrop($newWidth, $newHeight);
 				$optimalWidth = $optionArray['optimalWidth'];
