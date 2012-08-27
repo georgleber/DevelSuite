@@ -8,7 +8,7 @@
  */
 namespace DevelSuite\form\validator\impl;
 
-use DevelSuite\form\element\validator\dsAValidator;
+use DevelSuite\form\validator\dsAValidator;
 
 /**
  * Validator for Usernames.
