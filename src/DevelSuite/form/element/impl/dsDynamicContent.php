@@ -52,6 +52,22 @@ class dsDynamicContent extends dsASimpleElement {
 
 	/*
 	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsASimpleElement::addLabel()
+	 */
+	protected function addLabel() {
+		return "";
+	}
+
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsASimpleElement::addErrorSpan()
+	 */
+	protected function addErrorSpan() {
+		return "";
+	}
+
+	/*
+	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
 	 */
 	protected function getHTML() {
