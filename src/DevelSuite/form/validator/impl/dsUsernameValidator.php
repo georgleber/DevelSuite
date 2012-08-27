@@ -6,14 +6,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\form_old\element\validator\impl;
+namespace DevelSuite\form\validator\impl;
 
 use DevelSuite\form\element\validator\dsAValidator;
 
 /**
  * Validator for Usernames.
  *
- * @package DevelSuite\form\element\validator\impl
+ * @package DevelSuite\form\validator\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
