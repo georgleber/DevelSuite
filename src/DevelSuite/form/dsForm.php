@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form;
 
+use DevelSuite\form\element\impl\dsDynamicContent;
+
 use DevelSuite\i18n\dsResourceBundle;
 
 use DevelSuite\form\button\dsAButton;
@@ -282,10 +284,14 @@ class dsForm {
 			$html .= "<ul>\n";
 
 			// add elements
-			foreach ($this->elementList as $key => $element) {
-				$html .= "<li class='dsform-formRow'>\n";
-				$html .= $element->buildHTML();
-				$html .= "</li>\n";
+			foreach ($this->elementList as $element) {
+				if ($element instanceof dsDynamicContent) {
+					$html .= $element->buildHTML();
+				} else {
+					$html .= "<li class='dsform-formRow'>\n";
+					$html .= $element->buildHTML();
+					$html .= "</li>\n";
+				}
 			}
 
 			$html .= "</ul>\n";
