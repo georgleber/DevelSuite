@@ -68,8 +68,8 @@ class dsImaging {
 	 * @param double $newHeight
 	 * 		New height of the image
 	 * @param int $option
- 	 * 		Type of resizing
-	 * 		
+	 * 		Type of resizing
+	 *
 	 */
 	public function resizeImage($newWidth, $newHeight, $option = self::OPTION_AUTO) {
 		// Get optimal width and height - based on $option
@@ -98,18 +98,18 @@ class dsImaging {
 	 */
 	public function saveImage($savePath, $imageQuality = "100") {
 		// Get extension
-		$size = getimagesize($savePath);
-		$extension = $size["mime"];
+		$extension = strrchr($savePath, '.');
+		$extension = strtolower($extension);
 
-		if($extension === "image/jpeg") {
+		if($extension === (".jpeg" || ".jpg")) {
 			if (imagetypes() & IMG_JPG) {
 				imagejpeg($this->imageResized, $savePath, $imageQuality);
 			}
-		} else if ($extension === "image/gif") {
+		} else if ($extension === ".gif") {
 			if (imagetypes() & IMG_GIF) {
 				imagegif($this->imageResized, $savePath);
 			}
-		} else if ($extension === "image/png") {
+		} else if ($extension === ".png") {
 			// Scale quality from 0-100 to 0-9 and invert it (0 is best)
 			$scaleQuality = round(($imageQuality / 100) * 9);
 			$invertScaleQuality = 9 - $scaleQuality;
