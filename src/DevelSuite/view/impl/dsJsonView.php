@@ -29,6 +29,17 @@ class dsJsonView extends dsAView {
 		dsApp::getResponse()->setContentType("application/json");
 	}
 
+	/**
+	 * Overwrite the data array with self defined values. This method is
+	 * useful in cases where the JSON is parsed by an external tool.
+	 *
+	 * @param array $data
+	 * 		The new data array for teh JSON response
+	 */
+	public function setData($data) {
+		$this->data = $data;
+	}
+
 	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\view.dsAView::render()
