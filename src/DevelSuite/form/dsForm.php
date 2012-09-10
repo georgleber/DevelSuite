@@ -100,7 +100,7 @@ class dsForm {
 		
 		$log = new Logger("Form");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-		$log->info("adding element: " . var_dump($element));
+		$log->info("adding element: " . get_class($element));
 		
 		$this->elementList[] = $element;
 		if($element instanceof dsFileInput) {
