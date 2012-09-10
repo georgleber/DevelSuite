@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\form;
 
+use Monolog\Handler\StreamHandler;
+
+use Monolog\Logger;
+
 use DevelSuite\form\element\impl\dsDynamicContent;
 
 use DevelSuite\i18n\dsResourceBundle;
@@ -93,7 +97,11 @@ class dsForm {
 		if ($this->disabled) {
 			$element->setDisabled();
 		}
-
+		
+		$log = new Logger("Form");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+		$log->info("adding element: " . var_dump($element));
+		
 		$this->elementList[] = $element;
 		if($element instanceof dsFileInput) {
 			$this->enctype = "multipart/form-data";

@@ -48,7 +48,17 @@ abstract class dsASimpleElement extends dsAElement {
 		$html .= $this->addErrorSpan();
 		return $html;
 	}
-	
+
+	/**
+	 * Append the label to this element
+	 *
+	 * @param bool $appendLabel
+	 * 		TRUE, if label should be appended
+	 */
+	public function appendLabel($appendLabel = TRUE) {
+		$this->appendLabel = $appendLabel;
+	}
+
 	/**
 	 * Add a label element as caption
 	 */
