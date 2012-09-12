@@ -66,6 +66,6 @@ class dsMailView extends dsAView {
 			throw new dsRenderingException(dsRenderingException::TEMPLATE_NOT_FOUND, array($file));
 		}
 		
-		echo $content;
+		return $content;
 	}
 }
