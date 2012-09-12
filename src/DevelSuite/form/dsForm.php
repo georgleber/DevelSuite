@@ -97,11 +97,11 @@ class dsForm {
 		if ($this->disabled) {
 			$element->setDisabled();
 		}
-		
+
 		$log = new Logger("Form");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 		$log->info("adding element: " . get_class($element));
-		
+
 		$this->elementList[] = $element;
 		if($element instanceof dsFileInput) {
 			$this->enctype = "multipart/form-data";
@@ -200,6 +200,15 @@ class dsForm {
 	 */
 	public function showErrors() {
 		$this->showErrors = TRUE;
+	}
+
+	/**
+	 * Clears all values of the form
+	 */
+	public function clear() {
+		foreach ($this->elements as $element) {
+			$element->setValue("");
+		}
 	}
 
 	/**
