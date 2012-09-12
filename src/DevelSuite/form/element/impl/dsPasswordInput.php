@@ -31,6 +31,8 @@ class dsPasswordInput extends dsASimpleElement {
 	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
 	 */
 	protected function getHTML() {
+		$this->addCssClass("text");
+		
 		// generate HTML
 		$html = "<input type='password'";
 
