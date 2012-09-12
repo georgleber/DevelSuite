@@ -206,7 +206,7 @@ class dsForm {
 	 * Clears all values of the form
 	 */
 	public function clear() {
-		foreach ($this->elements as $element) {
+		foreach ($this->elementList as $element) {
 			$element->setValue("");
 		}
 	}
