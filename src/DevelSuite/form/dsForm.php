@@ -304,13 +304,13 @@ class dsForm {
 
 			// add elements
 			foreach ($this->elementList as $element) {
-				#if ($element instanceof dsDynamicContent) {
-				#	$html .= $element->buildHTML();
-				#} else {
+				if ($element instanceof dsDynamicContent) {
+					$html .= $element->buildHTML();
+				} else {
 					$html .= "<li class='dsform-formRow'>\n";
 					$html .= $element->buildHTML();
 					$html .= "</li>\n";
-				#}
+				}
 			}
 
 			$html .= "</ul>\n";
