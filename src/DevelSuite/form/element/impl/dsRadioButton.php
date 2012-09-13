@@ -88,7 +88,23 @@ class dsRadioButton extends dsASimpleElement {
 		}
 	}
 
-	/* 
+	/*
+	 * (non-PHPdoc)
+	 * @see DevelSuite\form\element.dsASimpleElement::addLabel()
+	 */
+	protected function addLabel() {
+		$label = "<label class='label-radiobutton' for='" . $this->name . "'>" . $this->caption;
+
+		// set mandatory
+		if($this->mandatory) {
+			$label .= "<em>*</em>";
+		}
+
+		$label .= "</label>\n";
+		return $label;
+	}
+
+	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
 	 */
