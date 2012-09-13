@@ -111,10 +111,6 @@ class dsImaging {
 	 * 		Quality of the image
 	 */
 	public function saveImage($savePath = NULL, $imageQuality = "100") {
-		// Get extension
-		$size = getimagesize($imageName);
-		$extension = $size["mime"];
-
 		if ($savePath != NULL) {
 			$h = fopen($savePath, 'w');
 			fclose($h);
