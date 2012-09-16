@@ -363,7 +363,7 @@ class dsFrontController {
 		$class = $namespace . ucfirst($route->getController()) . "Controller";
 
 		if (!class_exists($class)) {
-			throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID, "Controller could not be loaded: " . $ex->getTrace());
+			throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID, array($class));
 		}
 		
 		$controller = new $class();
