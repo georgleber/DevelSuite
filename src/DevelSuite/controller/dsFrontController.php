@@ -8,16 +8,14 @@
  */
 namespace DevelSuite\controller;
 
-use DevelSuite\eventbus\event\dsExceptionEvent;
-
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-
-use DevelSuite\exception\dsErrorCodeException;
 
 use DevelSuite\dsApp;
 use DevelSuite\config\dsConfig;
 use DevelSuite\eventbus\event\dsEvent;
+use DevelSuite\eventbus\event\dsExceptionEvent;
+use DevelSuite\exception\dsErrorCodeException;
 use DevelSuite\exception\impl\dsDispatchException;
 use DevelSuite\exception\impl\dsRenderingException;
 use DevelSuite\http\dsRequest;
@@ -27,6 +25,8 @@ use DevelSuite\routing\route\dsInternalRoute;
 use DevelSuite\routing\dsRouter;
 use DevelSuite\util\dsStringTools;
 use DevelSuite\view\dsAView;
+
+use \ErrorException as ErrorException;
 
 /**
  * FrontController handles all request, resolves a route,
@@ -141,7 +141,7 @@ class dsFrontController {
 			}
 		} catch(dsDispatchException $e) {
 			$this->log->err("DispatchException occured during request dispatching, error: " . $e);
-				
+
 			$event = new dsExceptionEvent("system.dispatching.exception", get_class($this), $e);
 			dsApp::getEventBus()->publish("system.dispatching.exception", $event);
 
@@ -361,7 +361,12 @@ class dsFrontController {
 
 		// load class and check if it is of type AController
 		$class = $namespace . ucfirst($route->getController()) . "Controller";
-		$controller = new $class();
+
+		try {
+			$controller = new $class();
+		} catch(ErrorException $ex) {
+			throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID, "Controller could not be loaded: " . $ex->getTrace());
+		}
 
 		if ($controller instanceof dsAController) {
 			return $controller;
