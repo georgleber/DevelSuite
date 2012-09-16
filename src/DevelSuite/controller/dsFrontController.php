@@ -362,12 +362,11 @@ class dsFrontController {
 		// load class and check if it is of type AController
 		$class = $namespace . ucfirst($route->getController()) . "Controller";
 
-		try {
-			$controller = new $class();
-		} catch(ErrorException $ex) {
+		if (!class_exists($class)) {
 			throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID, "Controller could not be loaded: " . $ex->getTrace());
 		}
-
+		
+		$controller = new $class();
 		if ($controller instanceof dsAController) {
 			return $controller;
 		} else {
