@@ -139,6 +139,10 @@ class dsStringTools {
 		return $output;
 	}
 
+	public static function startswith($haystack, $needle) {
+		return strncmp($haystack, $needle, strlen($needle)) === 0;
+	}
+
 	public static function isBoolean($var)  {
 		if(is_bool($var)){
 			return $var;
