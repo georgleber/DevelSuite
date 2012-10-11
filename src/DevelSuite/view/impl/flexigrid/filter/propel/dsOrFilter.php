@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\view\impl\flexigrid\filter\propel;
 
+use DevelSuite\view\impl\flexigrid\filter\dsIFilter;
+
 /**
  * Used for combining diffenret filters with an or relation.
  *
