@@ -15,4 +15,4 @@ namespace DevelSuite\view\impl\flexigrid\filter\propel;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsALogicFilter implements dsIPropelFilter {}
+abstract class dsALogicFilter implements dsIPropelFilter {}
