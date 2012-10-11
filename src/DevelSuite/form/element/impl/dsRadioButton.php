@@ -66,6 +66,13 @@ class dsRadioButton extends dsASimpleElement {
 		$this->checked = $checked;
 		return $this;
 	}
+	
+	/**
+	 * Returns if this radio button is checked
+	 */
+	public function isChecked() {
+		return $this->checked;
+	}
 
 	/**
 	 * Set a radio button group

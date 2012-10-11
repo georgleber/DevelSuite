@@ -9,6 +9,7 @@
 namespace DevelSuite\form\element\impl;
 
 use DevelSuite\form\element\dsACompositeElement;
+use DevelSuite\form\element\dsAElement;
 
 /**
  * Represents a checkbox group element.

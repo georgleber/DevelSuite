@@ -9,6 +9,7 @@
 namespace DevelSuite\form\element\impl;
 
 use DevelSuite\form\element\dsACompositeElement;
+use DevelSuite\form\element\dsAElement;
 
 /**
  * Represents a radio button group element.
@@ -44,7 +45,7 @@ class dsRadioButtonGroup extends dsACompositeElement {
 	 */
 	public function addChild(dsAElement $child) {
 		if ($child instanceof dsRadioButton) {
-			if ($child->getChecked() && $this->checkCount < 1) {
+			if ($child->isChecked() && $this->checkCount < 1) {
 				$this->checkCount++;
 			} else {
 				# FIXME: add logging!
