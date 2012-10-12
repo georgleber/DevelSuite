@@ -20,6 +20,12 @@ use DevelSuite\form\element\dsAElement;
  */
 class dsCheckboxGroup extends dsACompositeElement {
 	/**
+	 * Set this element readOnly
+	 * @var bool
+	 */
+	private $readOnly;
+	
+	/**
 	 * Constructor
 	 *
 	 * @param string $caption

@@ -20,6 +20,12 @@ use DevelSuite\form\element\dsAElement;
  */
 class dsRadioButtonGroup extends dsACompositeElement {
 	/**
+	 * Set this element readOnly
+	 * @var bool
+	 */
+	private $readOnly;
+	
+	/**
 	 * Count of all radio buttons checked state
 	 * @var int
 	 */

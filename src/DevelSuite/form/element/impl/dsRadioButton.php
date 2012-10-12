@@ -19,6 +19,12 @@ use DevelSuite\form\element\dsASimpleElement;
  */
 class dsRadioButton extends dsASimpleElement {
 	/**
+	 * Set this element readOnly
+	 * @var bool
+	 */
+	private $readOnly;
+
+	/**
 	 * Value fo the radio button
 	 * @var string
 	 */
@@ -66,7 +72,7 @@ class dsRadioButton extends dsASimpleElement {
 		$this->checked = $checked;
 		return $this;
 	}
-	
+
 	/**
 	 * Returns if this radio button is checked
 	 */
@@ -82,6 +88,17 @@ class dsRadioButton extends dsASimpleElement {
 	 */
 	public function setGroup($group) {
 		$this->group = $group;
+	}
+
+	/**
+	 * Set this element readOnly
+	 *
+	 * @param bool $readOnly
+	 * 			TRUE, if this element should be readOnly
+	 */
+	public function setReadOnly($readOnly = TRUE) {
+		$this->readOnly = $readOnly;
+		return $this;
 	}
 
 	/*
@@ -134,6 +151,11 @@ class dsRadioButton extends dsASimpleElement {
 		// set value
 		if (isset($this->value)) {
 			$html .= " value='" . $this->value . "'";
+		}
+
+		// set readonly
+		if ($this->readOnly) {
+			$html .= "readonly='readonly' ";
 		}
 
 		// set checked

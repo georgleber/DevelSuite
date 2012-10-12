@@ -19,6 +19,12 @@ use DevelSuite\form\element\dsASimpleElement;
  */
 class dsCheckbox extends dsASimpleElement {
 	/**
+	 * Set this element readOnly
+	 * @var bool
+	 */
+	private $readOnly;
+
+	/**
 	 * Value fo the checkbox
 	 * @var string
 	 */
@@ -77,6 +83,17 @@ class dsCheckbox extends dsASimpleElement {
 		$this->group = $group;
 	}
 
+	/**
+	 * Set this element readOnly
+	 *
+	 * @param bool $readOnly
+	 * 			TRUE, if this element should be readOnly
+	 */
+	public function setReadOnly($readOnly = TRUE) {
+		$this->readOnly = $readOnly;
+		return $this;
+	}
+
 	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\element.dsAElement::populate()
@@ -129,14 +146,14 @@ class dsCheckbox extends dsASimpleElement {
 			$html .= " value='" . $this->value . "'";
 		}
 
-		// set checked
-		if ($this->checked) {
-			$html .= " checked='checked'";
+		// set readonly
+		if ($this->readOnly) {
+			$html .= "readonly='readonly' ";
 		}
 
 		// set checked
-		if ($this->disabled) {
-			$html .= " disabled='disabled'";
+		if ($this->checked) {
+			$html .= " checked='checked'";
 		}
 
 		$html .= "/>\n";
