@@ -8,25 +8,19 @@
  */
 namespace DevelSuite\form\validator\impl;
 
-use DevelSuite\i18n\dsResourceBundle;
-use DevelSuite\util\dsStringTools;
-
 /**
- * Validator for email elements.
+ * Validator for House numbers.
  *
  * @package DevelSuite\form\validator\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsEmailValidator extends dsPatternValidator {
+class dsHousenoValidator extends dsPatternValidator {
 	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\form\validator.dsAValidator::init()
 	 */
 	protected function init() {
-		$this->pattern = "^[a-zA-Z0-9!#\$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#\$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$";
-
-		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__), "validation");
-		$this->errorMessage = $iniArr['dsEmailValidator.error'];
+		$this->pattern = "((http|https)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)";
 	}
 }

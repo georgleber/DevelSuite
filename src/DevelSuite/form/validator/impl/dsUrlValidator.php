@@ -8,9 +8,6 @@
  */
 namespace DevelSuite\form\validator\impl;
 
-use DevelSuite\form\validator\dsAValidator;
-use DevelSuite\util\dsStringTools;
-
 /**
  * Validator for URL inputs.
  *
@@ -18,21 +15,12 @@ use DevelSuite\util\dsStringTools;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsUrlValidator extends dsAValidator {
+class dsUrlValidator extends dsPatternValidator {
 	/*
 	 * (non-PHPdoc)
-	 * @see DevelSuite\form\validator.dsAValidator::validateElement()
+	 * @see DevelSuite\form\validator.dsAValidator::init()
 	 */
-	public function validateElement() {
-		$result = TRUE;
-		$url = $this->element->getValue();
-
-		if (dsStringTools::isFilled($url)) {
-			if (!preg_match("#((http|https)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#ie", $url)) {
-				$result = FALSE;
-			}
-		}
-
-		return $result;
+	protected function init() {
+		$this->pattern = "^\d+[a-zA-Z]?$";
 	}
 }
