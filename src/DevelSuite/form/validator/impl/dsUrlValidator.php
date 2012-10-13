@@ -21,6 +21,6 @@ class dsUrlValidator extends dsPatternValidator {
 	 * @see DevelSuite\form\validator.dsAValidator::init()
 	 */
 	protected function init() {
-		$this->pattern = "^\d+[a-zA-Z]?$";
+		$this->pattern = "((http|https)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)";
 	}
 }

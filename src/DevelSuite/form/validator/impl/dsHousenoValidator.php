@@ -21,6 +21,6 @@ class dsHousenoValidator extends dsPatternValidator {
 	 * @see DevelSuite\form\validator.dsAValidator::init()
 	 */
 	protected function init() {
-		$this->pattern = "((http|https)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)";
+		$this->pattern = "^\d+[a-zA-Z]?$";
 	}
 }
