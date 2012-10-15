@@ -83,14 +83,19 @@
 			}
 		}
 
+		function SelectionException(message) {
+			this.message = message;
+		    this.name = "SelectionException";
+		}
+
 		function getRequestedColumns(grid, requestColumns, multiSelection) {
 			var resultSet = new ResultSet(multiSelection);
 			
 			if ($('.trSelected', grid).length == 0) {
-				jAlert("Es wurde kein Datensatz ausgewählt.", "Fehler");
+				throw new SelectionException("Es wurde kein Datensatz ausgewählt.");
 				return null;
 			} else if (!multiSelection && $('.trSelected', grid).length > 1) {
-				jAlert("Es wurde mehr als ein Datensatz ausgewählt, es ist aber nur einfache Selektierung zulässig", "Fehler");
+				throw new SelectionException("Es wurde mehr als ein Datensatz ausgewählt, es ist aber nur einfache Selektierung zulässig");
 				return null;
 			} else {
 				$('.trSelected', grid).each(function(rowIndex) {

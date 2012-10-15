@@ -126,15 +126,22 @@ class dsFlexiAction implements dsIFlexiAction {
 				$code .= "reqColumns[" . $i . "] = '" . $this->requestColumns[$i] . "';\n";
 			}
 
+			$code .= "var exception = null;\n";
+			$code .= "try {\n";
+			
 			// request columns
 			if ($this->multiSelection) {
-				$code .= "\nvar resultSet = getRequestedColumns(grid, reqColumns, true);\n\n";
+				$code .= "\nvar resultSet = getRequestedColumns(grid, reqColumns, true);\n";
 			} else {
-				$code .= "\nvar resultSet = getRequestedColumns(grid, reqColumns, false);\n\n";
+				$code .= "\nvar resultSet = getRequestedColumns(grid, reqColumns, false);\n";
 			}
+			
+			$code .= "} catch(e) {\n";
+			$code .= "exception = e.message\n";
+			$code .= "}\n\n";
 
 			// trigger event
-			$code .= "if (resultSet != null) jQuery('body').trigger(event, [resultSet]); \n";
+			$code .= "if (resultSet != null) jQuery('body').trigger(event, [resultSet, exception]); \n";
 		} else {
 			// trigger event
 			$code .= "jQuery('body').trigger(event);\n";
