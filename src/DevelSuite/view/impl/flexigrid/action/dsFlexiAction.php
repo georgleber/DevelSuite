@@ -141,7 +141,7 @@ class dsFlexiAction implements dsIFlexiAction {
 			$code .= "}\n\n";
 
 			// trigger event
-			$code .= "if (resultSet != null) jQuery('body').trigger(event, [resultSet, exception]); \n";
+			$code .= "jQuery('body').trigger(event, [resultSet, exception]); \n";
 		} else {
 			// trigger event
 			$code .= "jQuery('body').trigger(event);\n";
