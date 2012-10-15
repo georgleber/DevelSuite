@@ -127,7 +127,7 @@ class dsFlexiAction implements dsIFlexiAction {
 			}
 
 			$code .= "var exception = null;\n";
-			$code .= "try {\n";
+			$code .= "try {";
 			
 			// request columns
 			if ($this->multiSelection) {
@@ -137,7 +137,7 @@ class dsFlexiAction implements dsIFlexiAction {
 			}
 			
 			$code .= "} catch(e) {\n";
-			$code .= "exception = e.message\n";
+			$code .= "exception = e.message;\n";
 			$code .= "}\n\n";
 
 			// trigger event
