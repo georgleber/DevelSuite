@@ -76,7 +76,7 @@ class dsSelect extends dsACompositeElement {
 	public function buildHTML() {
 		$this->addCssClass("select");
 		$html = $this->addLabel();
-		
+
 		// generate HTML
 		$html .= "<select";
 
@@ -124,5 +124,19 @@ class dsSelect extends dsACompositeElement {
 
 		$label .= "</label>\n";
 		return $label;
+	}
+
+	/**
+	 * Add a span element for error messages
+	 */
+	private function addErrorSpan() {
+		$html = "<span class='dsform-errorMsg'>";
+
+		if (dsStringTools::isFilled($this->errorMessage)) {
+			$html .= $this->errorMessage;
+		}
+
+		$html .= "</span>";
+		return $html;
 	}
 }
