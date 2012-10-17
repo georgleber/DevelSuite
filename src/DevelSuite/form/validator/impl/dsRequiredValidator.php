@@ -61,10 +61,12 @@ class dsRequiredValidator extends dsAValidator {
 		#if ($this->element instanceof dsFileInput) {
 		#	return TRUE;
 		#}
+		
 
 		$result = TRUE;
 		$value = $this->element->getValue();
-
+		$this->log("Element: " . get_class($this->element) . ", Value: " . $value);
+		
 		if(is_string($value)) {
 			if (dsStringTools::isNullOrEmpty($value)) {
 				$result = FALSE;
