@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form\element\impl;
 
+use DevelSuite\util\dsStringTools;
+
 use DevelSuite\form\element\dsACompositeElement;
 
 /**
