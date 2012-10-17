@@ -108,6 +108,8 @@ class dsSelect extends dsACompositeElement {
 		}
 
 		$html .= "</select>\n";
+		
+		$html .= addErrorSpan();
 		return $html;
 	}
 
