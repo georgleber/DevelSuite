@@ -23,6 +23,10 @@ use DevelSuite\config\dsConfig;
  * @version 1.0
  */
 abstract class dsASessionHandler {
+	/**
+	 * The responsible logger
+	 * @var Logger
+	 */
 	protected $log;
 	
 	/**

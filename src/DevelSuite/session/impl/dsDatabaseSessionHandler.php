@@ -38,13 +38,19 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 	 */
 	private $tableName;
 
+	/**
+	 * Save if table for session already exists
+	 * @var bool
+	 */
+	private $tabeExist = FALSE;
+
 	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\session.dsASessionHandler::init()
 	 */
 	protected function init() {
 		$this->log->debug("Initializing DatabaseSessionHandler");
-		
+
 		$this->tableName = dsConfig::read("session.database.tablename", "ds_session");#
 		$dsn = dsConfig::read('session.database.dsn');
 		$user = dsConfig::read('session.database.user');
@@ -62,21 +68,21 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 	 * Check if the session table exists and create it if not.
 	 */
 	private function checkTable() {
-		$this->log->debug("checking if table " . $this->tableName . " exists");
-		
-		$sql = "SHOW TABLES LIKE :TABLE";
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->bindParam(':TABLE', $this->tableName);
-		$stmt->execute();
+		if (!$this->tabeExist) {
+			$this->log->debug("Checking if table " . $this->tableName . " exists");
 
-		$tableExist = FALSE;
-		if ($stmt->rowCount() > 0) {
-			$tableExist = TRUE;
-		}
+			$sql = "SHOW TABLES LIKE :TABLE";
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->bindParam(':TABLE', $this->tableName);
+			$stmt->execute();
 
-		if (!$tableExist) {
-			$this->log->debug("creating table " . $this->tableName);
-			$sql = "CREATE TABLE IF NOT EXISTS  `" . $this->tableName. "` (
+			if ($stmt->rowCount() > 0) {
+				$this->tableExist = TRUE;
+			}
+
+			if ($this->tableExist) {
+				$this->log->debug("creating table " . $this->tableName);
+				$sql = "CREATE TABLE IF NOT EXISTS  `" . $this->tableName. "` (
 					  `session_id` varchar(255) NOT NULL default '',
 					  `user_agent` varchar(255) NOT NULL default '',
 					  `session_expire` datetime NOT NULL,
@@ -86,7 +92,8 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 					  KEY `session_expire` (`session_expire`)
 					) ENGINE=MyISAM";
 
-			$this->pdo->exec($sql);
+				$this->pdo->exec($sql);
+			}
 		}
 	}
 
@@ -182,6 +189,8 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 	 * @see DevelSuite\session.dsASessionHandler::destroy()
 	 */
 	public function destroy($sessionId) {
+		$this->log->debug("Destroying session with ID: " . $sessionId);
+
 		// create a query to delete a session
 		$sql = 'DELETE FROM ' . $this->tableName . ' WHERE session_id = :SESSION_ID';
 
