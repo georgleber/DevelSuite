@@ -197,7 +197,8 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 			$sql = 'DELETE FROM ' . $this->tableName . ' WHERE session_id = :SESSION_ID';
 
 			$stmt = $this->pdo->prepare($sql);
-			$stmt->bindParam(':SESSION_ID', $sessionId);
+			$this->log->debug("SQL Statement: " . $sql . ", Statement: " . $stmt);
+			$stmt->bindParam(':SESSION_ID', $sessionId, PDO::PARAM_STR);
 			$result = $stmt->execute();
 		} catch(PDOException $e) {
 			$this->log->err("Exception occured during session destroy: " . $e);
