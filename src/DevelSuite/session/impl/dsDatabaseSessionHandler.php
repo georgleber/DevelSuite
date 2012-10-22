@@ -80,7 +80,7 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 				$this->tableExist = TRUE;
 			}
 
-			if ($this->tableExist) {
+			if (!$this->tableExist) {
 				$this->log->debug("creating table " . $this->tableName);
 				$sql = "CREATE TABLE IF NOT EXISTS  `" . $this->tableName. "` (
 					  `session_id` varchar(255) NOT NULL default '',
