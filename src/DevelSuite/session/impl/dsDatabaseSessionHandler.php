@@ -191,12 +191,17 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 	public function destroy($sessionId) {
 		$this->log->debug("Destroying session with ID: " . $sessionId);
 
-		// create a query to delete a session
-		$sql = 'DELETE FROM ' . $this->tableName . ' WHERE session_id = :SESSION_ID';
+		$result = NULL;
+		try {
+			// create a query to delete a session
+			$sql = 'DELETE FROM ' . $this->tableName . ' WHERE session_id = :SESSION_ID';
 
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->bindParam(':SESSION_ID', $sessionId);
-		$result = $stmt->execute();
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->bindParam(':SESSION_ID', $sessionId);
+			$result = $stmt->execute();
+		} catch(PDOException $e) {
+			$this->log->err("Exception occured during session destroy: " . $e);
+		}
 
 		return $result;
 	}
@@ -208,13 +213,18 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 	public function gc($lifetime) {
 		/* period after that a session pass off */
 		$lifetime = time() - $this->sessionLifetime;
-			
-		// delete statement
-		$sql = 'DELETE FROM ' . $this->tableName . ' WHERE session_expire < FROM_UNIXTIME(:LIFETIME)';
 
-		$stmt = $this->pdo->prepare($sql);
-		$stmt->bindValue(':LIFETIME', $lifetime, PDO::PARAM_STR);
-		$result = $stmt->execute();
+		$result = NULL;
+		try {
+			// delete statement
+			$sql = 'DELETE FROM ' . $this->tableName . ' WHERE session_expire < FROM_UNIXTIME(:LIFETIME)';
+
+			$stmt = $this->pdo->prepare($sql);
+			$stmt->bindValue(':LIFETIME', $lifetime, PDO::PARAM_STR);
+			$result = $stmt->execute();
+		} catch(PDOException $e) {
+			$this->log->err("Exception occured during gc: " . $e);
+		}
 
 		return $result;
 	}
