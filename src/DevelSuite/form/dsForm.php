@@ -100,10 +100,6 @@ class dsForm {
 			$element->setDisabled();
 		}
 
-		$log = new Logger("Form");
-		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-		$log->info("adding element: " . get_class($element));
-
 		$this->elementList[] = $element;
 		if($element instanceof dsFileInput) {
 			$this->enctype = "multipart/form-data";

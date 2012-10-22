@@ -53,7 +53,6 @@ abstract class dsACompositeElement extends dsAElement {
 
 		if (empty($this->allowedElements) || array_search($class, $this->allowedElements) !== FALSE) {
 			$this->childElements[] = $child;
-			$log->debug("adding child: " . $class);
 		} else {
 			$log->debug("Could not add child: " . $class . ", because it is not in allowed list: " . implode(", ", $this->allowedElements));
 		}
