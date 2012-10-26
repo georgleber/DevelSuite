@@ -57,6 +57,7 @@ abstract class dsASimpleElement extends dsAElement {
 	 */
 	public function appendLabel($appendLabel = TRUE) {
 		$this->appendLabel = $appendLabel;
+		return $this;
 	}
 
 	/**
