@@ -44,6 +44,7 @@ class dsUsernameValidator extends dsPatternValidator {
 	 */
 	public function setMinLength($minLength) {
 		$this->minLength = $minLength;
+		return $this;
 	}
 
 	/**
@@ -54,6 +55,7 @@ class dsUsernameValidator extends dsPatternValidator {
 	 */
 	public function setMaxLength($maxLength) {
 		$this->maxLength = $maxLength;
+		return $this;
 	}
 
 	/*

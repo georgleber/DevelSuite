@@ -38,6 +38,7 @@ class dsAgeValidator extends dsAValidator {
 	 */
 	public function setMinAge($minAge) {
 		$this->minAge = $minAge;
+		return $this;
 	}
 
 	/**
@@ -48,6 +49,7 @@ class dsAgeValidator extends dsAValidator {
 	 */
 	public function setMaxAge($maxAge) {
 		$this->maxAge = $maxAge;
+		return $this;
 	}
 
 	/*
