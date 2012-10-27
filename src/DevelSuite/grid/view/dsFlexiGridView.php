@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\grid\view\impl;
+namespace DevelSuite\grid\view;
 
 use DevelSuite\config\dsConfig;
 use DevelSuite\controller\dsFrontController;
