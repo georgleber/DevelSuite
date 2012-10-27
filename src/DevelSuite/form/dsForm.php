@@ -8,31 +8,20 @@
  */
 namespace DevelSuite\form;
 
-use DevelSuite\view\impl\dsFormView;
-
-use DevelSuite\form\element\impl\dsFileInput;
-
 use Monolog\Handler\StreamHandler;
-
 use Monolog\Logger;
 
-use DevelSuite\form\element\impl\dsDynamicContent;
-
-use DevelSuite\i18n\dsResourceBundle;
-
-use DevelSuite\form\button\dsAButton;
-
-use DevelSuite\form\validator\impl\dsRequiredValidator;
-
-use DevelSuite\form\element\dsAElement;
-
-use DevelSuite\form\element\impl\dsHiddenInput;
-
-use DevelSuite\util\dsStringTools;
-
-use DevelSuite\form\constants\dsButtonNameConstants;
-
 use DevelSuite\dsApp;
+use DevelSuite\form\button\dsAButton;
+use DevelSuite\form\constants\dsButtonNameConstants;
+use DevelSuite\form\element\dsAElement;
+use DevelSuite\form\element\impl\dsDynamicContent;
+use DevelSuite\form\element\impl\dsFileInput;
+use DevelSuite\form\element\impl\dsHiddenInput;
+use DevelSuite\form\validator\impl\dsRequiredValidator;
+use DevelSuite\form\view\dsFormView;
+use DevelSuite\i18n\dsResourceBundle;
+use DevelSuite\util\dsStringTools;
 
 /**
  * FIXME
