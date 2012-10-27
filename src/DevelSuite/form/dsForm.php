@@ -57,7 +57,7 @@ class dsForm {
 	private $showErrors = FALSE;
 	private $errorMessage = NULL;
 
-	public function __construct($action, $callbackUrl, $method = NULL) {
+	public function __construct($action, $callbackUrl = NULL, $method = NULL) {
 		$this->action = $action;
 		$this->callbackUrl = $callbackUrl;
 
