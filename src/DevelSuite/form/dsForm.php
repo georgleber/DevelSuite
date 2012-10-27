@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\form;
 
+use DevelSuite\view\impl\dsFormView;
+
 use DevelSuite\form\element\impl\dsFileInput;
 
 use Monolog\Handler\StreamHandler;
@@ -41,6 +43,7 @@ use DevelSuite\dsApp;
  */
 class dsForm {
 	private $id = "dsForm";
+	private $callbackUrl;
 	private $action;
 	private $method = 'POST';
 	private $enctype = NULL;
@@ -54,8 +57,9 @@ class dsForm {
 	private $showErrors = FALSE;
 	private $errorMessage = NULL;
 
-	public function __construct($action, $method = NULL) {
+	public function __construct($action, $callbackUrl, $method = NULL) {
 		$this->action = $action;
+		$this->callbackUrl = $callbackUrl;
 
 		if ($method != NULL) {
 			$this->method = $method;
@@ -248,6 +252,40 @@ class dsForm {
 
 			return $response;
 		} else {
+			$view = new dsFormView($this->callbackUrl);
+			$view->assign("callbackUrl", $this->callbackUrl)
+			->assign("id", $this->id)
+			->assign("action", $this->action)
+			->assign("method", $this->method);
+
+			if (isset($this->enctype)) {
+				$view->assign("enctype", $this->enctype);
+			}
+
+			// set errors
+			if ($this->isSend() && $this->showErrors) {
+				$errorMessages = array();
+				if (dsStringTools::isFilled($this->errorMessage)) {
+					$errorMessages[] = $this->errorMessage;
+				} else {
+					foreach ($this->elementList as $element) {
+						if (!$element->isValid()) {
+							$errorMessages[] = $element->getErrorMessage();
+						}
+					}
+				}
+				
+				$view->assign("errorMessages", $errorMessages);
+			}
+			
+			$view->assign("showMandatory", $this->showMandatory)
+			->assign("elementList", $this->elementList)
+			->assign("buttonList", $this->buttonList);
+			
+			$html = $view->render();
+			return $html;
+			
+/*
 			// generate HTML
 			$html = "<form class='dsform' id ='" . $this->id . "' action='" . $this->action . "' method='" . $this->method . "'";
 
@@ -325,6 +363,7 @@ class dsForm {
 
 			$html .= "</form>\n";
 			return $html;
+*/
 		}
 	}
 

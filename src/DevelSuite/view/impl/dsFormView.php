@@ -8,6 +8,10 @@
  */
 namespace DevelSuite\view\impl;
 
+use DevelSuite\view\dsAView;
+
+use DevelSuite\form\dsForm;
+
 /**
  * View that renders a pre-defined template with a form.
  *
@@ -15,56 +19,41 @@ namespace DevelSuite\view\impl;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-use DevelSuite\form\dsForm;
-
-class dsFormView extends dsHtmlView {
+class dsFormView extends dsAView {
 	/**
 	 * Callback to view, when action was successfull
 	 * @var string
 	 */
 	private $callbackUrl;
-	
-	/**
-	 * The form to render
-	 * @var dsForm
-	 */
-	private $form;
 
 	/**
 	 * Constructor
 	 *
-	 * @param string $template
-	 * 		Used template
-	 * @param dsFrontController $ctrl
-	 * 		The corresponding controller
 	 * @param string $callbackUrl
 	 * 		Callback for actions
 	 */
-	public function __construct($template, dsFrontController $frontCtrl, $callbackUrl) {
-		parent::__construct($template, $frontCtrl);
-
+	public function __construct($callbackUrl) {
 		$this->callbackUrl = $callbackUrl;
-	}
-	
-	/**
-	 * Set the corresponding form
-	 *
-	 * @param dsForm $form
-	 * 		The form to show in template
-	 */
-	public function setForm(dsForm $form) {
-		$this->form = $form;
 	}
 
 	/**
 	 * Loads the form template, assigns all information to it and renders it
 	 */
-	public function doLayout() {
-		$formView = new dsHtmlView("form.tpl.php", $this->ctrl);
-		$formView->setPath(dirname(__FILE__) . DS . "form" . DS . "tpl");
-
-		$formView->assign("callbackUrl", $this->callbackUrl)
-		->assign("form", $form);
-		return $formView->render();
+	public function render() {
+		$template = "form.tpl.php";
+		$path = dirname(__FILE__) . DS . "form" . DS . "tpl";
+		
+		$content = NULL;
+		$file = $this->path . DS . $this->template;
+		if(file_exists($file)) {
+			ob_start();
+			include($file);
+			$content = ob_get_contents();
+			ob_end_clean();
+		} else {
+			throw new dsRenderingException(dsRenderingException::TEMPLATE_NOT_FOUND, array($file));
+		}
+		
+		return $content;
 	}
 }
