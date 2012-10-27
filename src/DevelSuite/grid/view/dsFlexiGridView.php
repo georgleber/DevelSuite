@@ -296,7 +296,7 @@ class dsFlexiGridView extends dsHtmlView {
 	 */
 	public function doLayout() {
 		$flexiGridView = new dsHtmlView("flexigrid.tpl.php", $this->ctrl);
-		$flexiGridView->setPath(dirname(__FILE__) . DS . "flexigrid" . DS . "tpl");
+		$flexiGridView->setPath(dirname(__FILE__) . DS . "tpl");
 
 		$flexiGridView->assign("title", $this->getTitle())
 		->assign("url", $this->getRequestUrl())
