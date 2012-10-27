@@ -2,7 +2,7 @@
 	<script type="text/javascript" charset="utf-8">
 	/* <![CDATA[ */
 		$(document).ready(function() {
-			$('#dsFormCancel', '#dsForm').click(function() {
+			$('input[name="dsFormCancel"]', '#dsForm').click(function() {
 				window.location.assign("<?php echo $this->callbackUrl; ?>");
 			});
 	
@@ -10,66 +10,59 @@
 				dataType: 'json',
 				success: showResponse,
 				error: function(a) {
-					jException("Bei der Kommunikation mit dem Server ist ein Fehler aufgetreten.<br/>"
-							+ "Bitte informieren Sie den Systemadministrator", "Exception", a.responseText);
+					showException(a.responseText);
 					console.log(a.responseText);
 				}
 			});
 	
 			function showResponse(data) {
-				if (data.form.valid) {					
-					jAlert("Speichern erfolgreich", "Speichern erfolgreich", function() {
+				if (data.form.valid) {
+					showInfoMessage("Die Daten wurden erfolgreich gespeichert", "Speichern erfolgreich", function() { 
 					window.location.assign("<?php echo $this->callbackUrl; ?>");
 					});
 				} else {
 					clear();
 					var form = $('#dsForm');
+
+					var prependHtml = false;
 					var html = "";
 						
-					if (data.form.globalError != null) {
+					if (data.form.errors != null) {
 						// generate html to show global error in form header
 						html += "<div class='dsform-errors'>";
-						html += "<p>Folgender Fehler ist aufgetreten:</p>";
-						html += "<ul><li>" + data.form.globalError + "</li></ul>";
-					} else {
-						// generate html to show all element errors in form header
-						html += "<div class='dsform-errors'>";
 						html += "<p>Folgende Fehler sind aufgetreten:</p><ul>";
-						$.each(data.form.validationErrors, function() {
-							html += "<li>" + this + "</li>";
-						});
-						html += "</ul></div>";
-	
-							// generate elements to show invalid elements
-						$.each(data.form.validationErrors, function(elem, msg) {
-							var div = null;
-							if($("#" + elem).hasClass('dsform-type-radiogrp') 
-									|| $("#" + elem).hasClass('dsform-type-chkgrp')
-									|| $("#" + elem).hasClass('dsform-type-select')) {
-								div = $("#" + elem);
+						
+						// generate elements to show invalid elements
+						$.each(data.form.errors, function(elem, msg) {
+							if (elem == "form") {
+								prependHtml = true;
+								html += "<li>" + msg + "</li>";
 							} else {
-							    div = $("#" + elem).parent();
+								$('input, textarea, select', "#dsForm").each(function() {
+									if ($(this).attr('name') == elem) {
+										$(this).addClass('error');
+										$(this).parent().find('span.dsform-errorMsg').html(msg);
+									}
+								});
 							}
-	 							
-							var errorMsg = "<strong class='dsform-message'>" + msg + "</strong>";
-							$('#' + elem).addClass("error");
-							div.prepend(errorMsg);
 						});
+
+						html += "</ul></div>";
 					}
 						
-					form.prepend(html);
+					if (prependHtml) {
+						form.prepend(html);
+					}
 				} 
 			}
 	
 			function clear() {
 				var form = $('#dsForm');
-				form.each(function() {
-					$('input,textarea', this).value = '';
-					$('input,textarea,select,div', this).removeClass("error");
+				$('input, textarea, select', form).each(function() {
+					$(this).removeClass('error');
+					$(this).parent().find('span.dsform-errorMsg').html('');
 				});
-	
 				$('.dsform-errors', form).remove();
-				$('.dsform-message', form).remove();
 			}
 		});
 	/* ]]> */
