@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace DevelSuite\view\impl;
+namespace DevelSuite\grid\view\impl;
 
 
 use DevelSuite\config\dsConfig;
@@ -24,7 +24,7 @@ use DevelSuite\util\dsStringTools;
 /**
  * View that renders a pre-defined template with a FlexiGrid table.
  *
- * @package DevelSuite\view\impl
+ * @package DevelSuite\grid\view\impl
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
