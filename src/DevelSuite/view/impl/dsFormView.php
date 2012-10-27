@@ -44,7 +44,7 @@ class dsFormView extends dsAView {
 		$path = dirname(__FILE__) . DS . "form" . DS . "tpl";
 		
 		$content = NULL;
-		$file = $this->path . DS . $this->template;
+		$file = $path . DS . $template;
 		if(file_exists($file)) {
 			ob_start();
 			include($file);
