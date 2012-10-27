@@ -43,7 +43,7 @@ use DevelSuite\dsApp;
  */
 class dsForm {
 	private $id = "dsForm";
-	private $callbackUrl;
+	private $callbackUrl = NULL;
 	private $action;
 	private $method = 'POST';
 	private $enctype = NULL;
@@ -252,7 +252,7 @@ class dsForm {
 
 			return $response;
 		} else {
-			$view = new dsFormView($this->callbackUrl);
+			$view = new dsFormView();
 			$view->assign("callbackUrl", $this->callbackUrl)
 			->assign("id", $this->id)
 			->assign("action", $this->action)

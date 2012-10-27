@@ -20,22 +20,6 @@ use DevelSuite\view\dsAView;
  */
 class dsFormView extends dsAView {
 	/**
-	 * Callback to view, when action was successfull
-	 * @var string
-	 */
-	private $callbackUrl;
-
-	/**
-	 * Constructor
-	 *
-	 * @param string $callbackUrl
-	 * 		Callback for actions
-	 */
-	public function __construct($callbackUrl) {
-		$this->callbackUrl = $callbackUrl;
-	}
-
-	/**
 	 * Loads the form template, assigns all information to it and renders it
 	 */
 	public function render() {
