@@ -74,19 +74,20 @@
 /* ]]> */
 </script>
 <form class='dsform' id ='<?php echo $this->id; ?>' action='<?php echo $this->action; ?>' method='<?php echo $this->method; ?>'<?php if (isset($this->enctype)) { echo " enctype=' . $this->enctype . '"; } ?>>
-<?php if (isset($this->errorMessages) && !empty($this->errorMessages)): ?>
-	<div class='dsform-errors'>
-		<?php if (count($this->errorMessages) > 1): ?>
-			<p>Folgende Fehler sind aufgetreten:</p>
-		<?php else: ?>
-			<p>Folgender Fehler ist aufgetreten:</p>
-		<?php endif;?>
-		<ul>
-			<?php foreach ($this->errorMessages as $errorMessage): ?>
-				<li><?php echo $errorMessage ?></li>
-			<?php endforeach; ?>
-		</ul>
-	</div>
+	<?php if (isset($this->errorMessages) && !empty($this->errorMessages)): ?>
+		<div class='dsform-errors'>
+			<?php if (count($this->errorMessages) > 1): ?>
+				<p>Folgende Fehler sind aufgetreten:</p>
+			<?php else: ?>
+				<p>Folgender Fehler ist aufgetreten:</p>
+			<?php endif;?>
+			<ul>
+				<?php foreach ($this->errorMessages as $errorMessage): ?>
+					<li><?php echo $errorMessage ?></li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+	<?php endif; ?>
 	
 	<?php if ($this->showMandatory): ?>
 		<p class='dsform-mandatory'>Alle Felder mit einem <em>*</em> sind Pflichtfelder</p>
@@ -115,5 +116,4 @@
 			<?php endforeach; ?>
 		</div>
 	<?php endif; ?>
-<?php endif; ?>
 </form>
