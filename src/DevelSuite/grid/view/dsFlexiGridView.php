@@ -8,7 +8,6 @@
  */
 namespace DevelSuite\grid\view\impl;
 
-
 use DevelSuite\config\dsConfig;
 use DevelSuite\controller\dsFrontController;
 use DevelSuite\exception\spl\dsFileNotFoundException;
@@ -20,6 +19,7 @@ use DevelSuite\grid\action\impl\dsEditAction;
 use DevelSuite\grid\provider\dsIDataProvider;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsStringTools;
+use DevelSuite\view\impl\dsHtmlView;
 
 /**
  * View that renders a pre-defined template with a FlexiGrid table.
