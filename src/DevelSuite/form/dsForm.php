@@ -242,7 +242,6 @@ class dsForm {
 			return $response;
 		} else {
 			$view = new dsFormView();
-			echo "CallbackUrl: " . $this->callbackUrl;
 			$view->assign("callbackUrl", $this->callbackUrl)
 			->assign("id", $this->id)
 			->assign("action", $this->action)
