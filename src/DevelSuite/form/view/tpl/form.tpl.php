@@ -1,4 +1,4 @@
-<?php if (isset($this->callbackUrl)): ?>
+<?php if (isset($this->callbackUrl) && $this->callbackUrl != NULL): ?>
 	<script type="text/javascript" charset="utf-8">
 	/* <![CDATA[ */
 		$(document).ready(function() {
