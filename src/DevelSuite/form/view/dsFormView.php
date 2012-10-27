@@ -23,11 +23,8 @@ class dsFormView extends dsAView {
 	 * Loads the form template, assigns all information to it and renders it
 	 */
 	public function render() {
-		$template = "form.tpl.php";
-		$path = dirname(__FILE__) . DS . "form" . DS . "tpl";
-		
 		$content = NULL;
-		$file = $path . DS . $template;
+		$file = dirname(__FILE__) . DS . "tpl" . DS . "form.tpl.php";
 		if(file_exists($file)) {
 			ob_start();
 			include($file);
