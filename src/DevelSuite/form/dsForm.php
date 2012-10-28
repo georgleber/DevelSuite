@@ -31,6 +31,12 @@ use DevelSuite\util\dsStringTools;
  * @version 1.0
  */
 class dsForm {
+	/**
+	 * The responsible logger
+	 * @var Logger
+	 */
+	protected $log;
+
 	private $id = "dsForm";
 	private $callbackUrl = NULL;
 	private $action;
@@ -53,6 +59,9 @@ class dsForm {
 		if ($method != NULL) {
 			$this->method = $method;
 		}
+
+		$this->log = new Logger("Form");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 	}
 
 	/**
@@ -214,6 +223,8 @@ class dsForm {
 		// AJAX request and form is send: send JSON
 		// form is not send or request is not AJAX: send HTML
 		if ($request->isAjaxRequest() && $this->isSend()) {
+			$this->log->debug("Rendering response as JSON string");
+
 			$response = array();
 
 			// send JSON without errors
@@ -241,6 +252,8 @@ class dsForm {
 
 			return $response;
 		} else {
+			$this->log->debug("Rendering response as HTML code");
+			
 			$view = new dsFormView();
 			$view->assign("callbackUrl", $this->callbackUrl)
 			->assign("id", $this->id)
@@ -263,96 +276,96 @@ class dsForm {
 						}
 					}
 				}
-				
+
 				$view->assign("errorMessages", $errorMessages);
 			}
-			
+
 			$view->assign("showMandatory", $this->showMandatory)
 			->assign("elementList", $this->elementList)
 			->assign("buttonList", $this->buttonList);
-			
+
 			$html = $view->render();
 			return $html;
-			
-/*
-			// generate HTML
-			$html = "<form class='dsform' id ='" . $this->id . "' action='" . $this->action . "' method='" . $this->method . "'";
 
-			// set enctype
-			if (isset($this->enctype)) {
+			/*
+			 // generate HTML
+			 $html = "<form class='dsform' id ='" . $this->id . "' action='" . $this->action . "' method='" . $this->method . "'";
+
+			 // set enctype
+			 if (isset($this->enctype)) {
 				$html .= " enctype='" . $this->enctype . "'";
-			}
+				}
 
-			$html .= ">\n";
+				$html .= ">\n";
 
-			// set errors
-			if ($this->isSend() && $this->showErrors) {
+				// set errors
+				if ($this->isSend() && $this->showErrors) {
 				// load text for form error message
 				$bundle = dsResourceBundle::getBundle(dirname(__FILE__), "form");
 				$errorText = $bundle['Form.formErrors'];
 					
 				// collect global error
 				if (dsStringTools::isFilled($this->errorMessage)) {
-					$html .= "<div class='dsform-errors'>\n";
-					$html .= "<p>" . $errorText . "</p>\n";
-					$html .= "<ul><li>" . $this->errorMessage . "</li></ul>\n</div>\n";
+				$html .= "<div class='dsform-errors'>\n";
+				$html .= "<p>" . $errorText . "</p>\n";
+				$html .= "<ul><li>" . $this->errorMessage . "</li></ul>\n</div>\n";
 				}
 				// collect validation error
 				else {
-					// load header text for element error message
-					$html .= "<div class='dsform-errors'>\n";
-					$html .= "<p>" . $errorText . "</p>\n";
+				// load header text for element error message
+				$html .= "<div class='dsform-errors'>\n";
+				$html .= "<p>" . $errorText . "</p>\n";
 
-					$html .= "<ul>\n";
-					foreach ($this->elementList as $element) {
-						if (!$element->isValid()) {
-							$error = $element->getErrorMessage();
-							$html .= "<li>" . $error . "</li>\n";
-						}
-					}
-					$html .= "</ul></div>\n";
+				$html .= "<ul>\n";
+				foreach ($this->elementList as $element) {
+				if (!$element->isValid()) {
+				$error = $element->getErrorMessage();
+				$html .= "<li>" . $error . "</li>\n";
 				}
-			}
+				}
+				$html .= "</ul></div>\n";
+				}
+				}
 
-			if ($this->showMandatory) {
+				if ($this->showMandatory) {
 				$html .= "<p class='dsform-mandatory'>Alle Felder mit einem <em>*</em> sind Pflichtfelder</p>";
-			}
-
-			// add a hidden input field
-			$element = new dsHiddenInput("form", $this->id);
-			$html .= $element->buildHTML();
-
-			$html .= "<fieldset>\n";
-			$html .= "<ul>\n";
-
-			// add elements
-			foreach ($this->elementList as $element) {
-				if ($element instanceof dsDynamicContent) {
-					$html .= $element->buildHTML();
-				} else {
-					$html .= "<li class='dsform-formRow'>\n";
-					$html .= $element->buildHTML();
-					$html .= "</li>\n";
 				}
-			}
 
-			$html .= "</ul>\n";
-			$html .= "</fieldset>\n";
+				// add a hidden input field
+				$element = new dsHiddenInput("form", $this->id);
+				$html .= $element->buildHTML();
 
-			// add buttons
-			if(count($this->buttonList) > 0) {
+				$html .= "<fieldset>\n";
+				$html .= "<ul>\n";
+
+				// add elements
+				foreach ($this->elementList as $element) {
+				if ($element instanceof dsDynamicContent) {
+				$html .= $element->buildHTML();
+				} else {
+				$html .= "<li class='dsform-formRow'>\n";
+				$html .= $element->buildHTML();
+				$html .= "</li>\n";
+				}
+				}
+
+				$html .= "</ul>\n";
+				$html .= "</fieldset>\n";
+
+				// add buttons
+				if(count($this->buttonList) > 0) {
 				$html .= "<div class='dsform-buttons'>\n";
 
 				foreach ($this->buttonList as $key => $button) {
-					$html .= $button->getHtml();
+				$html .= $button->getHtml();
 				}
 
 				$html .= "</div>\n";
-			}
+				}
 
-			$html .= "</form>\n";
-			return $html;
-*/
+				$html .= "</form>\n";
+				return $html;
+				*/
 		}
 	}
 
