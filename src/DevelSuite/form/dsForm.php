@@ -253,7 +253,7 @@ class dsForm {
 			return $response;
 		} else {
 			$this->log->debug("Rendering response as HTML code");
-			
+				
 			$view = new dsFormView();
 			$view->assign("callbackUrl", $this->callbackUrl)
 			->assign("id", $this->id)

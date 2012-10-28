@@ -69,6 +69,7 @@
 	</script>
 <?php endif; ?>
 <form class='dsform' id ='<?php echo $this->id; ?>' action='<?php echo $this->action; ?>' method='<?php echo $this->method; ?>'<?php if (isset($this->enctype)) { echo " enctype=' . $this->enctype . '"; } ?>>
+	<input type="hidden" name="form" value="<?php echo $this->id; ?>">
 	<?php if (isset($this->errorMessages) && !empty($this->errorMessages)): ?>
 		<div class='dsform-errors'>
 			<?php if (count($this->errorMessages) > 1): ?>
