@@ -24,7 +24,7 @@ class dsEmailValidator extends dsPatternValidator {
 	 * @see DevelSuite\form\validator.dsAValidator::init()
 	 */
 	protected function init() {
-		$this->pattern = "^[a-zA-Z0-9!#\$%&\'*+\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#\$%&\'*+\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$";
+		$this->pattern = "^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+$";
 
 		$iniArr = dsResourceBundle::getBundle(dirname(__FILE__), "validation");
 		$this->errorMessage = $iniArr['dsEmailValidator.error'];
