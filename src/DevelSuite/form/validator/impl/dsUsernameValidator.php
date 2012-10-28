@@ -66,6 +66,7 @@ class dsUsernameValidator extends dsPatternValidator {
 		$result = parent::validateElement();
 
 		if ($result) {
+			$userName = $this->element->getValue();
 			if(strlen($userName) < $this->minLength || strlen($userName) > $this->maxLength) {
 				$result = FALSE;
 			}
