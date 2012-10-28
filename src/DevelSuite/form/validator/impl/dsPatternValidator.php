@@ -45,6 +45,7 @@ class dsPatternValidator extends dsAValidator {
 
 		$result = TRUE;
 		if (dsStringTools::isFilled($value)) {
+			$this->log->debug("Pattern for validation: " . $this->pattern);
 			if (!preg_match("#" . $this->pattern . "#is", $value)) {
 				$result = FALSE;
 			}
