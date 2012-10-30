@@ -207,6 +207,10 @@ class dsForm {
 	 */
 	public function clear() {
 		foreach ($this->elementList as $element) {
+			if ($element instanceof dsDynamicContent) {
+				continue;
+			}
+				
 			$element->setValue("");
 		}
 	}
@@ -253,7 +257,7 @@ class dsForm {
 			return $response;
 		} else {
 			$this->log->debug("Rendering response as HTML code");
-				
+
 			$view = new dsFormView();
 			$view->assign("callbackUrl", $this->callbackUrl)
 			->assign("id", $this->id)
@@ -286,86 +290,6 @@ class dsForm {
 
 			$html = $view->render();
 			return $html;
-
-			/*
-			 // generate HTML
-			 $html = "<form class='dsform' id ='" . $this->id . "' action='" . $this->action . "' method='" . $this->method . "'";
-
-			 // set enctype
-			 if (isset($this->enctype)) {
-				$html .= " enctype='" . $this->enctype . "'";
-				}
-
-				$html .= ">\n";
-
-				// set errors
-				if ($this->isSend() && $this->showErrors) {
-				// load text for form error message
-				$bundle = dsResourceBundle::getBundle(dirname(__FILE__), "form");
-				$errorText = $bundle['Form.formErrors'];
-					
-				// collect global error
-				if (dsStringTools::isFilled($this->errorMessage)) {
-				$html .= "<div class='dsform-errors'>\n";
-				$html .= "<p>" . $errorText . "</p>\n";
-				$html .= "<ul><li>" . $this->errorMessage . "</li></ul>\n</div>\n";
-				}
-				// collect validation error
-				else {
-				// load header text for element error message
-				$html .= "<div class='dsform-errors'>\n";
-				$html .= "<p>" . $errorText . "</p>\n";
-
-				$html .= "<ul>\n";
-				foreach ($this->elementList as $element) {
-				if (!$element->isValid()) {
-				$error = $element->getErrorMessage();
-				$html .= "<li>" . $error . "</li>\n";
-				}
-				}
-				$html .= "</ul></div>\n";
-				}
-				}
-
-				if ($this->showMandatory) {
-				$html .= "<p class='dsform-mandatory'>Alle Felder mit einem <em>*</em> sind Pflichtfelder</p>";
-				}
-
-				// add a hidden input field
-				$element = new dsHiddenInput("form", $this->id);
-				$html .= $element->buildHTML();
-
-				$html .= "<fieldset>\n";
-				$html .= "<ul>\n";
-
-				// add elements
-				foreach ($this->elementList as $element) {
-				if ($element instanceof dsDynamicContent) {
-				$html .= $element->buildHTML();
-				} else {
-				$html .= "<li class='dsform-formRow'>\n";
-				$html .= $element->buildHTML();
-				$html .= "</li>\n";
-				}
-				}
-
-				$html .= "</ul>\n";
-				$html .= "</fieldset>\n";
-
-				// add buttons
-				if(count($this->buttonList) > 0) {
-				$html .= "<div class='dsform-buttons'>\n";
-
-				foreach ($this->buttonList as $key => $button) {
-				$html .= $button->getHtml();
-				}
-
-				$html .= "</div>\n";
-				}
-
-				$html .= "</form>\n";
-				return $html;
-				*/
 		}
 	}
 
