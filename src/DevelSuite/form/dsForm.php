@@ -203,19 +203,6 @@ class dsForm {
 	}
 
 	/**
-	 * Clears all values of the form
-	 */
-	public function clear() {
-		foreach ($this->elementList as $element) {
-			if ($element instanceof dsDynamicContent) {
-				continue;
-			}
-				
-			$element->setValue("");
-		}
-	}
-
-	/**
 	 * Generates the HTML of this form.
 	 *
 	 * @return HTML of this form
