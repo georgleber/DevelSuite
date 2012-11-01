@@ -18,28 +18,12 @@ use DevelSuite\grid\view\dsFlexiGridView;
  * @version 1.0
  */
 class dsFlexiSeparator implements dsIFlexiAction {
-	/**
-	 * Identifier for this action
-	 * @var string
-	 */
-	private $identifier;
-
-	/**
-	 * Constructor
-	 *
-	 * @param string $identifier
-	 * 		Identifier for this action
-	 */
-	public function __construct($identifier) {
-		$this->identifier = $identifier;
-	}
-
 	/*
 	 * (non-PHPdoc)
 	 * @see DevelSuite\grid\action.dsIFlexiAction::getIdentifier()
 	 */
 	public function getIdentifier() {
-		return $this->identifier;
+		return NULL;
 	}
 
 	/*
