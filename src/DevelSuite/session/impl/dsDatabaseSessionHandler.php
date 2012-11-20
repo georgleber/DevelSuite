@@ -128,7 +128,9 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		$stmt = $this->pdo->prepare($sql);
 		$stmt->bindParam(':SESSION_ID', $sessionId);
 		$stmt->bindParam(':USER_AGENT', $userAgent);
-		$stmt->bindParam(':TIME', time());
+		
+		$time = time();
+		$stmt->bindParam(':TIME', $time);
 		$result = $stmt->execute();
 
 		// fetch result if exists
@@ -157,8 +159,9 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		$updateSql = 'UPDATE ' . $this->tableName . ' SET session_expire = FROM_UNIXTIME(:SESSION_EXPIRE), session_data = :SESSION_DATA
 					WHERE session_id = :SESSION_ID AND user_agent = :USER_AGENT';
 
+		$time = time();
 		$updateStmt = $this->pdo->prepare($updateSql);
-		$updateStmt->bindParam(':SESSION_EXPIRE', time());
+		$updateStmt->bindParam(':SESSION_EXPIRE', $time);
 		$updateStmt->bindParam(':SESSION_DATA', $data);
 		$updateStmt->bindParam(':SESSION_ID', $sessionId);
 		$updateStmt->bindParam(':USER_AGENT', $userAgent);
@@ -173,11 +176,12 @@ class dsDatabaseSessionHandler extends dsASessionHandler {
 		$insertSQL = 'INSERT INTO ' . $this->tableName . ' (session_id, user_agent, session_expire, date_created, session_data)
 					VALUES (:SESSION_ID, :USER_AGENT, FROM_UNIXTIME(:SESSION_EXPIRE), FROM_UNIXTIME(:DATE_CREATED), :SESSION_DATA)';
 
+		$time = time();
 		$insertStmt = $this->pdo->prepare($insertSQL);
 		$insertStmt->bindParam(':SESSION_ID', $sessionId);
 		$insertStmt->bindParam(':USER_AGENT', $userAgent);
-		$insertStmt->bindParam(':SESSION_EXPIRE', time());
-		$insertStmt->bindParam(':DATE_CREATED', time());
+		$insertStmt->bindParam(':SESSION_EXPIRE', $time);
+		$insertStmt->bindParam(':DATE_CREATED', $time);
 		$insertStmt->bindParam(':SESSION_DATA', $data);
 		$insertResult = $insertStmt->execute();
 
