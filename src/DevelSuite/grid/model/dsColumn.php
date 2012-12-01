@@ -303,6 +303,13 @@ class dsColumn {
 	public function getCellRenderer() {
 		return $this->cellRenderer;
 	}
+	
+	/**
+	 * Return the related table of this column
+	 */
+	public function getRelatedTable() {
+		return NULL;
+	}
 
 	/**
 	 * Print a JSON presentation of this column needed for
