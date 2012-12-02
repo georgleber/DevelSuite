@@ -18,7 +18,7 @@
 			function showResponse(data) {
 				if (data.form.valid) {
 					showInfoMessage("Die Daten wurden erfolgreich gespeichert", "Speichern erfolgreich", function() { 
-					window.location.assign("<?php echo $this->callbackUrl; ?>");
+						window.location.assign("<?php echo $this->callbackUrl; ?>");
 					});
 				} else {
 					clear();
