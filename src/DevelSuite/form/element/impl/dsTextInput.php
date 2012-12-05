@@ -94,7 +94,7 @@ class dsTextInput extends dsASimpleElement {
 
 		// set value
 		if (dsStringTools::isFilled($this->value)) {
-			$html .= "value='" . $this->value . "' ";
+			$html .= "value=\"" . $this->value . "\" ";
 		}
 
 		// set readonly
