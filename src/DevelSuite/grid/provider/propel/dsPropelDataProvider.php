@@ -239,6 +239,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 		$rowCnt = 1;
 		$rows = array();
 		foreach ($resultSet as $result) {
+			print_r($result);
 			$cells = array();
 			$objectArr = $result->toArray("phpName", TRUE, array(), TRUE);
 
