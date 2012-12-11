@@ -204,9 +204,9 @@ class dsPropelQuery {
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
 						$modelName = $this->queryClass->getModelName();
-						if (preg_match('/\\\\/', $modelName)) {
-							$modelName = preg_replace('/.+\\\\/', "", $modelName);
-						}
+						#if (preg_match('/\\\\/', $modelName)) {
+						#	$modelName = preg_replace('/.+\\\\/', "", $modelName);
+						#}
 						
 						$relation =  $modelName . "." . substr($searchColumn->getIdentifier(), 0, $pos);
 						$where = substr($searchColumn->getIdentifier(), $pos + 1);
