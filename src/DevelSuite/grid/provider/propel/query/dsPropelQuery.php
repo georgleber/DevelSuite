@@ -203,13 +203,23 @@ class dsPropelQuery {
 					$this->queryClass->where("'" . $searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?'", $extraction["query"]);
 				} else {
 					if (strpos($searchColumn->getIdentifier(), ".") !== FALSE) {
-						$this->log->debug("Column is a RelationColumn");
-						list($relation, $searchBy) = explode(".", $searchColumn->getIdentifier());
-						$useQueryString = "use" . $relation . "Query";
-
-						$this->queryClass->{$useQueryString}()
-						->filterBy($searchBy, $extraction["query"], $extraction["comparison"])
-						->endUse();
+						$columnIdent = $searchColumn->getIdentifier();
+						$relationCount = 0;
+						while (($pos = strpos($columnIdent, ".")) !== FALSE) {
+							$relation = substr($columnIdent, 0, $pos);
+							$columnIdent = substr($columnIdent, $pos + 1);
+						
+							$useQueryString = "use" . $relation . "Query";
+							$this->queryClass->{$useQueryString}();
+							
+							$relationCount++;
+						}
+						
+						$this->queryClass->filterBy($columnIdent, $extraction["query"], $extraction["comparison"]);
+						
+						for ($i = 0; $i < $relationCountM; $i++) {
+							$this->queryClass->endUse();
+						}
 					} else {
 						$this->log->debug("Column is a normal Column");
 						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
