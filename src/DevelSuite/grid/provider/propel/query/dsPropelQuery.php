@@ -203,7 +203,12 @@ class dsPropelQuery {
 					$this->queryClass->where("'" . $searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?'", $extraction["query"]);
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
-						$relation = $this->queryClass->getModelAliasOrName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
+						$modelName = $this->queryClass->getModelName();
+						if (($modelPos = strpos($this->queryClass->getModelName(), "/" !== FALSE))) {
+							$modelName = substr($this->queryClass->getModelName(), $modelPos + 1);
+						}
+						
+						$relation =  $modelName . "." . substr($searchColumn->getIdentifier(), 0, $pos);
 						$where = substr($searchColumn->getIdentifier(), $pos + 1);
 						
 						$parts = explode(".", $relation);
