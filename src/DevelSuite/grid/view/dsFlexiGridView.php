@@ -76,7 +76,7 @@ class dsFlexiGridView extends dsHtmlView {
 	 * Height of the table (default is 300)
 	 * @var int
 	 */
-	private $height = 300;
+	private $height = 525;
 
 	/**
 	 * Count of rows (default is 15)
