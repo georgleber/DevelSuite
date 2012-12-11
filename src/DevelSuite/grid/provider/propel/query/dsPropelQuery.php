@@ -209,7 +209,7 @@ class dsPropelQuery {
 							$relation = substr($columnIdent, 0, $pos);
 							$columnIdent = substr($columnIdent, $pos + 1);
 						
-							$useQueryString = "use" . $relation . "Query";
+							$useQueryString = "join" . $relation;
 							$this->queryClass->{$useQueryString}();
 							
 							$relationCount++;
