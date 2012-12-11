@@ -204,18 +204,10 @@ class dsPropelQuery {
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
 						$relation = $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
-						$searchBy = substr($searchColumn->getIdentifier(), $pos + 1);
+						$where = substr($searchColumn->getIdentifier(), $pos + 1);
 						
-						while (($pos = strpos($relation, ".")) !== FALSE) {
-							$join = substr($relation, 0, $pos);
-							$relation = $joinRel = substr($relation, $pos + 1);
-							
-							if (($pos = strpos($relation, ".")) !== FALSE) {
-								$joinRel = substr($relation, 0, $pos);
-							}
-							
-							$this->queryClass->joinWith($join . "." . $joinRel);
-						}
+						$parts = explode(".", $relation);
+						print_r($parts);
 						
 						$this->queryClass->filterBy($searchBy, $extraction["query"], $extraction["comparison"]);
 					} else {
