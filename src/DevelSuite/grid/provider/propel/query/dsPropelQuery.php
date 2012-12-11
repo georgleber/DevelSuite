@@ -211,10 +211,18 @@ class dsPropelQuery {
 						$relation =  $modelName . "." . substr($searchColumn->getIdentifier(), 0, $pos);
 						$where = substr($searchColumn->getIdentifier(), $pos + 1);
 						
+						$count = 0;
 						$parts = explode(".", $relation);
-						print_r($parts);
+						$lastRel = NULL;
+						for ($cnt = count($parts); $count < $cnt; $count++) {
+							if ($count == $cnt-1) {
+								$lastRel = $parts[$count];
+							} else {
+								$this->queryClass->join($parts[$count] . "." . $parts[$count+1]);
+							}
+						}
 						
-						$this->queryClass->filterBy($searchBy, $extraction["query"], $extraction["comparison"]);
+						$this->queryClass->where($lastRel . "." . $where . " " . $extraction["comparison"] . " ?", $extraction["query"]);
 					} else {
 						$this->log->debug("Column is a normal Column");
 						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
