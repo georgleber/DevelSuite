@@ -244,7 +244,7 @@ class dsPropelQuery {
 					$this->queryClass->join($column->getJoin(), $column->getJoinType());
  				}
  				
- 				$this->queryClass->withColumn($colum->getQuery(), $colum->getIdentifier());
+ 				$this->queryClass->withColumn($column->getQuery(), $column->getIdentifier());
  			}
  		}
  	}
