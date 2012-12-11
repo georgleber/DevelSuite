@@ -204,7 +204,7 @@ class dsPropelQuery {
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
 						$modelName = $this->queryClass->getModelName();
-						if (($modelPos = strpos($this->queryClass->getModelName(), "/" !== FALSE))) {
+						if (($modelPos = strpos($this->queryClass->getModelName(), "\\\\" !== FALSE))) {
 							$modelName = substr($this->queryClass->getModelName(), $modelPos + 1);
 						}
 						
