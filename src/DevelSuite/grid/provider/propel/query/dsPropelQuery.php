@@ -202,24 +202,22 @@ class dsPropelQuery {
 					$this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
 					$this->queryClass->where("'" . $searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?'", $extraction["query"]);
 				} else {
-					if (strpos($searchColumn->getIdentifier(), ".") !== FALSE) {
-						$columnIdent = $searchColumn->getIdentifier();
-						$relationCount = 0;
-						while (($pos = strpos($columnIdent, ".")) !== FALSE) {
-							$relation = substr($columnIdent, 0, $pos);
-							$columnIdent = substr($columnIdent, $pos + 1);
+					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
+						$relation = $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
+						$searchBy = substr($searchColumn->getIdentifier(), $pos + 1);
 						
-							$useQueryString = "join" . $relation;
-							$this->queryClass->{$useQueryString}();
+						while (($pos = strpos($relation, ".")) !== FALSE) {
+							$join = substr($relation, 0, $pos);
+							$relation = $joinRel = substr($relation, $pos + 1);
 							
-							$relationCount++;
+							if (($pos = strrpos($relation, ".")) !== FALSE) {
+								$joinRel = substr($relation, 0, $pos);
+							}
+							
+							$this->queryClass->joinWith($join . "." . $joinRel);
 						}
 						
-						$this->queryClass->filterBy($columnIdent, $extraction["query"], $extraction["comparison"]);
-						
-						for ($i = 0; $i < $relationCountM; $i++) {
-							$this->queryClass->endUse();
-						}
+						$this->queryClass->filterBy($searchBy, $extraction["query"], $extraction["comparison"]);
 					} else {
 						$this->log->debug("Column is a normal Column");
 						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
