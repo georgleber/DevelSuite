@@ -62,7 +62,7 @@ class dsVirtualColumn extends dsColumn {
 	 * @param string $joinType
 	 * 		The type of the join (e.g. LEFT JOIN, ...)
 	 */
-	public function join($entity, $joinType = NULL) {
+	public function join($entity, $joinType = "INNER JOIN") {
 		$this->joinEntity = $entity;
 		$this->joinType = $joinType;
 	}

@@ -239,7 +239,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 		$rowCnt = 1;
 		$rows = array();
 		foreach ($resultSet as $result) {
-			print_r($result);
 			$cells = array();
 			$objectArr = $result->toArray("phpName", TRUE, array(), TRUE);
 
@@ -254,7 +253,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 					$cellRenderer = $this->rendererRegistry->getCellRenderer($column->getType());
 					$cellRenderer->setColumn($column);
 				}
-
 
 				if ($column instanceof dsVirtualColumn) {
 					$method = "get" . $column->getIdentifier();

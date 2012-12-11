@@ -143,6 +143,7 @@ class dsPropelQuery {
 		$this->loadRequest();
 		$this->considerSearch();
 		$this->considerFilter();
+		$this->considerVirtualColumns();
 	}
 
 	/**
@@ -234,6 +235,18 @@ class dsPropelQuery {
 		} else {
 			$this->log->debug("Filter is NULL or it is not instance of dsIPropelFilter: " . $this->filter);
 		}	
+ 	}
+ 	
+ 	public function considerVirtualColumns() {
+ 		foreach ($this->columnModel as $column) {
+ 			if ($column instanceof dsVirtualColumn) {
+ 				if (dsStringTools::isFilled($column->getJoin())) {
+					$this->queryClass->join($column->getJoin(), $column->getJoinType());
+ 				}
+ 				
+ 				$this->queryClass->withColumn($colum->getQuery(), $colum->getIdentifier());
+ 			}
+ 		}
  	}
 
 	/**
