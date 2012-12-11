@@ -210,7 +210,7 @@ class dsPropelQuery {
 							$join = substr($relation, 0, $pos);
 							$relation = $joinRel = substr($relation, $pos + 1);
 							
-							if (($pos = strrpos($relation, ".")) !== FALSE) {
+							if (($pos = strpos($relation, ".")) !== FALSE) {
 								$joinRel = substr($relation, 0, $pos);
 							}
 							
