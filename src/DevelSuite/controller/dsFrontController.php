@@ -8,6 +8,8 @@
  */
 namespace DevelSuite\controller;
 
+use DevelSuite\view\dsIView;
+
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -45,7 +47,7 @@ class dsFrontController {
 
 	/**
 	 * The main view (needed to allow nested calls)
-	 * @var dsAView
+	 * @var dsIView
 	 */
 	private $rootView;
 
@@ -167,10 +169,10 @@ class dsFrontController {
 	 * The view will just be rendered and send to the client.
 	 * This is needed for ajax calls to load content directly.
 	 *
-	 * @param dsAView $view
+	 * @param dsIView $view
 	 * 		The view to pass thru to the client
 	 */
-	public function passThru(dsAView $view) {
+	public function passThru(dsIView $view) {
 		$view->render();
 
 		// send response to client

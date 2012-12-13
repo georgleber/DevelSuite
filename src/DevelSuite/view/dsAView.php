@@ -1,11 +1,11 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2012 Georg Henkel <info@develman.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+* Copyright (C) 2012 Georg Henkel <info@develman.de>
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 namespace DevelSuite\view;
 
 use DevelSuite\dsApp;
@@ -18,7 +18,7 @@ use DevelSuite\exception\impl\dsRenderingException;
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-abstract class dsAView {
+abstract class dsAView implements dsIView {
 	/**
 	 * Assigned values, accessable from within the template
 	 * @var array
@@ -32,7 +32,7 @@ abstract class dsAView {
 	 * 			Key of the Value
 	 * @param mixed $value
 	 * 			The value to assign
-	 */
+	*/
 	public function assign($key, $value) {
 		$this->data[$key] = $value;
 		return $this;
@@ -49,11 +49,6 @@ abstract class dsAView {
 	}
 
 	/**
-	 * Renders the view
-	 */
-	abstract public function render();
-
-	/**
 	 * Is used to call an action of a ViewHelper.
 	 *
 	 * @param string $method
@@ -68,7 +63,7 @@ abstract class dsAView {
 		// first argument is action name
 		$action = $arguments[0];
 		$params = $arguments[1];
-		
+
 		$result = NULL;
 		if (method_exists($viewHelper, $action) && is_callable(array($viewHelper, $action))) {
 			$result = call_user_func_array(array($viewHelper, $action), (array)$params);

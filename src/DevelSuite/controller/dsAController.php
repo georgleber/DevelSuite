@@ -8,11 +8,13 @@
  */
 namespace DevelSuite\controller;
 
+use DevelSuite\view\dsIView;
+
 use DevelSuite\dsApp;
 use DevelSuite\controller\dsFrontController;
 use DevelSuite\exception\impl\dsDispatchException;
 use DevelSuite\routing\route\dsARoute;
-use DevelSuite\view\dsAView;
+use DevelSuite\view\dsIView;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -80,7 +82,7 @@ abstract class dsAController {
 	 *
 	 * @param string $action
 	 * 			The action that should be called
-	 * @return dsAView $view
+	 * @return dsIView $view
 	 * 			The view, which will be created by the action
 	 * @throws dsDispatchException
 	 */
@@ -91,7 +93,7 @@ abstract class dsAController {
 			throw new dsDispatchException(dsDispatchException::ACTION_NOT_CALLABLE, array($action));
 		}
 
-		if ($actionResult == NULL || !($actionResult instanceof dsAView)) {
+		if ($actionResult == NULL || !($actionResult instanceof dsIView)) {
 			throw new dsDispatchException(dsDispatchException::WRONG_ACTIONRESULT, array(get_class($actionResult)));
 		}
 
