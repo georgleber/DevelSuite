@@ -8,8 +8,6 @@
  */
 namespace DevelSuite\controller;
 
-use DevelSuite\view\dsIView;
-
 use DevelSuite\dsApp;
 use DevelSuite\controller\dsFrontController;
 use DevelSuite\exception\impl\dsDispatchException;
