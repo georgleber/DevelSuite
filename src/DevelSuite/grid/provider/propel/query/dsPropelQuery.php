@@ -1,11 +1,11 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2012 Georg Henkel <info@develman.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+* Copyright (C) 2012 Georg Henkel <info@develman.de>
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 namespace DevelSuite\grid\provider\propel\query;
 
 use Monolog\Handler\StreamHandler;
@@ -205,7 +205,7 @@ class dsPropelQuery {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
 						$relation =   $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
 						$where = substr($searchColumn->getIdentifier(), $pos + 1);
-						
+
 						$count = 0;
 						$parts = explode(".", $relation);
 						$lastRel = NULL;
@@ -216,7 +216,7 @@ class dsPropelQuery {
 								$this->queryClass->join($parts[$count] . "." . $parts[$count+1]);
 							}
 						}
-						
+
 						$this->queryClass->where($lastRel . "." . $where . " " . $extraction["comparison"] . " ?", $extraction["query"]);
 					} else {
 						$this->log->debug("Column is a normal Column");
@@ -234,37 +234,43 @@ class dsPropelQuery {
 	 */
 	public function considerFilter() {
 		$this->log->debug("Considering filter");
-		
+
 		if ($this->filter != NULL && $this->filter instanceof dsIPropelFilter) {
 			$this->log->debug("Building Query from filter");
 			$this->filter->buildQuery($this->queryClass);
-			
+
 			$this->filtered = TRUE;
 		} else {
 			$this->log->debug("Filter is NULL or it is not instance of dsIPropelFilter: " . $this->filter);
-		}	
- 	}
- 	
- 	public function considerVirtualColumns() {
- 		foreach ($this->columnModel as $column) {
- 			if ($column instanceof dsVirtualColumn) {
- 				if (dsStringTools::isFilled($column->getJoin())) {
+		}
+	}
+
+	public function considerVirtualColumns() {
+		foreach ($this->columnModel as $column) {
+			if ($column instanceof dsVirtualColumn) {
+				if (dsStringTools::isFilled($column->getJoin())) {
 					$this->queryClass->join($column->getJoin(), $column->getJoinType());
- 				}
- 				
- 				$this->queryClass->withColumn($column->getQuery(), $column->getIdentifier());
- 			}
- 		}
- 	}
+				}
+
+				$this->queryClass->withColumn($column->getQuery(), $column->getIdentifier());
+			}
+		}
+	}
 
 	/**
 	 * Retrieve the result set of the query from database
 	 */
 	public function query() {
-		$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
-		->offset(($this->offset - 1) * $this->limit)
-		->limit($this->limit)
-		->find();
+		$resultSet = NULL;
+		if ($this->limit == "Alle") {
+			$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
+			->find();
+		} else {
+			$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
+			->offset(($this->offset - 1) * $this->limit)
+			->limit($this->limit)
+			->find();
+		}
 
 		return $resultSet;
 	}
