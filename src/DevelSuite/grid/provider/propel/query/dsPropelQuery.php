@@ -129,10 +129,6 @@ class dsPropelQuery {
 	 * Returns the total count of rows in the result set
 	 */
 	public function getTotal() {
-		if ($this->filtered) {
-			$this->total = $this->queryClass->count();
-		}
-
 		return $this->total;
 	}
 
@@ -224,7 +220,7 @@ class dsPropelQuery {
 					}
 				}
 
-				$this->filtered = TRUE;
+				$this->total = $this->queryClass->count();
 			}
 		}
 	}
@@ -239,7 +235,7 @@ class dsPropelQuery {
 			$this->log->debug("Building Query from filter");
 			$this->filter->buildQuery($this->queryClass);
 
-			$this->filtered = TRUE;
+			$this->total = $this->queryClass->count();
 		} else {
 			$this->log->debug("Filter is NULL or it is not instance of dsIPropelFilter: " . $this->filter);
 		}
