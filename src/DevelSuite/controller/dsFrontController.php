@@ -240,9 +240,9 @@ class dsFrontController {
 
 		$env = dsConfig::read('app.environment', dsApp::ENV_PRODUCTION);
 		if ($env == dsApp::ENV_DEVELOPMENT) {
-			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.js'></script>";
+			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery-1.8.3.js'></script>";
 		} else {
-			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>";
+			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery-1.8.3.min.js'></script>";
 		}
 		$code .= "<script>window.jQuery || document.write('<script src=\"/public/scripts/jquery.min.js\"><\/script>')</script>";
 
