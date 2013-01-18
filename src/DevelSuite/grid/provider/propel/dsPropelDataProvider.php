@@ -252,6 +252,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 				} else {
 					$cellRenderer = $this->rendererRegistry->getCellRenderer($column->getType());
 					$cellRenderer->setColumn($column);
+					$cellRenderer->setValue(NULL);
 				}
 
 				if ($column instanceof dsVirtualColumn) {
