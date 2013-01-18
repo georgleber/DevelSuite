@@ -1,11 +1,11 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2012 Georg Henkel <info@develman.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+* Copyright (C) 2012 Georg Henkel <info@develman.de>
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 namespace DevelSuite\controller;
 
 use DevelSuite\view\dsIView;
@@ -72,7 +72,7 @@ class dsFrontController {
 	/**
 	 * Stylesheets, which will be inserted in header
 	 * @var array
-	 */
+	*/
 	private $stylesheets = array();
 
 	/**
@@ -80,7 +80,7 @@ class dsFrontController {
 	 *
 	 * @param string $newLayout
 	 * 			The new layout
-	 */
+	*/
 	public function updateLayout($newLayout) {
 		$this->layout = $newLayout;
 	}
@@ -238,11 +238,20 @@ class dsFrontController {
 	public function includeJavaScripts() {
 		$code = "";
 
+		$version = dsConfig::read('jquery.version');
 		$env = dsConfig::read('app.environment', dsApp::ENV_PRODUCTION);
 		if ($env == dsApp::ENV_DEVELOPMENT) {
-			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery-1.8.3.js'></script>";
+			if (dsStringTools::isFilled($version)) {
+				$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery-" . $version . ".js'></script>";
+			} else {
+				$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.js'></script>";
+			}
 		} else {
-			$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery-1.8.3.min.js'></script>";
+			if (dsStringTools::isFilled($version)) {
+				$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery-" . $version . ".js'></script>";
+			} else {
+				$code .= "<script type='text/javascript' src='http://code.jquery.com/jquery.min.js'></script>";
+			}
 		}
 		$code .= "<script>window.jQuery || document.write('<script src=\"/public/scripts/jquery.min.js\"><\/script>')</script>";
 
@@ -367,7 +376,7 @@ class dsFrontController {
 		if (!class_exists($class)) {
 			throw new dsDispatchException(dsDispatchException::CONTROLLER_INVALID, array($class));
 		}
-		
+
 		$controller = new $class();
 		if ($controller instanceof dsAController) {
 			return $controller;
