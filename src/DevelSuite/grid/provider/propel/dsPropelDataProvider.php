@@ -261,7 +261,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 					$virtualResult = NULL;
 					if (is_callable(array($result, $method))) {
 						$virtualResult = call_user_func(array($result, $method));
-						$virtualResult = "XXX" . $virtualResult;
 					}
 
 					if ($virtualResult != NULL) {
