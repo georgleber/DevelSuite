@@ -137,9 +137,9 @@ class dsPropelQuery {
 	 */
 	public function buildQuery() {
 		$this->loadRequest();
+		$this->considerVirtualColumns();
 		$this->considerSearch();
 		$this->considerFilter();
-		$this->considerVirtualColumns();
 	}
 
 	/**
@@ -195,7 +195,7 @@ class dsPropelQuery {
 						}
 					}
 
-					$this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
+					// $this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
 					$this->queryClass->where($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
