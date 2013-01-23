@@ -83,6 +83,8 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * @var dsIFilter
 	 */
 	private $filter;
+	
+	private $modelAlias;
 
 	/**
 	 * Constructor
@@ -109,8 +111,9 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * @param PropelQueryObject $queryObject
 	 * 		PropelQueryObject for data manipulation operations
 	 */
-	public function setQueryClass($queryClass) {
+	public function setQueryClass($queryClass, $modelAlias = NULL) {
 		$this->queryClass = $queryClass;
+		$this->modelAlias = $modelAlias;
 	}
 
 	/*
@@ -226,7 +229,7 @@ class dsPropelDataProvider implements dsIDataProvider {
 	 * @see DevelSuite\grid\provider.dsIDataProvider::loadData()
 	 */
 	public function loadData() {
-		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
+		$propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter, $this->modelAlias);
 		$propelQuery->buildQuery();
 
 		// retrieve ResultSet from PropelQuery

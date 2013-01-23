@@ -98,6 +98,8 @@ class dsPropelQuery {
 	 * @var bool
 	 */
 	private $filtered = FALSE;
+	
+	private $modelAlias;
 
 	/**
 	 * Constructor
@@ -109,13 +111,14 @@ class dsPropelQuery {
 	 * @param dsIFilter $filter
 	 * 		Fitler for the table
 	 */
-	public function __construct($queryClass, array $columnModel, $filter) {
+	public function __construct($queryClass, array $columnModel, $filter, $modelAlias = NULL) {
 		$this->log = new Logger("PropelQuery");
 		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 
 		$this->queryClass = $queryClass;
 		$this->columnModel = $columnModel;
 		$this->filter = $filter;
+		$this->modelAlias = $modelAlias;
 	}
 
 	/**
@@ -198,7 +201,11 @@ class dsPropelQuery {
 					$this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
 					
 					$this->log->debug("SearchColumn->Identifier: " . $searchColumn->getIdentifier());
-					$this->queryClass->where($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+					if ($this->modelAlias != NULL) {
+						$this->queryClass->where($this->modelAlias . "." .$searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+					} else {
+						$this->queryClass->where($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+					}
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
 						$relation =   $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
