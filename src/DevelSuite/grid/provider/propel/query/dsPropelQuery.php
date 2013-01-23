@@ -188,7 +188,6 @@ class dsPropelQuery {
 
 				// check for a virtual column
 				if ($searchColumn instanceof dsVirtualColumn) {
-					$this->log->debug("Column is a VirtualColumn");
 					if (dsStringTools::isFilled($searchColumn->getJoin())) {
 						if (dsStringTools::isFilled($searchColumn->getJoinType())) {
 							$this->queryClass->join($searchColumn->getJoin(), $searchColumn->getJoinType());
@@ -197,7 +196,6 @@ class dsPropelQuery {
 						}
 					}
 
-					// $this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
 					$this->queryClass->having($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"], $extraction["type"]);
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
