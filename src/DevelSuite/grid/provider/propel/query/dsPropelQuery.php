@@ -196,6 +196,8 @@ class dsPropelQuery {
 					}
 
 					$this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
+					
+					$this->log->debug("SearchColumn->Identifier: " . $searchColumn->getIdentifier());
 					$this->queryClass->where("'" . $searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?'", $extraction["query"]);
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
