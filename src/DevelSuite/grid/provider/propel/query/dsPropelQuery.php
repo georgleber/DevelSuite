@@ -196,7 +196,7 @@ class dsPropelQuery {
 					}
 
 					// $this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
-					$this->queryClass->where($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+					$this->queryClass->having($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
 						$relation =   $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
