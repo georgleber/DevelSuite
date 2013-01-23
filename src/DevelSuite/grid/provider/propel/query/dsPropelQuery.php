@@ -11,6 +11,8 @@ namespace DevelSuite\grid\provider\propel\query;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
+use \PDO as PDO;
+
 use DevelSuite\dsApp;
 use DevelSuite\grid\constants\dsColumnTypeConstants;
 use DevelSuite\grid\constants\dsSortOrderConstants;
@@ -196,7 +198,7 @@ class dsPropelQuery {
 					}
 
 					// $this->queryClass->withColumn($searchColumn->getQuery(), $searchColumn->getIdentifier());
-					$this->queryClass->having($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+					$this->queryClass->having($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"], $extraction["type"]);
 				} else {
 					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
 						$relation =   $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
@@ -213,7 +215,7 @@ class dsPropelQuery {
 							}
 						}
 
-						$this->queryClass->where($lastRel . "." . $where . " " . $extraction["comparison"] . " ?", $extraction["query"]);
+						$this->queryClass->where($lastRel . "." . $where . " " . $extraction["comparison"] . " ?", $extraction["query"], $extraction["type"]);
 					} else {
 						$this->log->debug("Column is a normal Column");
 						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
@@ -298,8 +300,10 @@ class dsPropelQuery {
 		$extraction = array();
 		$extraction["comparison"] = " = ";
 		$extraction["query"] = $this->searchQuery;
+		$extraction["type"] = PDO::PARAM_STR;
 
 		if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_BOOLEAN) {
+			$extraction["type"] = PDO::PARAM_BOOL;
 			$extraction["query"] = dsStringTools::isBoolean($this->searchQuery);
 		} else if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_DATE) {
 			// FIXME
