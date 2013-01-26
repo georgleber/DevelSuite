@@ -61,6 +61,8 @@ class dsRequiredValidator extends dsAValidator {
 		$result = TRUE;
 		$value = $this->element->getValue();
 		
+		$this->log->debug("Validating element: " . $this->element->getName() . ", value: " . $value);
+		
 		if(is_string($value)) {
 			if (dsStringTools::isNullOrEmpty($value)) {
 				$result = FALSE;

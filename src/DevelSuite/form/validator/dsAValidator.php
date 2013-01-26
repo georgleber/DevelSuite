@@ -9,7 +9,6 @@
 namespace DevelSuite\form\validator;
 
 use Monolog\Handler\StreamHandler;
-
 use Monolog\Logger;
 
 use DevelSuite\form\element\dsAElement;
