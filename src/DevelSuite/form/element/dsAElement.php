@@ -8,11 +8,12 @@
  */
 namespace DevelSuite\form\element;
 
-use DevelSuite\form\validator\dsValidatorChain;
-
-use DevelSuite\form\validator\dsAValidator;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 use DevelSuite\dsApp;
+use DevelSuite\form\validator\dsAValidator;
+use DevelSuite\form\validator\dsValidatorChain;
 
 /**
  * Abstract Superclass for all form elements.
@@ -22,6 +23,12 @@ use DevelSuite\dsApp;
  * @version 1.0
  */
 abstract class dsAElement {
+	/**
+	 * Logger instance
+	 * @var Logger
+	 */
+	protected $log;
+	
 	/**
 	 * Name of the element
 	 * @var string
@@ -86,6 +93,9 @@ abstract class dsAElement {
 	 * 			Name of this element
 	 */
 	public function __construct($caption, $name) {
+		$this->log = new Logger("AElement");
+		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+		
 		$this->caption = $caption;
 		$this->name = $name;
 
