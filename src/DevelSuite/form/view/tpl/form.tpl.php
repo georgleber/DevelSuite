@@ -70,7 +70,7 @@
 <?php endif; ?>
 <form class='dsform' id ='<?php echo $this->id; ?>' action='<?php echo $this->action; ?>' method='<?php echo $this->method; ?>'<?php if ($this->enctype != NULL) { echo " enctype=" . $this->enctype; } ?>>
 	<input type="hidden" name="form" value="<?php echo $this->id; ?>">
-	<?php if ($this->errorMessages != NULL && !empty($this->errorMessages)): ?>
+	<?php if ($this->errorMessages != NULL && count($this->errorMessages) > 0): ?>
 		<div class='dsform-errors'>
 			<?php if (count($this->errorMessages) > 1): ?>
 				<p>Folgende Fehler sind aufgetreten:</p>
