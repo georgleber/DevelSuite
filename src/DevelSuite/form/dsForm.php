@@ -249,11 +249,8 @@ class dsForm {
 			$view->assign("callbackUrl", $this->callbackUrl)
 			->assign("id", $this->id)
 			->assign("action", $this->action)
-			->assign("method", $this->method);
-
-			if (isset($this->enctype)) {
-				$view->assign("enctype", $this->enctype);
-			}
+			->assign("method", $this->method)
+			->assign("enctype", $this->enctype);
 
 			// set errors
 			if ($this->isSend() && $this->showErrors) {
@@ -268,6 +265,7 @@ class dsForm {
 					}
 				}
 
+				$this->log->debug("Adding errorMessages: " . $errorMessages);
 				$view->assign("errorMessages", $errorMessages);
 			}
 
