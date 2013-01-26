@@ -89,7 +89,7 @@ class dsRequest implements \ArrayAccess {
 		switch ($this->requestMethod) {
 			case 'POST':
 				$this->parameters = $this->sanitizeMagicQuotes($_POST);
-				$this->files = &$_FILES;
+				$this->files = $this->sanitizeMagicQuotes($_FILES);
 				break;
 
 			case 'GET':

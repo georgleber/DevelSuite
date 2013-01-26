@@ -30,7 +30,7 @@ class dsFileInput extends dsASimpleElement {
 		$this->log->debug("FileUpload element: " . $this->name);
 		if ($request->issetFile($this->name)) {
 			$result = $request->getFile($this->name);
-			$this->log->debug("found file with name: " . $this->name . ", result: " . $result);
+			$this->log->debug("found file with name: " . $this->name);
 		}
 
 		return $result;
