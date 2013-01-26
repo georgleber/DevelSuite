@@ -218,6 +218,7 @@ class dsRequest implements \ArrayAccess {
 	 * @return TRUE if key is set in the file parameters
 	 */
 	public function issetFile($key) {
+		print_r($this->files);
 		return (isset($this->files[$key]));
 	}
 
