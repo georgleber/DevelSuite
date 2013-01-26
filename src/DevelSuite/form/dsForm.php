@@ -252,6 +252,7 @@ class dsForm {
 			->assign("method", $this->method);
 
 			if (isset($this->enctype)) {
+				$this->log->debug("adding enctype");
 				$view->assign("enctype", $this->enctype);
 			}
 
