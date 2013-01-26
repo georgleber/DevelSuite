@@ -1,11 +1,11 @@
 <?php
 /*
  * This file is part of the DevelSuite
- * Copyright (C) 2012 Georg Henkel <info@develman.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+* Copyright (C) 2012 Georg Henkel <info@develman.de>
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 namespace DevelSuite\form;
 
 use Monolog\Handler\StreamHandler;
@@ -253,8 +253,8 @@ class dsForm {
 			->assign("enctype", $this->enctype);
 
 			// set errors
+			$errorMessages = array();
 			if ($this->isSend() && $this->showErrors) {
-				$errorMessages = array();
 				if (dsStringTools::isFilled($this->errorMessage)) {
 					$errorMessages[] = $this->errorMessage;
 				} else {
@@ -264,10 +264,8 @@ class dsForm {
 						}
 					}
 				}
-
-				$this->log->debug("Adding errorMessages: " . $errorMessages);
-				$view->assign("errorMessages", $errorMessages);
 			}
+			$view->assign("errorMessages", $errorMessages);
 
 			$view->assign("showMandatory", $this->showMandatory)
 			->assign("elementList", $this->elementList)
