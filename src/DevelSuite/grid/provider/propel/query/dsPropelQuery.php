@@ -257,6 +257,7 @@ class dsPropelQuery {
 	 * Retrieve the result set of the query from database
 	 */
 	public function query() {
+		$this->log->debug("Query: " . $this->queryClass->toString());
 		$resultSet = NULL;
 		if ($this->limit == "Alle") {
 			$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
