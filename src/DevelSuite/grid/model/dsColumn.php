@@ -205,7 +205,6 @@ class dsColumn {
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 		
 		$alignment = $this->alignment;
-		$log->debug("alignment: [" . $alignment . "]");
 		if (dsStringTools::isNullOrEmpty($alignment)) {
 			if ($this->type == dsColumnTypeConstants::TYPE_TEXT) {
 				$alignment = dsAlignmentConstants::ALIGN_LEFT;

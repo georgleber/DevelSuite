@@ -161,8 +161,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 	public function removeColumn($columnIdentifier) {
 		$index = $this->getColumnIndex($columnIdentifier);
 
-		$this->log->debug("Removig column " . $columnIdentifier .", found on index: " . $index . ", current primaryIdx: " . $this->primaryIdx);
-
 		// do not allow to remove primary keys
 		if ($index < $this->primaryIdx) {
 			return;
