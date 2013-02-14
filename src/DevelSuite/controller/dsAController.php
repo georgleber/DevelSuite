@@ -16,7 +16,6 @@ use DevelSuite\view\dsIView;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Monolog\Processor\WebProcessor;
 
 /**
  * Abstract super class for all (Document-)Controller.

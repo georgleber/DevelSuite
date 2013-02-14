@@ -8,6 +8,8 @@
  */
 namespace DevelSuite;
 
+use DevelSuite\error\dsErrorHandler;
+
 use DevelSuite\exception\spl\dsFileNotFoundException;
 
 use DevelSuite\view\helper\cache\dsViewHelperCache;
@@ -188,15 +190,15 @@ class dsApp {
 			case self::ENV_TEST:
 				ini_set('display_errors',1);
 				ini_set('display_startup_errors',1);
-				error_reporting(E_ALL);
 				break;
 					
 			case self::ENV_PRODUCTION:
 				ini_set("display_errors", 0);
 				ini_set("display_startup_errors", 0);
-				error_reporting(0);
 				break;
 		}
+		
+		set_error_handler("dsErrorHandler::handleError");
 	}
 
 	/**
