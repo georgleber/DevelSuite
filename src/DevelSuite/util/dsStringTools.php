@@ -83,11 +83,15 @@ class dsStringTools {
 		return $str;
 	}
 
-	public static function replaceUmlauts($str) {
+	public static function replaceUmlauts($str, $withWhitespace = FALSE) {
 		$umlauts = Array("/ä/","/ö/","/ü/","/Ä/","/Ö/","/Ü/","/ß/");
 		$replace = Array("ae","oe","ue","Ae","Oe","Ue","ss");
 
 		$str = preg_replace($umlauts, $replace, $str);
+		
+		if ($withWhitespace) {
+			$str = preg_replace("/\s/", "-", $str);
+		}
 			
 		return $str;
 	}
