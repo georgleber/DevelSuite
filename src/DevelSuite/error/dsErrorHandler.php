@@ -6,7 +6,6 @@ use Monolog\Handler\StreamHandler;
 
 class dsErrorHandler {
 	public static function handleError($level, $message, $file, $line, $context) {
-		echo "TEST";
 		$log = new Logger("ErrorHandler");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'error.log'));
 
