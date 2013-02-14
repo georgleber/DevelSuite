@@ -198,7 +198,7 @@ class dsApp {
 				break;
 		}
 		
-		set_error_handler("DevelSuite\\error\\dsErrorHandler::handleError");
+		set_error_handler(array(new dsErrorHandler(), 'handleError'));
 	}
 
 	/**
