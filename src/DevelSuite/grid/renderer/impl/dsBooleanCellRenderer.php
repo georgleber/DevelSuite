@@ -23,14 +23,14 @@ class dsBooleanCellRenderer extends dsACellRenderer {
 	}
 
 	public function render() {
-		$code = "<input type='checkbox' name='" . $this->column->getIdentifier() . "' value='" . $this->value . "'";
-
+		$image = NULL;
 		if ($this->value) {
-			$code .= " checked='checked'";
+			$image = dirname(__FILE__) . DS . "res" . DS . "cbx_true.png";
+		} else {
+			$image = dirname(__FILE__) . DS . "res" . DS . "cbx_false.png";
 		}
-
-		$code .= ">";
-
+		
+		$code = "<img src='" . $image . "' width='16' />";
 		return $code;
 	}
 }
