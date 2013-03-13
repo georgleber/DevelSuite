@@ -25,9 +25,9 @@ class dsBooleanCellRenderer extends dsACellRenderer {
 	public function render() {
 		$image = NULL;
 		if ($this->value) {
-			$image = dirname(__FILE__) . DS . "res" . DS . "cbx_true.png";
+			$image = DS . dirname(__FILE__) . DS . "res" . DS . "cbx_true.png";
 		} else {
-			$image = dirname(__FILE__) . DS . "res" . DS . "cbx_false.png";
+			$image = DS . dirname(__FILE__) . DS . "res" . DS . "cbx_false.png";
 		}
 		
 		$code = "<img src='" . $image . "' width='16' />";
