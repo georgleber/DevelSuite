@@ -25,9 +25,9 @@ class dsBooleanCellRenderer extends dsACellRenderer {
 	public function render() {
 		$image = NULL;
 		if ($this->value) {
-			$iamge = "<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAiUlEQVR42qXM3QYFIRiF4d3dJpIhI5FKJCOSSHe7f9gn4ztZo3Wwzt6HvTbHfhdCeD8Nvw27Ad57OI4xUsA5BwMpJQpYa2Eg50wBYwwMlFIocJ4nDFzXRQGtNQzUWilwHAcMtNYooJSCgd47BaSUMDDGoIAQAgbmnBTgnMPAWosCcP3fDdjZNvABvRhVEQglsV8AAAAASUVORK5CYII=' width='16' />";
-		} else {
 			$image = "<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAuklEQVR42qWScQfFIBTF27dNzIxMxtREkpjE7Nu+98q7U+96T0/nj3Vv55wfsYF0akgfpdTj3+KrM1QAKWVzed93DNi2rRmgtcaAdV1/lowxBDJpRgAhxNeytTafkEk7AizLkk3nHIEZdlCZQQDOeTa99/lMO8ywg9I9AszznM3jONATwAOlDAJM03QHQgj3XN6XPgKM41iFYozk8670EIAx1vgXEHKeJwZQSpsB13VhQHP7rQrQo27AE+MRcBFOD9LhAAAAAElFTkSuQmCC' width='16' />";
+		} else {
+			$image = "<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAiUlEQVR42qXM3QYFIRiF4d3dJpIhI5FKJCOSSHe7f9gn4ztZo3Wwzt6HvTbHfhdCeD8Nvw27Ad57OI4xUsA5BwMpJQpYa2Eg50wBYwwMlFIocJ4nDFzXRQGtNQzUWilwHAcMtNYooJSCgd47BaSUMDDGoIAQAgbmnBTgnMPAWosCcP3fDdjZNvABvRhVEQglsV8AAAAASUVORK5CYII=' width='16' />";
 		}
 		
 		return $image;
