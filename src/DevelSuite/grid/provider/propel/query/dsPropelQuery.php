@@ -247,6 +247,10 @@ class dsPropelQuery {
 				if (dsStringTools::isFilled($column->getJoin())) {
 					$this->queryClass->join($column->getJoin(), $column->getJoinType());
 				}
+				
+				if (dsStringTools::isFilled($column->getGroupBy())) {
+					$this->queryClass->groupBy($column->getGroupBy());
+				}
 
 				$this->queryClass->withColumn($column->getQuery(), $column->getIdentifier());
 			}

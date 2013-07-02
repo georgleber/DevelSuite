@@ -29,6 +29,12 @@ class dsVirtualColumn extends dsColumn {
 	 * @var string
 	 */
 	private $joinType = NULL;
+	
+	/**
+	 * The entity for grouping (class or alias)
+	 * @var string 
+	 */
+	private $groupEntity = NULL;
 
 	/**
 	 * Query used in the virtual column
@@ -66,6 +72,16 @@ class dsVirtualColumn extends dsColumn {
 		$this->joinEntity = $entity;
 		$this->joinType = $joinType;
 	}
+	
+	/**
+	 * Group by an entity
+	 *
+	 * @param string $entity
+	 * 		The entity to group by (class name or alias)
+	 */
+	public function groupBy($entity) {
+		$this->groupEntity = $entity;
+	}
 
 	/**
 	 * Return the query of this column
@@ -86,5 +102,12 @@ class dsVirtualColumn extends dsColumn {
 	 */
 	public function getJoinType() {
 		return $this->joinType;
+	}
+	
+	/**
+	 * Return the group by entity
+	 */
+	public function getGroupBy() {
+		return $this->groupEntity;
 	}
 }
