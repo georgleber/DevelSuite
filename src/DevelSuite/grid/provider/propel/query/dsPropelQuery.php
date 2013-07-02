@@ -249,7 +249,7 @@ class dsPropelQuery {
 				}
 				
 				if (dsStringTools::isFilled($column->getGroupBy())) {
-					$this->queryClass->groupBy($column->getGroupBy());
+					$this->queryClass->groupByClass($column->getGroupBy());
 				}
 
 				$this->queryClass->withColumn($column->getQuery(), $column->getIdentifier());
