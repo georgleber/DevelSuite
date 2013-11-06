@@ -31,6 +31,11 @@ use DevelSuite\http\dsResponse;
 use DevelSuite\http\dsRequest;
 use DevelSuite\session\dsSession;
 
+use \Propel as Propel;
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 /**
  * FIXME
  *
@@ -73,6 +78,9 @@ class dsApp {
 
 		// session management
 		self::initSession();
+		
+		// propel - database abstraction layer 
+		self::initPropel();
 
 		// routing
 		self::initRouting();
@@ -112,6 +120,11 @@ class dsApp {
 		// define CONFIG_PATH
 		if (!defined('CONFIG_PATH')) {
 			define('CONFIG_PATH', APP_PATH . DS . 'config');
+		}
+		
+		// define VENDOR_PATH
+		if (!defined('VENDOR_PATH')) {
+			define('VENDOR_PATH', DOCUMENT_ROOT . DS . 'vendor');
 		}
 	}
 
@@ -208,6 +221,21 @@ class dsApp {
 		dsSession::configure();
 	}
 
+	private static function initPropel() {
+		// define VENDOR_PATH
+		if (!defined('PROPEL_PATH')) {
+			define('PROPEL_PATH', VENDOR_PATH . DS . 'propel' . DS . 'propel1' . DS . 'runtime' . DS . 'lib');
+		}
+
+		// init Propel
+		require_once (PROPEL_PATH . DS . "Propel.php");
+		Propel::init(dsConfig::read('propel.config'));
+		
+		$log = new Logger("Propel");
+		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'propel.log'));
+		Propel::setLogger($log);
+	}
+	
 	/**
 	 * Initialise routing
 	 */

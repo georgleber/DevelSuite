@@ -17,6 +17,12 @@
     	"monolog/monolog": "1.0.*",
     	"propel/propel1" : "1.6.4"
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/propelorm/Propel"
+        }
+    ],
     "autoload": {
     	"psr-0": {"DevelSuite": "src/"}
     }
