@@ -25,6 +25,12 @@ abstract class dsASimpleElement extends dsAElement {
 	 * @var bool
 	 */
 	protected $appendLabel = FALSE;
+    
+    /**
+	 * Additional css class for labels
+	 * @var array
+	 */
+    private $labelCss = array();
 
 	/**
 	 * Get the HTML code of the specific form element
@@ -59,12 +65,30 @@ abstract class dsASimpleElement extends dsAElement {
 		$this->appendLabel = $appendLabel;
 		return $this;
 	}
+    
+    /**
+	 * Set a CSS class for this elements label.
+	 *
+	 * @param string $class
+	 * 			CSS class name for this elements label
+	 */
+	public function addLabelCss($class) {
+		$this->labelCss[] = $class;
+		return $this;
+	}
 
 	/**
 	 * Add a label element as caption
 	 */
 	protected function addLabel() {
-		$label = "<label for='" . $this->name . "'>" . $this->caption;
+		$label = "<label for='" . $this->name . "'";
+        
+        // set CSS class
+		if (!empty($this->labelCss)) {
+			$label .= " class='" . implode(" ", $this->labelCss) . "'";
+		}
+        
+        $label .= ">" . $this->caption;
 
 		// set mandatory
 		if($this->mandatory) {
