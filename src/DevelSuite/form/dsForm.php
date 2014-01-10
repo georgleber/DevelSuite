@@ -83,8 +83,8 @@ class dsForm {
         $this->disabled = $disabled;
     }
 
-    public function addCss($css) {
-        $this->$css[] = $css;
+    public function addCssClass($cssClass) {
+        $this->$css[] = $cssClass;
     }
 
     /**
