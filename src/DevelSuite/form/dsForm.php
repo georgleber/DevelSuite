@@ -49,7 +49,7 @@ class dsForm {
     private $showMandatory = FALSE;
     private $showErrors = FALSE;
     private $errorMessage = NULL;
-    private $css = array();
+    private $css = NULL;
 
     public function __construct($action, $callbackUrl = NULL, $method = NULL) {
         $this->action = $action;
@@ -83,8 +83,8 @@ class dsForm {
         $this->disabled = $disabled;
     }
 
-    public function addCssClass($cssClass) {
-        $this->css[] = $cssClass;
+    public function setCss($cssClass) {
+        $this->css = $cssClass;
     }
 
     /**

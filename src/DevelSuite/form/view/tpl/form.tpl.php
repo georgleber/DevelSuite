@@ -68,7 +68,7 @@
 	/* ]]> */
 	</script>
 <?php endif; ?>
-<form class='dsform <?php echo $this->css; ?>' id ='<?php echo $this->id; ?>' action='<?php echo $this->action; ?>' method='<?php echo $this->method; ?>'<?php if ($this->enctype != NULL) { echo " enctype=" . $this->enctype; } ?>>
+<form class='dsform<?php if ($this->css != NULL) { echo " " . $this->css; }  ?>' id ='<?php echo $this->id; ?>' action='<?php echo $this->action; ?>' method='<?php echo $this->method; ?>'<?php if ($this->enctype != NULL) { echo " enctype=" . $this->enctype; } ?>>
 	<input type="hidden" name="form" value="<?php echo $this->id; ?>">
 	<?php if ($this->errorMessages != NULL && count($this->errorMessages) > 0): ?>
 		<div class='dsform-errors'>
