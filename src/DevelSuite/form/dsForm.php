@@ -1,16 +1,17 @@
 <?php
+
 /*
  * This file is part of the DevelSuite
-* Copyright (C) 2012 Georg Henkel <info@develman.de>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ * Copyright (C) 2012 Georg Henkel <info@develman.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace DevelSuite\form;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-
 use DevelSuite\dsApp;
 use DevelSuite\form\button\dsAButton;
 use DevelSuite\form\constants\dsButtonNameConstants;
@@ -31,264 +32,268 @@ use DevelSuite\util\dsStringTools;
  * @version 1.0
  */
 class dsForm {
-	/**
-	 * The responsible logger
-	 * @var Logger
-	 */
-	protected $log;
 
-	private $id = "dsForm";
-	private $callbackUrl = NULL;
-	private $action;
-	private $method = 'POST';
-	private $enctype = NULL;
+    /**
+     * The responsible logger
+     * @var Logger
+     */
+    protected $log;
+    private $id = "dsForm";
+    private $callbackUrl = NULL;
+    private $action;
+    private $method = 'POST';
+    private $enctype = NULL;
+    private $elementList = array();
+    private $buttonList = array();
+    private $disabled = FALSE;
+    private $showMandatory = FALSE;
+    private $showErrors = FALSE;
+    private $errorMessage = NULL;
+    private $css = array();
 
-	private $elementList = array();
-	private $buttonList = array();
+    public function __construct($action, $callbackUrl = NULL, $method = NULL) {
+        $this->action = $action;
+        $this->callbackUrl = $callbackUrl;
 
-	private $disabled = FALSE;
-	private $showMandatory = FALSE;
+        if ($method != NULL) {
+            $this->method = $method;
+        }
 
-	private $showErrors = FALSE;
-	private $errorMessage = NULL;
+        $this->log = new Logger("Form");
+        $this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+    }
 
-	public function __construct($action, $callbackUrl = NULL, $method = NULL) {
-		$this->action = $action;
-		$this->callbackUrl = $callbackUrl;
+    /**
+     * Set an alternative id for the form
+     *
+     * @param string $id
+     * 		New Id for the form
+     */
+    public function setId($id) {
+        $this->id = $id;
+    }
 
-		if ($method != NULL) {
-			$this->method = $method;
-		}
+    /**
+     * Disbale the complete form (all elements are disabled)
+     *
+     * @param bool $disabled
+     * 			TRUE, if form should be disabled
+     */
+    public function setDisabled($disabled = TRUE) {
+        $this->disabled = $disabled;
+    }
 
-		$this->log = new Logger("Form");
-		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-	}
+    public function addCss($css) {
+        $this->$css[] = $css;
+    }
 
-	/**
-	 * Set an alternative id for the form
-	 *
-	 * @param string $id
-	 * 		New Id for the form
-	 */
-	public function setId($id) {
-		$this->id = $id;
-	}
+    /**
+     * Add a new form element.
+     * If the element is of type <@link DevelSuite\form\element\impl\dsFileInput>
+     * multipart/form-data is set into enctype of the form.
+     *
+     * @param dsAElement $element
+     * 			The new form element
+     */
+    public function addElement(dsAElement $element) {
+        if ($element->isMandatory()) {
+            $this->showMandatory = TRUE;
+            $element->addValidator(new dsRequiredValidator($element));
+        }
 
-	/**
-	 * Disbale the complete form (all elements are disabled)
-	 *
-	 * @param bool $disabled
-	 * 			TRUE, if form should be disabled
-	 */
-	public function setDisabled($disabled = TRUE) {
-		$this->disabled = $disabled;
-	}
+        if ($this->disabled) {
+            $element->setDisabled();
+        }
 
-	/**
-	 * Add a new form element.
-	 * If the element is of type <@link DevelSuite\form\element\impl\dsFileInput>
-	 * multipart/form-data is set into enctype of the form.
-	 *
-	 * @param dsAElement $element
-	 * 			The new form element
-	 */
-	public function addElement(dsAElement $element) {
-		if ($element->isMandatory()) {
-			$this->showMandatory = TRUE;
-			$element->addValidator(new dsRequiredValidator($element));
-		}
+        $this->elementList[] = $element;
+        if ($element instanceof dsFileInput) {
+            $this->enctype = "multipart/form-data";
+        }
+    }
 
-		if ($this->disabled) {
-			$element->setDisabled();
-		}
+    /**
+     * Add a new button element to the form
+     *
+     * @param dsAButton $button
+     * 			The new button element
+     */
+    public function addButton(dsAButton $button) {
+        $this->buttonList[] = $button;
+    }
 
-		$this->elementList[] = $element;
-		if($element instanceof dsFileInput) {
-			$this->enctype = "multipart/form-data";
-		}
-	}
+    /**
+     * Checks if the form was send
+     *
+     * @return TRUE if form was send
+     */
+    public function isSend() {
+        $isSend = FALSE;
 
-	/**
-	 * Add a new button element to the form
-	 *
-	 * @param dsAButton $button
-	 * 			The new button element
-	 */
-	public function addButton(dsAButton $button) {
-		$this->buttonList[] = $button;
-	}
+        $request = dsApp::getRequest();
+        if ($request->isAjaxRequest()) {
+            $formVal = $request['form'];
+            if (isset($formVal) && $formVal == $this->id) {
+                $isSend = TRUE;
+            }
+        } else {
+            // check if submit was send
+            if ($request[dsButtonNameConstants::SUBMIT]) {
+                $isSend = TRUE;
+            }
 
-	/**
-	 * Checks if the form was send
-	 *
-	 * @return TRUE if form was send
-	 */
-	public function isSend() {
-		$isSend = FALSE;
+            // set old values of the form elements
+            if ($isSend) {
+                foreach ($this->elementList as $element) {
+                    $element->populate();
+                }
+            }
+        }
 
-		$request = dsApp::getRequest();
-		if ($request->isAjaxRequest()) {
-			$formVal = $request['form'];
-			if (isset($formVal) && $formVal == $this->id) {
-				$isSend = TRUE;
-			}
-		} else {
-			// check if submit was send
-			if ($request[dsButtonNameConstants::SUBMIT]) {
-				$isSend = TRUE;
-			}
+        return $isSend;
+    }
 
-			// set old values of the form elements
-			if ($isSend)  {
-				foreach ($this->elementList as $element) {
-					$element->populate();
-				}
-			}
-		}
+    /**
+     * Checks if the form elements are valid.
+     */
+    public function isValid() {
+        $validResult = TRUE;
 
-		return $isSend;
-	}
+        foreach ($this->elementList as $element) {
+            if (!$element->validate()) {
+                $validResult = FALSE;
+            }
+        }
 
-	/**
-	 * Checks if the form elements are valid.
-	 */
-	public function isValid() {
-		$validResult = TRUE;
+        if ($validResult === FALSE) {
+            $this->showErrors = TRUE;
+        }
 
-		foreach ($this->elementList as $element) {
-			if (!$element->validate()) {
-				$validResult = FALSE;
-			}
-		}
+        return $validResult;
+    }
 
-		if ($validResult === FALSE) {
-			$this->showErrors = TRUE;
-		}
+    /**
+     * Loads the element with the given element name and retrieves it value
+     *
+     * @param string $elementName
+     * 			Name of the element
+     */
+    public function getValue($elementName) {
+        $element = $this->findElement($elementName);
 
-		return $validResult;
-	}
+        if ($element == NULL) {
+            return NULL;
+        }
 
-	/**
-	 * Loads the element with the given element name and retrieves it value
-	 *
-	 * @param string $elementName
-	 * 			Name of the element
-	 */
-	public function getValue($elementName) {
-		$element = $this->findElement($elementName);
+        return $element->getValue();
+    }
 
-		if ($element == NULL) {
-			return NULL;
-		}
+    /**
+     * Set a error message, with can not be set by a validator
+     *
+     * @param string $errorMessage
+     * 			The error message
+     */
+    public function setErrorMessage($errorMessage) {
+        $this->errorMessage = $errorMessage;
+        $this->showErrors = TRUE;
+    }
 
-		return $element->getValue();
-	}
+    /**
+     * Call method to show errors
+     */
+    public function showErrors() {
+        $this->showErrors = TRUE;
+    }
 
-	/**
-	 * Set a error message, with can not be set by a validator
-	 *
-	 * @param string $errorMessage
-	 * 			The error message
-	 */
-	public function setErrorMessage($errorMessage) {
-		$this->errorMessage = $errorMessage;
-		$this->showErrors = TRUE;
-	}
+    /**
+     * Generates the HTML of this form.
+     *
+     * @return HTML of this form
+     */
+    public function render() {
+        $request = dsApp::getRequest();
 
-	/**
-	 * Call method to show errors
-	 */
-	public function showErrors() {
-		$this->showErrors = TRUE;
-	}
+        // send HTML or JSON response depending on following information
+        // AJAX request and form is send: send JSON
+        // form is not send or request is not AJAX: send HTML
+        if ($request->isAjaxRequest() && $this->isSend()) {
+            $this->log->debug("Rendering response as JSON string");
 
-	/**
-	 * Generates the HTML of this form.
-	 *
-	 * @return HTML of this form
-	 */
-	public function render() {
-		$request = dsApp::getRequest();
+            $response = array();
 
-		// send HTML or JSON response depending on following information
-		// AJAX request and form is send: send JSON
-		// form is not send or request is not AJAX: send HTML
-		if ($request->isAjaxRequest() && $this->isSend()) {
-			$this->log->debug("Rendering response as JSON string");
+            // send JSON without errors
+            if (!$this->showErrors) {
+                $response["valid"] = TRUE;
+                $response["errors"] = NULL;
+            } else {
+                $response["valid"] = FALSE;
 
-			$response = array();
+                $errors = array();
+                // collect global error
+                if (isset($this->errorMessage)) {
+                    $errors["form"] = $this->errorMessage;
+                }
+                // collect validation error
+                else {
+                    foreach ($this->elementList as $element) {
+                        if (!$element->isValid()) {
+                            $errors[$element->getName()] = $element->getErrorMessage();
+                        }
+                    }
+                }
+                $response["errors"] = $errors;
+            }
 
-			// send JSON without errors
-			if (!$this->showErrors) {
-				$response["valid"] = TRUE;
-				$response["errors"] = NULL;
-			} else {
-				$response["valid"] = FALSE;
+            return $response;
+        } else {
+            $this->log->debug("Rendering response as HTML code");
 
-				$errors = array();
-				// collect global error
-				if (isset($this->errorMessage)) {
-					$errors["form"] = $this->errorMessage;
-				}
-				// collect validation error
-				else {
-					foreach ($this->elementList as $element) {
-						if (!$element->isValid()) {
-							$errors[$element->getName()] = $element->getErrorMessage();
-						}
-					}
-				}
-				$response["errors"] = $errors;
-			}
+            $view = new dsFormView();
+            $view->assign("callbackUrl", $this->callbackUrl)
+                    ->assign("id", $this->id)
+                    ->assign("css", $this->css)
+                    ->assign("action", $this->action)
+                    ->assign("method", $this->method)
+                    ->assign("enctype", $this->enctype);
 
-			return $response;
-		} else {
-			$this->log->debug("Rendering response as HTML code");
+            // set errors
+            $errorMessages = array();
+            if ($this->isSend() && $this->showErrors) {
+                if (dsStringTools::isFilled($this->errorMessage)) {
+                    $errorMessages[] = $this->errorMessage;
+                } else {
+                    foreach ($this->elementList as $element) {
+                        if (!$element->isValid()) {
+                            $errorMessages[] = $element->getErrorMessage();
+                        }
+                    }
+                }
+            }
+            $view->assign("errorMessages", $errorMessages);
 
-			$view = new dsFormView();
-			$view->assign("callbackUrl", $this->callbackUrl)
-			->assign("id", $this->id)
-			->assign("action", $this->action)
-			->assign("method", $this->method)
-			->assign("enctype", $this->enctype);
+            $view->assign("showMandatory", $this->showMandatory)
+                    ->assign("elementList", $this->elementList)
+                    ->assign("buttonList", $this->buttonList);
 
-			// set errors
-			$errorMessages = array();
-			if ($this->isSend() && $this->showErrors) {
-				if (dsStringTools::isFilled($this->errorMessage)) {
-					$errorMessages[] = $this->errorMessage;
-				} else {
-					foreach ($this->elementList as $element) {
-						if (!$element->isValid()) {
-							$errorMessages[] = $element->getErrorMessage();
-						}
-					}
-				}
-			}
-			$view->assign("errorMessages", $errorMessages);
+            $html = $view->render();
+            return $html;
+        }
+    }
 
-			$view->assign("showMandatory", $this->showMandatory)
-			->assign("elementList", $this->elementList)
-			->assign("buttonList", $this->buttonList);
+    /**
+     * Find an element by name
+     *
+     * @param string $elementName
+     * 		Name of the element
+     */
+    private function findElement($elementName) {
+        foreach ($this->elementList as $element) {
+            if ($element->getName() == $elementName) {
+                return $element;
+            }
+        }
 
-			$html = $view->render();
-			return $html;
-		}
-	}
+        return NULL;
+    }
 
-	/**
-	 * Find an element by name
-	 *
-	 * @param string $elementName
-	 * 		Name of the element
-	 */
-	private function findElement($elementName) {
-		foreach ($this->elementList as $element) {
-			if ($element->getName() == $elementName) {
-				return $element;
-			}
-		}
-
-		return NULL;
-	}
 }
