@@ -84,7 +84,7 @@ class dsForm {
     }
 
     public function addCssClass($cssClass) {
-        $this->$css[] = $cssClass;
+        $this->css[] = $cssClass;
     }
 
     /**
