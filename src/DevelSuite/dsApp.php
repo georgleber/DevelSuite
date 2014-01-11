@@ -30,7 +30,6 @@ use DevelSuite\config\dsConfig;
 use DevelSuite\http\dsResponse;
 use DevelSuite\http\dsRequest;
 use DevelSuite\session\dsSession;
-use DevelSuite\logging\dsPropelLogger;
 
 use \Propel as Propel;
 
@@ -232,7 +231,7 @@ class dsApp {
 		require_once (PROPEL_PATH . DS . "Propel.php");
 		Propel::init(dsConfig::read('propel.config'));
 		
-        $log = new dsPropelLogger("Propel");
+        $log = new Logger("Propel");
 		$log->pushHandler(new StreamHandler(LOG_PATH . DS . 'propel.log'));
 		Propel::setLogger($log);
 	}
