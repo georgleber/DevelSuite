@@ -21,6 +21,10 @@ use Monolog\Logger;
  */
 class dsPropelLogger extends Logger {
 
+    public function __construct($name) {
+        parent::__construct($name);
+    }
+    
     public function emergency($message) {
         parent::emerg($message);
     }
