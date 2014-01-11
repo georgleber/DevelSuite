@@ -30,7 +30,7 @@ use DevelSuite\config\dsConfig;
 use DevelSuite\http\dsResponse;
 use DevelSuite\http\dsRequest;
 use DevelSuite\session\dsSession;
-use logging\dsPropelLogger;
+use DevelSuite\logging\dsPropelLogger;
 
 use \Propel as Propel;
 
