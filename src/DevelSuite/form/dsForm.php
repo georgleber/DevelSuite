@@ -102,6 +102,7 @@ class dsForm {
         }
 
         if ($this->disabled) {
+            print_r("JES");
             $element->setDisabled();
         }
 
