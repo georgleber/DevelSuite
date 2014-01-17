@@ -96,22 +96,21 @@ class dsRadioButtonGroup extends dsACompositeElement {
         }
 
         $html .= "</p>\n";
-
+        $html .= $this->addErrorSpan();
+        
         // add html of childElements
         foreach ($this->childElements as $child) {
             $html .= $child->buildHTML();
         }
 
         $html .= "</div>\n";
-        
-        $html .= $this->addErrorSpan();
         return $html;
     }
 
     /**
      * Add a span element for error messages
      */
-    protected function addErrorSpan() {
+    private function addErrorSpan() {
         $html = "<span class='dsform-errorMsg'>";
 
         if (dsStringTools::isFilled($this->errorMessage)) {
