@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the DevelSuite
  * Copyright (C) 2012 Georg Henkel <info@develman.de>
@@ -6,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace DevelSuite\form\element\impl;
 
 use DevelSuite\form\element\dsACompositeElement;
@@ -19,85 +21,105 @@ use DevelSuite\form\element\dsAElement;
  * @version 1.0
  */
 class dsRadioButtonGroup extends dsACompositeElement {
-	/**
-	 * Set this element readOnly
-	 * @var bool
-	 */
-	private $readOnly;
-	
-	/**
-	 * Count of all radio buttons checked state
-	 * @var int
-	 */
-	private $checkCount = 0;
 
-	/**
-	 * Constructor
-	 *
-	 * @param string $caption
-	 * 		Caption for this element
-	 * @param string $name
-	 * 		Name for this element
-	 */
-	public function __construct($caption, $name) {
-		parent::__construct($caption, $name);
+    /**
+     * Set this element readOnly
+     * @var bool
+     */
+    private $readOnly;
 
-		$this->allowedElements = array("dsRadioButton");
-	}
+    /**
+     * Count of all radio buttons checked state
+     * @var int
+     */
+    private $checkCount = 0;
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsACompositeElement::addChild()
-	 */
-	public function addChild(dsAElement $child) {
-		if ($child instanceof dsRadioButton) {
-			if ($child->isChecked() && $this->checkCount < 1) {
-				$this->checkCount++;
-			} else {
-				# FIXME: add logging!
-				$child->setChecked(FALSE);
-			}
+    /**
+     * Constructor
+     *
+     * @param string $caption
+     * 		Caption for this element
+     * @param string $name
+     * 		Name for this element
+     */
+    public function __construct($caption, $name) {
+        parent::__construct($caption, $name);
 
-			$child->setGroup($this);
+        $this->allowedElements = array("dsRadioButton");
+    }
 
-			// set readonly if group is set to readonly
-			if ($this->readOnly) {
-				$child->setReadOnly($this->readOnly);
-			}
+    /*
+     * (non-PHPdoc)
+     * @see DevelSuite\form\element.dsACompositeElement::addChild()
+     */
 
-			parent::addChild($child);
-		}
-	}
+    public function addChild(dsAElement $child) {
+        if ($child instanceof dsRadioButton) {
+            if ($child->isChecked() && $this->checkCount < 1) {
+                $this->checkCount++;
+            } else {
+                # FIXME: add logging!
+                $child->setChecked(FALSE);
+            }
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::buildHTML()
-	 */
-	public function buildHTML() {
-		// generate HTML
-		$html = "<div class='dsform-radioGrp";
+            $child->setGroup($this);
 
-		// set CSS class
-		if (!empty($this->cssClasses)) {
-			$html .= " " . implode(" ", $this->cssClasses);
-		}
+            // set readonly if group is set to readonly
+            if ($this->readOnly) {
+                $child->setReadOnly($this->readOnly);
+            }
 
-		$html .= "'>\n";
-		$html .= "<p>" . $this->caption;
+            parent::addChild($child);
+        }
+    }
 
-		// set mandatory
-		if ($this->mandatory) {
-			$html .= "<em>*</em>";
-		}
+    /*
+     * (non-PHPdoc)
+     * @see DevelSuite\form\element.dsAElement::buildHTML()
+     */
 
-		$html .= "</p>\n";
+    public function buildHTML() {
+        // generate HTML
+        $html = "<div class='dsform-radioGrp";
 
-		// add html of childElements
-		foreach ($this->childElements as $child) {
-			$html .= $child->buildHTML();
-		}
+        // set CSS class
+        if (!empty($this->cssClasses)) {
+            $html .= " " . implode(" ", $this->cssClasses);
+        }
 
-		$html .= "</div>\n";
-		return $html;
-	}
+        $html .= "'>\n";
+        $html .= "<p>" . $this->caption;
+
+        // set mandatory
+        if ($this->mandatory) {
+            $html .= "<em>*</em>";
+        }
+
+        $html .= "</p>\n";
+
+        // add html of childElements
+        foreach ($this->childElements as $child) {
+            $html .= $child->buildHTML();
+        }
+
+        $html .= "</div>\n";
+        
+        $html .= $this->addErrorSpan();
+        return $html;
+    }
+
+    /**
+     * Add a span element for error messages
+     */
+    protected function addErrorSpan() {
+        $html = "<span class='dsform-errorMsg'>";
+
+        if (dsStringTools::isFilled($this->errorMessage)) {
+            $html .= $this->errorMessage;
+        }
+
+        $html .= "</span>";
+        return $html;
+    }
+
 }

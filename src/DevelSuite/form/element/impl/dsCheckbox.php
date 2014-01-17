@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the DevelSuite
  * Copyright (C) 2012 Georg Henkel <info@develman.de>
@@ -6,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace DevelSuite\form\element\impl;
 
 use DevelSuite\form\element\dsASimpleElement;
@@ -18,145 +20,168 @@ use DevelSuite\form\element\dsASimpleElement;
  * @version 1.0
  */
 class dsCheckbox extends dsASimpleElement {
-	/**
-	 * Set this element readOnly
-	 * @var bool
-	 */
-	private $readOnly;
 
-	/**
-	 * Value fo the checkbox
-	 * @var string
-	 */
-	private $value;
+    /**
+     * Set this element readOnly
+     * @var bool
+     */
+    private $readOnly;
 
-	/**
-	 * Group of checkbox
-	 * @var dsCheckboxGroup
-	 */
-	private $group;
+    /**
+     * Value fo the checkbox
+     * @var string
+     */
+    private $value;
 
-	/**
-	 * Is the checkbox checked
-	 * @var bool
-	 */
-	private $checked = FALSE;
+    /**
+     * Group of checkbox
+     * @var dsCheckboxGroup
+     */
+    private $group;
 
-	/**
-	 * Constructor
-	 *
-	 * @param string $caption
-	 * 			Caption of the element
-	 * @param string $name
-	 * 			Name of the element
-	 * @param string $value
-	 * 			Value of the element
-	 */
-	public function __construct($caption, $name, $value = NULL) {
-		parent::__construct($caption, $name);
+    /**
+     * Is the checkbox checked
+     * @var bool
+     */
+    private $checked = FALSE;
 
-		if (isset($value)) {
-			$this->value = $value;
-		} else {
-			$this->value = $name;
-		}
-	}
+    /**
+     * Constructor
+     *
+     * @param string $caption
+     * 			Caption of the element
+     * @param string $name
+     * 			Name of the element
+     * @param string $value
+     * 			Value of the element
+     */
+    public function __construct($caption, $name, $value = NULL) {
+        parent::__construct($caption, $name);
 
-	/**
-	 * Set the checkbox checked
-	 *
-	 * @param bool $checked
-	 * 			TRUE if checkbox should be checked (must be bool)
-	 */
-	public function setChecked($checked = TRUE) {
-		$this->checked = $checked;
-		return $this;
-	}
+        if (isset($value)) {
+            $this->value = $value;
+        } else {
+            $this->value = $name;
+        }
+    }
 
-	/**
-	 * Set a cehckbox group
-	 *
-	 * @param dsCheckboxGroup group
-	 * 			The group of the checkbox
-	 */
-	public function setGroup($group) {
-		$this->group = $group;
-	}
+    /**
+     * Set the checkbox checked
+     *
+     * @param bool $checked
+     * 			TRUE if checkbox should be checked (must be bool)
+     */
+    public function setChecked($checked = TRUE) {
+        $this->checked = $checked;
+        return $this;
+    }
 
-	/**
-	 * Set this element readOnly
-	 *
-	 * @param bool $readOnly
-	 * 			TRUE, if this element should be readOnly
-	 */
-	public function setReadOnly($readOnly = TRUE) {
-		$this->readOnly = $readOnly;
-		return $this;
-	}
+    /**
+     * Set a cehckbox group
+     *
+     * @param dsCheckboxGroup group
+     * 			The group of the checkbox
+     */
+    public function setGroup($group) {
+        $this->group = $group;
+    }
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsAElement::populate()
-	 */
-	public function populate() {
-		$value = $this->getValue();
-		if (isset($value)) {
-			$this->setChecked();
-		}
-	}
+    /**
+     * Set this element readOnly
+     *
+     * @param bool $readOnly
+     * 			TRUE, if this element should be readOnly
+     */
+    public function setReadOnly($readOnly = TRUE) {
+        $this->readOnly = $readOnly;
+        return $this;
+    }
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsASimpleElement::addLabel()
-	 */
-	protected function addLabel() {
-		$label = "<label class='label-checkbox' for='" . $this->name . "'>" . $this->caption;
+    /*
+     * (non-PHPdoc)
+     * @see DevelSuite\form\element.dsAElement::populate()
+     */
 
-		// set mandatory
-		if($this->mandatory) {
-			$label .= "<em>*</em>";
-		}
+    public function populate() {
+        $value = $this->getValue();
+        if (isset($value)) {
+            $this->setChecked();
+        }
+    }
 
-		$label .= "</label>\n";
-		return $label;
-	}
+    /*
+     * (non-PHPdoc)
+     * @see DevelSuite\form\element.dsASimpleElement::addLabel()
+     */
 
-	/*
-	 * (non-PHPdoc)
-	 * @see DevelSuite\form\element.dsASimpleElement::getHTML()
-	 */
-	protected function getHTML() {
-		// generate HTML
-		$html = "<input type='checkbox'";
+    protected function addLabel() {
+        $label = "<label class='label-checkbox' for='" . $this->name . "'>" . $this->caption;
 
-		// set CSS class
-		if (!empty($this->cssClasses)) {
-			$html .= " class='" . implode(" ", $this->cssClasses) . "'";
-		}
+        // set mandatory
+        if ($this->mandatory) {
+            $label .= "<em>*</em>";
+        }
 
-		// set name of group
-		if (isset($this->group)) {
-			$html .= " name='" . $this->group->getName() . "[]'";
-		} else {
-			$html .= " name='" . $this->name . "'";
-		}
+        $label .= "</label>\n";
+        return $label;
+    }
 
-		// set value
-		if (isset($this->value)) {
-			$html .= " value='" . $this->value . "'";
-		}
+    /*
+     * (non-PHPdoc)
+     * @see DevelSuite\form\element.dsASimpleElement::getHTML()
+     */
 
-		// set readonly
-		if ($this->readOnly) {
-			$html .= "readonly='readonly' ";
-		}
+    protected function getHTML() {
+        // generate HTML
+        $html = "<input type='checkbox'";
 
-		// set checked
-		if ($this->checked) {
-			$html .= " checked='checked'";
-		}
+        // set CSS class
+        if (!empty($this->cssClasses)) {
+            $html .= " class='" . implode(" ", $this->cssClasses) . "'";
+        }
 
-		$html .= "/>\n";
-		return $html;
-	}
+        // set name of group
+        if (isset($this->group)) {
+            $html .= " name='" . $this->group->getName() . "[]'";
+        } else {
+            $html .= " name='" . $this->name . "'";
+        }
+
+        // set value
+        if (isset($this->value)) {
+            $html .= " value='" . $this->value . "'";
+        }
+
+        // set readonly
+        if ($this->readOnly) {
+            $html .= "readonly='readonly' ";
+        }
+
+        // set checked
+        if ($this->checked) {
+            $html .= " checked='checked'";
+        }
+
+        $html .= "/>\n";
+        return $html;
+    }
+
+    /**
+     * Add a span element for error messages
+     */
+    protected function addErrorSpan() {
+        $html = "";
+        if ($this->group == NULL) {
+            $html = "<span class='dsform-errorMsg'>";
+
+            if (dsStringTools::isFilled($this->errorMessage)) {
+                $html .= $this->errorMessage;
+            }
+
+            $html .= "</span>";
+        }
+
+        return $html;
+    }
+
 }
