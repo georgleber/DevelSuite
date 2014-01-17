@@ -179,6 +179,7 @@ class dsRadioButton extends dsASimpleElement {
     protected function addErrorSpan() {
         $html = "";
         if ($this->group == NULL) {
+            print_r($this->group);
             $html = "<span class='dsform-errorMsg'>";
 
             if (dsStringTools::isFilled($this->errorMessage)) {
