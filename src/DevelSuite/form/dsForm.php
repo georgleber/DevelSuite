@@ -102,7 +102,7 @@ class dsForm {
         }
 
         if ($this->disabled) {
-            print_r("JES");
+            $this->log->debug("TEST");
             $element->setDisabled();
         }
 
