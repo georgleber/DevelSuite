@@ -12,6 +12,7 @@ namespace DevelSuite\form\element\impl;
 
 use DevelSuite\form\element\dsACompositeElement;
 use DevelSuite\form\element\dsAElement;
+use DevelSuite\util\dsStringTools;
 
 /**
  * Represents a checkbox group element.
@@ -87,15 +88,14 @@ class dsCheckboxGroup extends dsACompositeElement {
         }
 
         $html .= "</p>\n";
-
+        $html .= $this->addErrorSpan();
+        
         // add html of childElements
         foreach ($this->childElements as $child) {
             $html .= $child->buildHTML();
         }
 
         $html .= "</div>\n";
-        
-        $html .= $this->addErrorSpan();
         return $html;
     }
 

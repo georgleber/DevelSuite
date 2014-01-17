@@ -12,6 +12,7 @@ namespace DevelSuite\form\element\impl;
 
 use DevelSuite\form\element\dsACompositeElement;
 use DevelSuite\form\element\dsAElement;
+use DevelSuite\util\dsStringTools;
 
 /**
  * Represents a radio button group element.
