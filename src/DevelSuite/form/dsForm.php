@@ -80,6 +80,7 @@ class dsForm {
      * 			TRUE, if form should be disabled
      */
     public function setDisabled($disabled = TRUE) {
+        $this->log->debug("Disabling form");
         $this->disabled = $disabled;
     }
 
@@ -102,7 +103,7 @@ class dsForm {
         }
 
         if ($this->disabled) {
-            $this->log->debug("TEST");
+            $this->log->debug("Disabling element");
             $element->setDisabled();
         }
 

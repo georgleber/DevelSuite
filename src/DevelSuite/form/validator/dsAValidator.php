@@ -76,6 +76,7 @@ abstract class dsAValidator {
      */
     public function validate() {
         if ($this->element->isDisabled()) {
+            $this->log->debug("VALIDATION is deactivated");
             return TRUE;
         }
 
