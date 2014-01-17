@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the DevelSuite
  * Copyright (C) 2012 Georg Henkel <info@develman.de>
@@ -6,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace DevelSuite\form\element;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-
 use DevelSuite\dsApp;
 use DevelSuite\form\validator\dsAValidator;
 use DevelSuite\form\validator\dsValidatorChain;
@@ -23,218 +24,225 @@ use DevelSuite\form\validator\dsValidatorChain;
  * @version 1.0
  */
 abstract class dsAElement {
-	/**
-	 * Logger instance
-	 * @var Logger
-	 */
-	protected $log;
-	
-	/**
-	 * Name of the element
-	 * @var string
-	 */
-	protected $name;
 
-	/**
-	 * Caption of the element
-	 * @var string
-	 */
-	protected $caption;
+    /**
+     * Logger instance
+     * @var Logger
+     */
+    protected $log;
 
-	/**
-	 * Is this element mandatory
-	 * @var bool
-	 */
-	protected $mandatory;
+    /**
+     * Name of the element
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * Is the element disabled
-	 * @var bool
-	 */
-	protected $disabled;
+    /**
+     * Caption of the element
+     * @var string
+     */
+    protected $caption;
 
-	/**
-	 * Tab index of the element (index has to be > 0)
-	 * @var int
-	 */
-	protected $tabIndex;
+    /**
+     * Is this element mandatory
+     * @var bool
+     */
+    protected $mandatory;
 
-	/**
-	 * Additional css classes for the element
-	 * @var array
-	 */
-	protected $cssClasses = array();
+    /**
+     * Is the element disabled
+     * @var bool
+     */
+    protected $disabled;
 
-	/**
-	 * Error message if validation failed
-	 * @var string
-	 */
-	protected $errorMessage;
+    /**
+     * Tab index of the element (index has to be > 0)
+     * @var int
+     */
+    protected $tabIndex;
 
-	/**
-	 * Chain of all valdiators of this element
-	 * @var array
-	 */
-	private $validatorChain = array();
+    /**
+     * Additional css classes for the element
+     * @var array
+     */
+    protected $cssClasses = array();
 
+    /**
+     * Error message if validation failed
+     * @var string
+     */
+    protected $errorMessage;
 
-	/**
-	 * Check if element is valid
-	 * @var bool
-	 */
-	private $valid = TRUE;
+    /**
+     * Chain of all valdiators of this element
+     * @var array
+     */
+    private $validatorChain = array();
 
-	/**
-	 * Constructor
-	 *
-	 * @param string $caption
-	 * 			Caption of this element
-	 * @param string $name
-	 * 			Name of this element
-	 */
-	public function __construct($caption, $name) {
-		$this->log = new Logger("AElement");
-		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
-		
-		$this->caption = $caption;
-		$this->name = $name;
+    /**
+     * Check if element is valid
+     * @var bool
+     */
+    private $valid = TRUE;
 
-		$this->validatorChain = new dsValidatorChain();
-	}
+    /**
+     * Constructor
+     *
+     * @param string $caption
+     * 			Caption of this element
+     * @param string $name
+     * 			Name of this element
+     */
+    public function __construct($caption, $name) {
+        $this->log = new Logger("AElement");
+        $this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 
-	/**
-	 * Set this element mandatory
-	 *
-	 * @param bool $mandatory
-	 * 			TRUE, if element is mandatory
-	 */
-	public function setMandatory($mandatory = TRUE) {
-		$this->mandatory = $mandatory;
-		return $this;
-	}
+        $this->caption = $caption;
+        $this->name = $name;
 
-	/**
-	 * Returns if this element is mandatory
-	 */
-	public function isMandatory() {
-		return $this->mandatory;
-	}
+        $this->validatorChain = new dsValidatorChain();
+    }
 
-	/**
-	 * Set the element disabled
-	 *
-	 * @param bool $disabled
-	 * 			TRUE, if the element should be disabled
-	 */
-	public function setDisabled($disabled = TRUE) {
-		$this->disabled = $disabled;
-		return $this;
-	}
+    /**
+     * Set this element mandatory
+     *
+     * @param bool $mandatory
+     * 			TRUE, if element is mandatory
+     */
+    public function setMandatory($mandatory = TRUE) {
+        $this->mandatory = $mandatory;
+        return $this;
+    }
 
-	/**
-	 * Set a tabIndex for this element
-	 *
-	 * @param int $tabIndex
-	 * 			TabIndex for this element
-	 */
-	public function setTabIndex($tabIndex) {
-		if ($tabIndex <= 0) {
-			return $this;
-		}
+    /**
+     * Returns if this element is mandatory
+     */
+    public function isMandatory() {
+        return $this->mandatory;
+    }
 
-		$this->tabIndex = $tabIndex;
-		return $this;
-	}
+    /**
+     * Set the element disabled
+     *
+     * @param bool $disabled
+     * 			TRUE, if the element should be disabled
+     */
+    public function setDisabled($disabled = TRUE) {
+        $this->disabled = $disabled;
+        return $this;
+    }
 
-	/**
-	 * Set a CSS class for this element.
-	 *
-	 * @param string $class
-	 * 			CSS class name for this element
-	 */
-	public function addCssClass($class) {
-		$this->cssClasses[] = $class;
-		return $this;
-	}
+    /**
+     * Returns if the element is disabled
+     */
+    public function isDisabled() {
+        return $this->disabled;
+    }
 
-	/**
-	 * Returns the caption of this element
-	 */
-	public function getCaption() {
-		return $this->caption;
-	}
+    /**
+     * Set a tabIndex for this element
+     *
+     * @param int $tabIndex
+     * 			TabIndex for this element
+     */
+    public function setTabIndex($tabIndex) {
+        if ($tabIndex <= 0) {
+            return $this;
+        }
 
-	/**
-	 * Returns the name of this element
-	 */
-	public function getName() {
-		return $this->name;
-	}
+        $this->tabIndex = $tabIndex;
+        return $this;
+    }
 
-	/**
-	 * Returns the value of this element.
-	 */
-	public function getValue() {
-		$result = NULL;
-		$request = dsApp::getRequest();
+    /**
+     * Set a CSS class for this element.
+     *
+     * @param string $class
+     * 			CSS class name for this element
+     */
+    public function addCssClass($class) {
+        $this->cssClasses[] = $class;
+        return $this;
+    }
 
-		if (isset($request[$this->name])) {
-			$result = $request[$this->name];
-		}
+    /**
+     * Returns the caption of this element
+     */
+    public function getCaption() {
+        return $this->caption;
+    }
 
-		return $result;
-	}
+    /**
+     * Returns the name of this element
+     */
+    public function getName() {
+        return $this->name;
+    }
 
-	/**
-	 * Add a validator to the ValidatorChain, which will be
-	 * processed after submit of the form.
-	 *
-	 * @param dsAValidator $validator
-	 * 			The new validator
-	 */
-	public function addValidator(dsAValidator $validator) {
-		$this->validatorChain->addValidator($validator);
-	}
+    /**
+     * Returns the value of this element.
+     */
+    public function getValue() {
+        $result = NULL;
+        $request = dsApp::getRequest();
 
-	/**
-	 * Runs all validators of this element
-	 */
-	public function validate() {
-		$this->valid = $this->validatorChain->processValidator();
-		return $this->valid;
-	}
+        if (isset($request[$this->name])) {
+            $result = $request[$this->name];
+        }
 
-	/**
-	 * Returns if the element is valid
-	 */
-	public function isValid() {
-		return $this->valid;
-	}
+        return $result;
+    }
 
-	/**
-	 * Set a error message to the element.
-	 *
-	 * @param string $errorMessage
-	 * 			The error message
-	 */
-	public function setErrorMessage($errorMessage) {
-		$this->errorMessage = $errorMessage;
-	}
+    /**
+     * Add a validator to the ValidatorChain, which will be
+     * processed after submit of the form.
+     *
+     * @param dsAValidator $validator
+     * 			The new validator
+     */
+    public function addValidator(dsAValidator $validator) {
+        $this->validatorChain->addValidator($validator);
+    }
 
-	/**
-	 * Returns the error message of this element
-	 */
-	public function getErrorMessage() {
-		return $this->errorMessage;
-	}
+    /**
+     * Runs all validators of this element
+     */
+    public function validate() {
+        $this->valid = $this->validatorChain->processValidator();
+        return $this->valid;
+    }
 
-	/**
-	 * Populates the form data after an unseccessfull commit
-	 */
-	abstract public function populate();
+    /**
+     * Returns if the element is valid
+     */
+    public function isValid() {
+        return $this->valid;
+    }
 
-	/**
-	 * Build up the HTML of the elements
-	 */
-	abstract public function buildHTML();
+    /**
+     * Set a error message to the element.
+     *
+     * @param string $errorMessage
+     * 			The error message
+     */
+    public function setErrorMessage($errorMessage) {
+        $this->errorMessage = $errorMessage;
+    }
+
+    /**
+     * Returns the error message of this element
+     */
+    public function getErrorMessage() {
+        return $this->errorMessage;
+    }
+
+    /**
+     * Populates the form data after an unseccessfull commit
+     */
+    abstract public function populate();
+
+    /**
+     * Build up the HTML of the elements
+     */
+    abstract public function buildHTML();
 }
