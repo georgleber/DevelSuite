@@ -112,7 +112,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         $this->queryClass = $queryClass;
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getDataType()
      */
@@ -120,7 +120,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         return "json";
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getEntityName()
      */
@@ -128,7 +128,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         return $this->tableMap->getPhpName();
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getColumnModel()
      */
@@ -136,7 +136,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         return $this->columnModel;
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::addColumn()
      */
@@ -153,7 +153,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         }
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::removeColumn()
      */
@@ -168,7 +168,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         $this->columnModel = dsArrayTools::arrayRemove($this->columnModel, $index);
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::moveColumn()
      */
@@ -180,7 +180,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         $this->columnModel = dsArrayTools::arrayInsert($this->columnModel, $targetColumnIndex, $column);
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getColumn()
      */
@@ -194,7 +194,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         return NULL;
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::setDefaultCellRenderer()
      */
@@ -202,7 +202,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         $this->rendererRegistry->setCellRenderer($columnType, $cellRenderer);
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getDefaultCellRenderer()
      */
@@ -210,7 +210,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         return $this->rendererRegistry->getCellRenderer($columnType);
     }
 
-    /*
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::addFilter()
      */
@@ -218,7 +218,19 @@ class dsPropelDataProvider implements dsIDataProvider {
         $this->filter = $filter;
     }
 
-    /*
+    /**
+     * (non-PHPdoc)
+     * @see DevelSuite\grid\provider.dsIDataProvider::getQueryResult()
+     */
+    public function getQueryResult() {
+        $propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
+        $propelQuery->buildQuery();
+
+        // retrieve ResultSet from PropelQuery
+        $resultSet = $propelQuery->query();
+    }
+
+    /**
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::loadData()
      */
