@@ -342,7 +342,7 @@ class dsPropelDataProvider implements dsIDataProvider {
                     } else {
                         $relation = $result;
                         $columnIdent = $column->getIdentifier();
-
+                        
                         // if column contains .'s, it is a relation column
                         while (($pos = strpos($columnIdent, ".")) !== FALSE) {
                             $tableName = substr($columnIdent, 0, $pos);
@@ -362,6 +362,10 @@ class dsPropelDataProvider implements dsIDataProvider {
                             if (array_key_exists($column->getIdentifier(), $objectArr)) {
                                 $value = $result->getByName($column->getIdentifier());
                             }
+                        }
+                        
+                        if ($value == NULL && $column->getType() == dsColumnTypeConstants::TYPE_BOOLEAN) {
+                            $value = 0;
                         }
                     }
 
