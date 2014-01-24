@@ -318,53 +318,55 @@ class dsPropelDataProvider implements dsIDataProvider {
                 $columns[] = $column->getCaption();
             }
         }
-        
+
         $exportData[] = $columns;
         foreach ($resultSet as $result) {
             $cells = array();
             $objectArr = $result->toArray("phpName", TRUE, array(), TRUE);
             foreach ($this->columnModel as $column) {
-                // load column specific CellRenderer if it is set,
-                // otherwise load it from the registry
-                $value = NULL;
-                if ($column instanceof dsVirtualColumn) {
-                    $method = "get" . $column->getIdentifier();
+                if (!$column->isHidden()) {
+                    // load column specific CellRenderer if it is set,
+                    // otherwise load it from the registry
+                    $value = NULL;
+                    if ($column instanceof dsVirtualColumn) {
+                        $method = "get" . $column->getIdentifier();
 
-                    $virtualResult = NULL;
-                    if (is_callable(array($result, $method))) {
-                        $virtualResult = call_user_func(array($result, $method));
-                    }
-
-                    if ($virtualResult != NULL) {
-                       $value = $virtualResult;
-                    }
-                } else {
-                    $relation = $result;
-                    $columnIdent = $column->getIdentifier();
-
-                    // if column contains .'s, it is a relation column
-                    while (($pos = strpos($columnIdent, ".")) !== FALSE) {
-                        $tableName = substr($columnIdent, 0, $pos);
-                        $columnName = substr($columnIdent, $pos + 1);
-
-                        $method = "get" . $tableName;
-                        if (method_exists($relation, $method) && is_callable(array($relation, $method))) {
-                            $relation = call_user_func(array($relation, $method));
+                        $virtualResult = NULL;
+                        if (is_callable(array($result, $method))) {
+                            $virtualResult = call_user_func(array($result, $method));
                         }
 
-                        $columnIdent = $columnName;
-                    }
-
-                    if ($relation != NULL && $relation !== $result) {
-                        $value = $relation->getByName($columnIdent);
+                        if ($virtualResult != NULL) {
+                            $value = $virtualResult;
+                        }
                     } else {
-                        if (array_key_exists($column->getIdentifier(), $objectArr)) {
-                           $value = $result->getByName($column->getIdentifier());
+                        $relation = $result;
+                        $columnIdent = $column->getIdentifier();
+
+                        // if column contains .'s, it is a relation column
+                        while (($pos = strpos($columnIdent, ".")) !== FALSE) {
+                            $tableName = substr($columnIdent, 0, $pos);
+                            $columnName = substr($columnIdent, $pos + 1);
+
+                            $method = "get" . $tableName;
+                            if (method_exists($relation, $method) && is_callable(array($relation, $method))) {
+                                $relation = call_user_func(array($relation, $method));
+                            }
+
+                            $columnIdent = $columnName;
+                        }
+
+                        if ($relation != NULL && $relation !== $result) {
+                            $value = $relation->getByName($columnIdent);
+                        } else {
+                            if (array_key_exists($column->getIdentifier(), $objectArr)) {
+                                $value = $result->getByName($column->getIdentifier());
+                            }
                         }
                     }
-                }
 
-                $cells[] = $value;
+                    $cells[] = $value;
+                }
             }
 
             $exportData[] = $cells;
