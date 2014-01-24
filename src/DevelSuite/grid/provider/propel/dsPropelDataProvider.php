@@ -220,18 +220,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 
     /**
      * (non-PHPdoc)
-     * @see DevelSuite\grid\provider.dsIDataProvider::getQueryResult()
-     */
-    public function getQueryResult() {
-        $propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
-        $propelQuery->buildQuery();
-
-        // retrieve ResultSet from PropelQuery
-        return $propelQuery->query();
-    }
-
-    /**
-     * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::loadData()
      */
     public function loadData() {
@@ -310,6 +298,79 @@ class dsPropelDataProvider implements dsIDataProvider {
 
         $retVal["rows"] = $rows;
         return $retVal;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see DevelSuite\grid\provider.dsIDataProvider::exportData()
+     */
+    public function exportData() {
+        $propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
+        $propelQuery->buildQuery();
+
+        // retrieve ResultSet from PropelQuery
+        $resultSet = $propelQuery->query();
+
+        $exportData = array();
+        $columns = array();
+        foreach ($this->columnModel as $column) {
+            if (!$column->isHidden()) {
+                $columns[] = $column->getCaption();
+            }
+        }
+        
+        $exportData[] = $columns;
+        foreach ($resultSet as $result) {
+            $cells = array();
+            $objectArr = $result->toArray("phpName", TRUE, array(), TRUE);
+            foreach ($this->columnModel as $column) {
+                // load column specific CellRenderer if it is set,
+                // otherwise load it from the registry
+                $value = NULL;
+                if ($column instanceof dsVirtualColumn) {
+                    $method = "get" . $column->getIdentifier();
+
+                    $virtualResult = NULL;
+                    if (is_callable(array($result, $method))) {
+                        $virtualResult = call_user_func(array($result, $method));
+                    }
+
+                    if ($virtualResult != NULL) {
+                       $value = $virtualResult;
+                    }
+                } else {
+                    $relation = $result;
+                    $columnIdent = $column->getIdentifier();
+
+                    // if column contains .'s, it is a relation column
+                    while (($pos = strpos($columnIdent, ".")) !== FALSE) {
+                        $tableName = substr($columnIdent, 0, $pos);
+                        $columnName = substr($columnIdent, $pos + 1);
+
+                        $method = "get" . $tableName;
+                        if (method_exists($relation, $method) && is_callable(array($relation, $method))) {
+                            $relation = call_user_func(array($relation, $method));
+                        }
+
+                        $columnIdent = $columnName;
+                    }
+
+                    if ($relation != NULL && $relation !== $result) {
+                        $value = $relation->getByName($columnIdent);
+                    } else {
+                        if (array_key_exists($column->getIdentifier(), $objectArr)) {
+                           $value = $result->getByName($column->getIdentifier());
+                        }
+                    }
+                }
+
+                $cells[] = $value;
+            }
+
+            $exportData[] = $cells;
+        }
+
+        return $exportData;
     }
 
     /**
