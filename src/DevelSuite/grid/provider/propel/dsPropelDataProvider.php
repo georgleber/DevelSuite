@@ -13,6 +13,7 @@ namespace DevelSuite\grid\provider\propel;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use DevelSuite\exception\spl\dsFileNotFoundException;
+use DevelSuite\grid\constants\dsColumnTypeConstants;
 use DevelSuite\grid\filter\dsIFilter;
 use DevelSuite\grid\model\dsColumn;
 use DevelSuite\grid\model\propel\dsPropelColumn;
