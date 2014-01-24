@@ -82,12 +82,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * @var dsIFilter
      */
     private $filter;
-    
-    /**
-     *Query object for underlying sql requests
-     * @var dsPropelQuery 
-     */
-    private  $propelQuery;
 
     /**
      * Constructor
@@ -122,7 +116,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getDataType()
      */
-
     public function getDataType() {
         return "json";
     }
@@ -131,7 +124,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getEntityName()
      */
-
     public function getEntityName() {
         return $this->tableMap->getPhpName();
     }
@@ -140,7 +132,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getColumnModel()
      */
-
     public function getColumnModel() {
         return $this->columnModel;
     }
@@ -149,7 +140,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::addColumn()
      */
-
     public function addColumn(dsColumn $column, $index = NULL) {
         // append column
         if ($index == NULL) {
@@ -167,7 +157,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::removeColumn()
      */
-
     public function removeColumn($columnIdentifier) {
         $index = $this->getColumnIndex($columnIdentifier);
 
@@ -183,7 +172,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::moveColumn()
      */
-
     public function moveColumn($columnIdentifier, $targetColumnIndex) {
         $index = $this->getColumnIndex($columnIdentifier);
         $column = $this->columnModel[$index];
@@ -196,7 +184,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getColumn()
      */
-
     public function getColumn($columnIdentifier) {
         foreach ($this->columnModel as $column) {
             if (strtolower($column->getIdentifier()) === strtolower($columnIdentifier)) {
@@ -211,7 +198,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::setDefaultCellRenderer()
      */
-
     public function setDefaultCellRenderer($columnType, dsICellRenderer $cellRenderer) {
         $this->rendererRegistry->setCellRenderer($columnType, $cellRenderer);
     }
@@ -220,7 +206,6 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getDefaultCellRenderer()
      */
-
     public function getDefaultCellRenderer($columnType) {
         return $this->rendererRegistry->getCellRenderer($columnType);
     }
@@ -233,32 +218,20 @@ class dsPropelDataProvider implements dsIDataProvider {
         $this->filter = $filter;
     }
 
-      /*
-     * (non-PHPdoc)
-     * @see DevelSuite\grid\provider.dsIDataProvider::getQueryResult()
-     */
-    public function getQueryResult() {
-        if ($this->propelQuery == NULL) {
-            $this->initQuery();
-        }
-        
-        return $this->propelQuery->query();
-    }
     /*
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::loadData()
      */
     public function loadData() {
-        if ($this->propelQuery == NULL) {
-            $this->initQuery();
-        }
+        $propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
+        $propelQuery->buildQuery();
 
         // retrieve ResultSet from PropelQuery
-        $resultSet = $this->propelQuery->query();
+        $resultSet = $propelQuery->query();
 
         $retVal = array();
-        $retVal["page"] = $this->propelQuery->getOffset();
-        $retVal["total"] = $this->propelQuery->getTotal();
+        $retVal["page"] = $propelQuery->getOffset();
+        $retVal["total"] = $propelQuery->getTotal();
 
         $rowCnt = 1;
         $rows = array();
@@ -325,11 +298,6 @@ class dsPropelDataProvider implements dsIDataProvider {
 
         $retVal["rows"] = $rows;
         return $retVal;
-    }
-    
-    private function initQuery() {
-        $this->propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
-        $this->propelQuery->buildQuery();
     }
 
     /**

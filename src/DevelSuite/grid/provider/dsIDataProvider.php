@@ -37,11 +37,6 @@ interface dsIDataProvider {
 	 */
 	public function getColumnModel();
         
-        /**
-	 * Retrieve pure data from sql request 
-	 */
-        public function getQueryResult();
-
 	/**
 	 * Load / reload the data
 	 */
