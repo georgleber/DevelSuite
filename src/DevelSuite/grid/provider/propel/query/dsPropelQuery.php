@@ -1,18 +1,18 @@
 <?php
+
 /*
  * This file is part of the DevelSuite
-* Copyright (C) 2012 Georg Henkel <info@develman.de>
-*
-* For the full copyright and license information, please view the LICENSE
-* file that was distributed with this source code.
-*/
+ * Copyright (C) 2012 Georg Henkel <info@develman.de>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace DevelSuite\grid\provider\propel\query;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-
 use \PDO as PDO;
-
 use DevelSuite\dsApp;
 use DevelSuite\grid\constants\dsColumnTypeConstants;
 use DevelSuite\grid\constants\dsSortOrderConstants;
@@ -29,293 +29,295 @@ use DevelSuite\util\dsStringTools;
  * @version 1.0
  */
 class dsPropelQuery {
-	/**
-	 * Logger instance
-	 * @var Logger
-	 */
-	private $log;
 
-	/**
-	 * The Propel query class of the corresponding entity
-	 * @var QueryClass
-	 */
-	private $queryClass;
+    /**
+     * Logger instance
+     * @var Logger
+     */
+    private $log;
 
-	/**
-	 * The column model
-	 * @var array
-	 */
-	private $columnModel;
+    /**
+     * The Propel query class of the corresponding entity
+     * @var QueryClass
+     */
+    private $queryClass;
 
-	/**
-	 * The filter for the table
-	 * @var dsIFilter
-	 */
-	private $filter;
+    /**
+     * The column model
+     * @var array
+     */
+    private $columnModel;
 
-	/**
-	 * offset, where to start the result set
-	 * @var int
-	 */
-	private $offset;
+    /**
+     * The filter for the table
+     * @var dsIFilter
+     */
+    private $filter;
 
-	/**
-	 * Limit number of results
-	 * @var int
-	 */
-	private $limit;
+    /**
+     * offset, where to start the result set
+     * @var int
+     */
+    private $offset;
 
-	/**
-	 * Column to sort the query by
-	 * @var string
-	 */
-	private $sortBy;
+    /**
+     * Limit number of results
+     * @var int
+     */
+    private $limit;
 
-	/**
-	 * order of the sorting
-	 * @var string
-	 */
-	private $sortOrder;
+    /**
+     * Column to sort the query by
+     * @var string
+     */
+    private $sortBy;
 
-	/**
-	 * Column of a user search
-	 * @var string
-	 */
-	private $searchColumn;
+    /**
+     * order of the sorting
+     * @var string
+     */
+    private $sortOrder;
 
-	/**
-	 * Query of a user search
-	 * @var string
-	 */
-	private $searchQuery;
+    /**
+     * Column of a user search
+     * @var string
+     */
+    private $searchColumn;
 
-	/**
-	 * Total count of rows in table
-	 * @var int
-	 */
-	private $total;
+    /**
+     * Query of a user search
+     * @var string
+     */
+    private $searchQuery;
 
-	/**
-	 * Flag, that marks the query as filtered or not
-	 * @var bool
-	 */
-	private $filtered = FALSE;
+    /**
+     * Total count of rows in table
+     * @var int
+     */
+    private $total;
 
-	/**
-	 * Constructor
-	 *
-	 * @param QueryClass $queryClass
-	 * 		The query class to load data with propel
-	 * @param array $columnModel
-	 * 		The column model
-	 * @param dsIFilter $filter
-	 * 		Fitler for the table
-	 */
-	public function __construct($queryClass, array $columnModel, $filter) {
-		$this->log = new Logger("PropelQuery");
-		$this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
+    /**
+     * Flag, that marks the query as filtered or not
+     * @var bool
+     */
+    private $filtered = FALSE;
 
-		$this->queryClass = $queryClass;
-		$this->columnModel = $columnModel;
-		$this->filter = $filter;
-	}
+    /**
+     * Constructor
+     *
+     * @param QueryClass $queryClass
+     * 		The query class to load data with propel
+     * @param array $columnModel
+     * 		The column model
+     * @param dsIFilter $filter
+     * 		Fitler for the table
+     */
+    public function __construct($queryClass, array $columnModel, $filter) {
+        $this->log = new Logger("PropelQuery");
+        $this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 
-	/**
-	 * Return the offset of the query
-	 */
-	public function getOffset() {
-		return $this->offset;
-	}
+        $this->queryClass = $queryClass;
+        $this->columnModel = $columnModel;
+        $this->filter = $filter;
+    }
 
-	/**
-	 * Returns the total count of rows in the result set
-	 */
-	public function getTotal() {
-		return $this->total;
-	}
+    /**
+     * Return the offset of the query
+     */
+    public function getOffset() {
+        return $this->offset;
+    }
 
-	/**
-	 * Creates the query
-	 */
-	public function buildQuery() {
-		$this->loadRequest();
-		$this->considerVirtualColumns();
-		$this->considerSearch();
-		$this->considerFilter();
-	}
+    /**
+     * Returns the total count of rows in the result set
+     */
+    public function getTotal() {
+        return $this->total;
+    }
 
-	/**
-	 * Load parameters from request for limiing / filtering the result set
-	 */
-	public function loadRequest() {
-		$request = dsApp::getRequest();
+    /**
+     * Creates the query
+     */
+    public function buildQuery() {
+        $this->loadRequest();
+        $this->considerVirtualColumns();
+        $this->considerSearch();
+        $this->considerFilter();
+    }
 
-		$this->offset = 1;
-		if (isset($request['page'])) {
-			$this->offset = $request['page'];
-		}
+    /**
+     * Load parameters from request for limiing / filtering the result set
+     */
+    public function loadRequest() {
+        $request = dsApp::getRequest();
 
-		$this->total = $this->limit = $this->queryClass->count();
-		if (isset($request['rp'])) {
-			$this->limit = $request['rp'];
-		}
+        $this->offset = 1;
+        if (isset($request['page'])) {
+            $this->offset = $request['page'];
+        }
 
-		// default sort column is the ID column
-		$this->sortBy = $this->findColumn("ID");
-		if (isset($request['sortname'])) {
-			$this->sortBy = $request['sortname'];
-		}
+        $this->total = $this->limit = $this->queryClass->count();
+        if (isset($request['rp'])) {
+            $this->limit = $request['rp'];
+        }
 
-		// default sort order is ascending
-		$this->sortOrder = dsSortOrderConstants::ORDER_ASC;
-		if (isset($request['sortorder'])) {
-			$this->sortOrder = $request['sortorder'];
-		}
+        // default sort column is the ID column
+        $this->sortBy = $this->findColumn("ID");
+        if (isset($request['sortname'])) {
+            $this->sortBy = $request['sortname'];
+        }
 
-		$this->searchColumn = $request['qtype'];
-		$this->searchQuery = $request['query'];
-	}
+        // default sort order is ascending
+        $this->sortOrder = dsSortOrderConstants::ORDER_ASC;
+        if (isset($request['sortorder'])) {
+            $this->sortOrder = $request['sortorder'];
+        }
 
-	/**
-	 * Build up query with user defined search
-	 */
-	public function considerSearch() {
-		if (dsStringTools::isFilled($this->searchColumn) && dsStringTools::isFilled($this->searchQuery)) {
-			$searchColumn = $this->findColumn($this->searchColumn);
+        $this->searchColumn = $request['qtype'];
+        $this->searchQuery = $request['query'];
+    }
 
-			if ($searchColumn != NULL && $searchColumn->isSearchable()) {
-				$extraction = $this->extractSearchQuery($searchColumn);
+    /**
+     * Build up query with user defined search
+     */
+    public function considerSearch() {
+        if (dsStringTools::isFilled($this->searchColumn) && dsStringTools::isFilled($this->searchQuery)) {
+            $searchColumn = $this->findColumn($this->searchColumn);
 
-				// check for a virtual column
-				if ($searchColumn instanceof dsVirtualColumn) {
-					if (dsStringTools::isFilled($searchColumn->getJoin())) {
-						if (dsStringTools::isFilled($searchColumn->getJoinType())) {
-							$this->queryClass->join($searchColumn->getJoin(), $searchColumn->getJoinType());
-						} else {
-							$this->queryClass->join($searchColumn->getJoin());
-						}
-					}
+            if ($searchColumn != NULL && $searchColumn->isSearchable()) {
+                $extraction = $this->extractSearchQuery($searchColumn);
 
-					$this->queryClass->having($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"], $extraction["type"]);
-				} else {
-					if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
-						$relation =   $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
-						$where = substr($searchColumn->getIdentifier(), $pos + 1);
+                // check for a virtual column
+                if ($searchColumn instanceof dsVirtualColumn) {
+                    if (dsStringTools::isFilled($searchColumn->getJoin())) {
+                        if (dsStringTools::isFilled($searchColumn->getJoinType())) {
+                            $this->queryClass->join($searchColumn->getJoin(), $searchColumn->getJoinType());
+                        } else {
+                            $this->queryClass->join($searchColumn->getJoin());
+                        }
+                    }
 
-						$count = 0;
-						$parts = explode(".", $relation);
-						$lastRel = NULL;
-						for ($cnt = count($parts); $count < $cnt; $count++) {
-							if ($count == $cnt-1) {
-								$lastRel = $parts[$count];
-							} else {
-								$this->queryClass->join($parts[$count] . "." . $parts[$count+1]);
-							}
-						}
+                    $this->queryClass->having($searchColumn->getIdentifier() . " " . $extraction["comparison"] . " ?", $extraction["query"], $extraction["type"]);
+                } else {
+                    if (($pos = strrpos($searchColumn->getIdentifier(), ".")) !== FALSE) {
+                        $relation = $this->queryClass->getModelName() . "." . substr($searchColumn->getIdentifier(), 0, $pos);
+                        $where = substr($searchColumn->getIdentifier(), $pos + 1);
 
-						$this->queryClass->where($lastRel . "." . $where . " " . $extraction["comparison"] . " ?", $extraction["query"], $extraction["type"]);
-					} else {
-						$this->log->debug("Column is a normal Column");
-						$this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
-					}
-				}
+                        $count = 0;
+                        $parts = explode(".", $relation);
+                        $lastRel = NULL;
+                        for ($cnt = count($parts); $count < $cnt; $count++) {
+                            if ($count == $cnt - 1) {
+                                $lastRel = $parts[$count];
+                            } else {
+                                $this->queryClass->join($parts[$count] . "." . $parts[$count + 1]);
+                            }
+                        }
 
-				$this->total = $this->queryClass->count();
-			}
-		}
-	}
+                        $this->queryClass->where($lastRel . "." . $where . " " . $extraction["comparison"] . " ?", $extraction["query"], $extraction["type"]);
+                    } else {
+                        $this->log->debug("Column is a normal Column");
+                        $this->queryClass->filterBy($searchColumn->getIdentifier(), $extraction["query"], $extraction["comparison"]);
+                    }
+                }
 
-	/**
-	 * Build up query with filters of the table
-	 */
-	public function considerFilter() {
-		$this->log->debug("Considering filter");
+                $this->total = $this->queryClass->count();
+            }
+        }
+    }
 
-		if ($this->filter != NULL && $this->filter instanceof dsIPropelFilter) {
-			$this->log->debug("Building Query from filter");
-			$this->filter->buildQuery($this->queryClass);
+    /**
+     * Build up query with filters of the table
+     */
+    public function considerFilter() {
+        $this->log->debug("Considering filter");
 
-			$this->total = $this->queryClass->count();
-		} else {
-			$this->log->debug("Filter is NULL or it is not instance of dsIPropelFilter: " . $this->filter);
-		}
-	}
+        if ($this->filter != NULL && $this->filter instanceof dsIPropelFilter) {
+            $this->log->debug("Building Query from filter");
+            $this->filter->buildQuery($this->queryClass);
 
-	public function considerVirtualColumns() {
-		foreach ($this->columnModel as $column) {
-			if ($column instanceof dsVirtualColumn) {
-				if (dsStringTools::isFilled($column->getJoin())) {
-					$this->queryClass->join($column->getJoin(), $column->getJoinType());
-				}
-				
-				if (dsStringTools::isFilled($column->getGroupBy())) {
-					$this->queryClass->groupByClass($column->getGroupBy());
-				}
+            $this->total = $this->queryClass->count();
+        } else {
+            $this->log->debug("Filter is NULL or it is not instance of dsIPropelFilter: " . $this->filter);
+        }
+    }
 
-				$this->queryClass->withColumn($column->getQuery(), $column->getIdentifier());
-			}
-		}
-	}
+    public function considerVirtualColumns() {
+        foreach ($this->columnModel as $column) {
+            if ($column instanceof dsVirtualColumn) {
+                if (dsStringTools::isFilled($column->getJoin())) {
+                    $this->queryClass->join($column->getJoin(), $column->getJoinType());
+                }
 
-	/**
-	 * Retrieve the result set of the query from database
-	 */
-	public function query() {
-		$resultSet = NULL;
-		if ($this->limit == "Alle") {
-			$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
-			->find();
-		} else {
-			$resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
-			->offset(($this->offset - 1) * $this->limit)
-			->limit($this->limit)
-			->find();
-		}
+                if (dsStringTools::isFilled($column->getGroupBy())) {
+                    $this->queryClass->groupByClass($column->getGroupBy());
+                }
 
-		return $resultSet;
-	}
+                $this->queryClass->withColumn($column->getQuery(), $column->getIdentifier());
+            }
+        }
+    }
 
-	/**
-	 * Find a column by its identifier in the column model
-	 *
-	 * @param string $columnIdentifier
-	 * 		Identifier of the column to search
-	 */
-	private function findColumn($columnIdentifier) {
-		foreach ($this->columnModel as $column) {
-			if (strtolower($column->getIdentifier()) === strtolower($columnIdentifier)) {
-				return $column;
-			}
-		}
+    /**
+     * Retrieve the result set of the query from database
+     */
+    public function query() {
+        $resultSet = NULL;
+        if ($this->limit == "Alle") {
+            $resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
+                    ->find();
+        } else {
+            $resultSet = $this->queryClass->orderBy($this->sortBy, $this->sortOrder)
+                    ->offset(($this->offset - 1) * $this->limit)
+                    ->limit($this->limit)
+                    ->find();
+        }
 
-		return NULL;
-	}
+        return $resultSet;
+    }
 
-	/**
-	 * Extracts the comparison type used for the searchColumn and
-	 * adjusts the searchQuery.
-	 *
-	 * @param dsColumn $searchColumn
-	 * 		The column, which is used for the search
-	 */
-	private function extractSearchQuery($searchColumn) {
-		$extraction = array();
-		$extraction["comparison"] = " = ";
-		$extraction["query"] = $this->searchQuery;
-		$extraction["type"] = PDO::PARAM_STR;
+    /**
+     * Find a column by its identifier in the column model
+     *
+     * @param string $columnIdentifier
+     * 		Identifier of the column to search
+     */
+    private function findColumn($columnIdentifier) {
+        foreach ($this->columnModel as $column) {
+            if (strtolower($column->getIdentifier()) === strtolower($columnIdentifier)) {
+                return $column;
+            }
+        }
 
-		if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_BOOLEAN) {
-			$extraction["type"] = PDO::PARAM_BOOL;
-			$extraction["query"] = dsStringTools::isBoolean($this->searchQuery);
-		} else if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_DATE) {
-			// FIXME
-			// compare dates
-			$extraction["query"] = $this->searchQuery;
-		} else {
-			$extraction["query"] = "%" . $this->searchQuery . "%";
-			$extraction["comparison"] = " LIKE ";
-		}
+        return NULL;
+    }
 
-		return $extraction;
-	}
+    /**
+     * Extracts the comparison type used for the searchColumn and
+     * adjusts the searchQuery.
+     *
+     * @param dsColumn $searchColumn
+     * 		The column, which is used for the search
+     */
+    private function extractSearchQuery($searchColumn) {
+        $extraction = array();
+        $extraction["comparison"] = " = ";
+        $extraction["query"] = $this->searchQuery;
+        $extraction["type"] = PDO::PARAM_STR;
+
+        if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_BOOLEAN) {
+            $extraction["type"] = PDO::PARAM_BOOL;
+            $extraction["query"] = dsStringTools::isBoolean($this->searchQuery);
+        } else if ($searchColumn->getType() === dsColumnTypeConstants::TYPE_DATE) {
+            // FIXME
+            // compare dates
+            $extraction["query"] = $this->searchQuery;
+        } else {
+            $extraction["query"] = "%" . $this->searchQuery . "%";
+            $extraction["comparison"] = " LIKE ";
+        }
+
+        return $extraction;
+    }
+
 }

@@ -36,6 +36,11 @@ interface dsIDataProvider {
 	 * Provide a column model which is used in the GUI
 	 */
 	public function getColumnModel();
+        
+        /**
+	 * Retrieve pure data from sql request 
+	 */
+        public function getQueryResult();
 
 	/**
 	 * Load / reload the data

@@ -82,6 +82,12 @@ class dsPropelDataProvider implements dsIDataProvider {
      * @var dsIFilter
      */
     private $filter;
+    
+    /**
+     *Query object for underlying sql requests
+     * @var dsPropelQuery 
+     */
+    private  $propelQuery;
 
     /**
      * Constructor
@@ -223,26 +229,36 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::addFilter()
      */
-
     public function addFilter(dsIFilter $filter) {
         $this->filter = $filter;
     }
 
+      /*
+     * (non-PHPdoc)
+     * @see DevelSuite\grid\provider.dsIDataProvider::getQueryResult()
+     */
+    public function getQueryResult() {
+        if ($this->propelQuery == NULL) {
+            $this->initQuery();
+        }
+        
+        return $this->propelQuery->query();
+    }
     /*
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::loadData()
      */
-
     public function loadData() {
-        $propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
-        $propelQuery->buildQuery();
+        if ($this->propelQuery == NULL) {
+            $this->initQuery();
+        }
 
         // retrieve ResultSet from PropelQuery
-        $resultSet = $propelQuery->query();
+        $resultSet = $this->propelQuery->query();
 
         $retVal = array();
-        $retVal["page"] = $propelQuery->getOffset();
-        $retVal["total"] = $propelQuery->getTotal();
+        $retVal["page"] = $this->propelQuery->getOffset();
+        $retVal["total"] = $this->propelQuery->getTotal();
 
         $rowCnt = 1;
         $rows = array();
@@ -309,6 +325,11 @@ class dsPropelDataProvider implements dsIDataProvider {
 
         $retVal["rows"] = $rows;
         return $retVal;
+    }
+    
+    private function initQuery() {
+        $this->propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
+        $this->propelQuery->buildQuery();
     }
 
     /**
