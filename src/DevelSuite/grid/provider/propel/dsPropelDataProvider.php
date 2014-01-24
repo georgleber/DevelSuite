@@ -227,7 +227,7 @@ class dsPropelDataProvider implements dsIDataProvider {
         $propelQuery->buildQuery();
 
         // retrieve ResultSet from PropelQuery
-        $resultSet = $propelQuery->query();
+        return $propelQuery->query();
     }
 
     /**
