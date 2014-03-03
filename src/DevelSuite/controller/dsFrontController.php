@@ -136,7 +136,7 @@ class dsFrontController {
 			// the full design
 			$request = dsApp::getRequest();
 			if($request->isAjaxRequest()) {
-				$this->log->debug("rendering ajax request");
+				$this->log->debug("rendering ajax request for route " . $route);
 				$this->rootView->render();
 			} else {
 				$this->render();
