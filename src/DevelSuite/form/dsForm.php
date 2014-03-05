@@ -50,6 +50,7 @@ class dsForm {
     private $showErrors = FALSE;
     private $errorMessage = NULL;
     private $css = NULL;
+    private $formTemplate = NULL;
 
     public function __construct($action, $callbackUrl = NULL, $method = NULL) {
         $this->action = $action;
@@ -85,6 +86,10 @@ class dsForm {
 
     public function setCss($cssClass) {
         $this->css = $cssClass;
+    }
+
+    public function setFormTemplate($formTemplate) {
+        $this->formTemplate = $formTemplate;
     }
 
     /**
@@ -249,6 +254,11 @@ class dsForm {
             $this->log->debug("Rendering response as HTML code");
 
             $view = new dsFormView();
+
+            if ($this->formTemplate != NULL) {
+                $view->setTemplate($this->formTemplate);
+            }
+
             $view->assign("callbackUrl", $this->callbackUrl)
                     ->assign("id", $this->id)
                     ->assign("css", $this->css)
