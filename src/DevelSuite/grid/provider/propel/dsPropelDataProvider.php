@@ -22,20 +22,22 @@ use DevelSuite\grid\provider\dsIDataProvider;
 use DevelSuite\grid\provider\propel\query\dsPropelQuery;
 use DevelSuite\grid\renderer\dsICellRenderer;
 use DevelSuite\grid\renderer\dsCellRendererRegistry;
+use DevelSuite\grid\renderer\impl\dsBooleanCellRenderer;
+use DevelSuite\grid\renderer\impl\dsDefaultCellRenderer;
 use DevelSuite\i18n\dsResourceBundle;
 use DevelSuite\util\dsArrayTools;
 use DevelSuite\util\dsStringTools;
 
 /**
- * PropelDataProvider uses Propel for building the column model and 
+ * PropelDataProvider uses Propel for building the column model and
  * loading data from database.
  *
  * @package DevelSuite\grid\provider\propel
  * @author  Georg Henkel <info@develman.de>
  * @version 1.0
  */
-class dsPropelDataProvider implements dsIDataProvider {
-
+class dsPropelDataProvider implements dsIDataProvider
+{
     /**
      * The responsible logger
      * @var Logger
@@ -79,7 +81,7 @@ class dsPropelDataProvider implements dsIDataProvider {
     private $rendererRegistry;
 
     /**
-     * Additional filter for the table 
+     * Additional filter for the table
      * @var dsIFilter
      */
     private $filter;
@@ -92,7 +94,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * @param string $bundlePath
      * 		Path to the i18n bundle files for translation of the column names
      */
-    public function __construct($tableMap, $bundlePath = NULL) {
+    public function __construct($tableMap, $bundlePath = NULL)
+    {
         $this->log = new Logger("PropelDataProvider");
         $this->log->pushHandler(new StreamHandler(LOG_PATH . DS . 'server.log'));
 
@@ -109,7 +112,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * @param PropelQueryObject $queryObject
      * 		PropelQueryObject for data manipulation operations
      */
-    public function setQueryClass($queryClass) {
+    public function setQueryClass($queryClass)
+    {
         $this->queryClass = $queryClass;
     }
 
@@ -117,7 +121,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getDataType()
      */
-    public function getDataType() {
+    public function getDataType()
+    {
         return "json";
     }
 
@@ -125,7 +130,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getEntityName()
      */
-    public function getEntityName() {
+    public function getEntityName()
+    {
         return $this->tableMap->getPhpName();
     }
 
@@ -133,7 +139,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getColumnModel()
      */
-    public function getColumnModel() {
+    public function getColumnModel()
+    {
         return $this->columnModel;
     }
 
@@ -141,14 +148,20 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::addColumn()
      */
-    public function addColumn(dsColumn $column, $index = NULL) {
+    public function addColumn(dsColumn $column, $index = NULL)
+    {
         // append column
-        if ($index == NULL) {
+        if ($index == NULL)
+        {
             $this->columnModel[] = $column;
-        } else if ($index == -1) {
+        }
+        else if ($index == -1)
+        {
             // append column behind primary keys and before rest of columns
             $this->columnModel = dsArrayTools::arrayInsert($this->columnModel, ($this->primaryIdx - 1), $column);
-        } else {
+        }
+        else
+        {
             // insert column at index
             $this->columnModel = dsArrayTools::arrayInsert($this->columnModel, $index, $column);
         }
@@ -158,11 +171,13 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::removeColumn()
      */
-    public function removeColumn($columnIdentifier) {
+    public function removeColumn($columnIdentifier)
+    {
         $index = $this->getColumnIndex($columnIdentifier);
 
         // do not allow to remove primary keys
-        if ($index < $this->primaryIdx) {
+        if ($index < $this->primaryIdx)
+        {
             return;
         }
 
@@ -173,7 +188,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::moveColumn()
      */
-    public function moveColumn($columnIdentifier, $targetColumnIndex) {
+    public function moveColumn($columnIdentifier, $targetColumnIndex)
+    {
         $index = $this->getColumnIndex($columnIdentifier);
         $column = $this->columnModel[$index];
 
@@ -185,9 +201,12 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getColumn()
      */
-    public function getColumn($columnIdentifier) {
-        foreach ($this->columnModel as $column) {
-            if (strtolower($column->getIdentifier()) === strtolower($columnIdentifier)) {
+    public function getColumn($columnIdentifier)
+    {
+        foreach ($this->columnModel as $column)
+        {
+            if (strtolower($column->getIdentifier()) === strtolower($columnIdentifier))
+            {
                 return $column;
             }
         }
@@ -199,7 +218,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::setDefaultCellRenderer()
      */
-    public function setDefaultCellRenderer($columnType, dsICellRenderer $cellRenderer) {
+    public function setDefaultCellRenderer($columnType, dsICellRenderer $cellRenderer)
+    {
         $this->rendererRegistry->setCellRenderer($columnType, $cellRenderer);
     }
 
@@ -207,7 +227,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::getDefaultCellRenderer()
      */
-    public function getDefaultCellRenderer($columnType) {
+    public function getDefaultCellRenderer($columnType)
+    {
         return $this->rendererRegistry->getCellRenderer($columnType);
     }
 
@@ -215,7 +236,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::addFilter()
      */
-    public function addFilter(dsIFilter $filter) {
+    public function addFilter(dsIFilter $filter)
+    {
         $this->filter = $filter;
     }
 
@@ -223,7 +245,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::loadData()
      */
-    public function loadData() {
+    public function loadData()
+    {
         $propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
         $propelQuery->buildQuery();
 
@@ -236,55 +259,71 @@ class dsPropelDataProvider implements dsIDataProvider {
 
         $rowCnt = 1;
         $rows = array();
-        foreach ($resultSet as $result) {
+        foreach ($resultSet as $result)
+        {
             $cells = array();
             $objectArr = $result->toArray("phpName", TRUE, array(), TRUE);
 
-            foreach ($this->columnModel as $column) {
+            foreach ($this->columnModel as $column)
+            {
 
                 // load column specific CellRenderer if it is set,
                 // otherwise load it from the registry
                 $cellRenderer = NULL;
-                if ($column->getCellRenderer() !== NULL) {
+                if ($column->getCellRenderer() !== NULL)
+                {
                     $cellRenderer = $column->getCellRenderer();
-                } else {
+                }
+                else
+                {
                     $cellRenderer = $this->rendererRegistry->getCellRenderer($column->getType());
                     $cellRenderer->setColumn($column);
                     $cellRenderer->setValue(NULL);
                 }
 
-                if ($column instanceof dsVirtualColumn) {
+                if ($column instanceof dsVirtualColumn)
+                {
                     $method = "get" . $column->getIdentifier();
 
                     $virtualResult = NULL;
-                    if (is_callable(array($result, $method))) {
+                    if (is_callable(array($result, $method)))
+                    {
                         $virtualResult = call_user_func(array($result, $method));
                     }
 
-                    if ($virtualResult != NULL) {
+                    if ($virtualResult != NULL)
+                    {
                         $cellRenderer->setValue($virtualResult);
                     }
-                } else {
+                }
+                else
+                {
                     $relation = $result;
                     $columnIdent = $column->getIdentifier();
 
                     // if column contains .'s, it is a relation column
-                    while (($pos = strpos($columnIdent, ".")) !== FALSE) {
+                    while (($pos = strpos($columnIdent, ".")) !== FALSE)
+                    {
                         $tableName = substr($columnIdent, 0, $pos);
                         $columnName = substr($columnIdent, $pos + 1);
 
                         $method = "get" . $tableName;
-                        if (method_exists($relation, $method) && is_callable(array($relation, $method))) {
+                        if (method_exists($relation, $method) && is_callable(array($relation, $method)))
+                        {
                             $relation = call_user_func(array($relation, $method));
                         }
 
                         $columnIdent = $columnName;
                     }
 
-                    if ($relation != NULL && $relation !== $result) {
+                    if ($relation != NULL && $relation !== $result)
+                    {
                         $cellRenderer->setValue($relation->getByName($columnIdent));
-                    } else {
-                        if (array_key_exists($column->getIdentifier(), $objectArr)) {
+                    }
+                    else
+                    {
+                        if (array_key_exists($column->getIdentifier(), $objectArr))
+                        {
                             $cellRenderer->setValue($result->getByName($column->getIdentifier()));
                         }
                     }
@@ -305,7 +344,8 @@ class dsPropelDataProvider implements dsIDataProvider {
      * (non-PHPdoc)
      * @see DevelSuite\grid\provider.dsIDataProvider::exportData()
      */
-    public function exportData() {
+    public function exportData()
+    {
         $propelQuery = new dsPropelQuery($this->queryClass, $this->columnModel, $this->filter);
         $propelQuery->buildQuery();
 
@@ -314,63 +354,106 @@ class dsPropelDataProvider implements dsIDataProvider {
 
         $exportData = array();
         $columns = array();
-        foreach ($this->columnModel as $column) {
-            if (!$column->isHidden()) {
+        foreach ($this->columnModel as $column)
+        {
+            if (!$column->isHidden())
+            {
                 $columns[] = $column->getCaption();
             }
         }
 
         $exportData[] = $columns;
-        foreach ($resultSet as $result) {
+        foreach ($resultSet as $result)
+        {
             $cells = array();
             $objectArr = $result->toArray("phpName", TRUE, array(), TRUE);
-            foreach ($this->columnModel as $column) {
-                if (!$column->isHidden()) {
-                    // load column specific CellRenderer if it is set,
-                    // otherwise load it from the registry
-                    $value = NULL;
-                    if ($column instanceof dsVirtualColumn) {
+            foreach ($this->columnModel as $column)
+            {
+                // load column specific CellRenderer if it is set,
+                // otherwise load it from the registry
+                $value = NULL;
+                $cellRenderer = NULL;
+                if ($column->getCellRenderer() !== NULL)
+                {
+                    $cellRenderer = $column->getCellRenderer();
+                    if ($cellRenderer instanceof dsBooleanCellRenderer)
+                    {
+                        $cellRenderer = new dsDefaultCellRenderer();
+                        $cellRenderer->setColumn($column);
+                        $cellRenderer->setValue(NULL);
+                    }
+                }
+                else
+                {
+                    $cellRenderer = $this->rendererRegistry->getCellRenderer($column->getType());
+                    if ($cellRenderer instanceof dsBooleanCellRenderer)
+                    {
+                        $cellRenderer = new dsDefaultCellRenderer();
+                    }
+                    $cellRenderer->setColumn($column);
+                    $cellRenderer->setValue(NULL);
+                }
+
+                if (!$column->isHidden())
+                {
+                    if ($column instanceof dsVirtualColumn)
+                    {
                         $method = "get" . $column->getIdentifier();
 
                         $virtualResult = NULL;
-                        if (is_callable(array($result, $method))) {
+                        if (is_callable(array($result, $method)))
+                        {
                             $virtualResult = call_user_func(array($result, $method));
                         }
 
-                        if ($virtualResult != NULL) {
-                            $value = $virtualResult;
+                        if ($virtualResult != NULL)
+                        {
+                            $cellRenderer->setValue($virtualResult);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         $relation = $result;
                         $columnIdent = $column->getIdentifier();
-                        
+
                         // if column contains .'s, it is a relation column
-                        while (($pos = strpos($columnIdent, ".")) !== FALSE) {
+                        while (($pos = strpos($columnIdent, ".")) !== FALSE)
+                        {
                             $tableName = substr($columnIdent, 0, $pos);
                             $columnName = substr($columnIdent, $pos + 1);
 
                             $method = "get" . $tableName;
-                            if (method_exists($relation, $method) && is_callable(array($relation, $method))) {
+                            if (method_exists($relation, $method) && is_callable(array($relation, $method)))
+                            {
                                 $relation = call_user_func(array($relation, $method));
                             }
 
                             $columnIdent = $columnName;
                         }
 
-                        if ($relation != NULL && $relation !== $result) {
+                        if ($relation != NULL && $relation !== $result)
+                        {
                             $value = $relation->getByName($columnIdent);
-                        } else {
-                            if (array_key_exists($column->getIdentifier(), $objectArr)) {
+                        }
+                        else
+                        {
+                            if (array_key_exists($column->getIdentifier(), $objectArr))
+                            {
                                 $value = $result->getByName($column->getIdentifier());
                             }
                         }
-                        
-                        if ($value == NULL && $column->getType() == dsColumnTypeConstants::TYPE_BOOLEAN) {
+
+                        if ($value == NULL && $column->getType() == dsColumnTypeConstants::TYPE_BOOLEAN)
+                        {
                             $value = 0;
                         }
+
+                        $this->log->info("Column: " . $column->getIdentifier() . ", CellRenderer: " . get_class($cellRenderer) . " value: " . $value);
+
+                        $cellRenderer->setValue($value);
                     }
 
-                    $cells[] = $value;
+                    $cells[$column->getIdentifier()] = $cellRenderer->render();
                 }
             }
 
@@ -383,33 +466,43 @@ class dsPropelDataProvider implements dsIDataProvider {
     /**
      * Build the column model of the specified propel entity
      */
-    private function buildModel() {
+    private function buildModel()
+    {
         $bundle = NULL;
-        if (dsStringTools::isFilled($this->bundlePath)) {
+        if (dsStringTools::isFilled($this->bundlePath))
+        {
             $table = strtolower($this->tableMap->getPhpName());
-            try {
+            try
+            {
                 $bundle = dsResourceBundle::getBundle($this->bundlePath, $table);
-            } catch (dsFileNotFoundException $ex) {
+            }
+            catch (dsFileNotFoundException $ex)
+            {
                 // do nothing
             }
         }
 
         // first add primary keys
         $primaryKeys = $this->tableMap->getPrimaryKeys();
-        foreach ($primaryKeys as $primaryKeyColumn) {
+        foreach ($primaryKeys as $primaryKeyColumn)
+        {
             $caption = $identifier = $primaryKeyColumn->getPhpName();
             $columnType = dsPropelTypeMapper::mapPropelType($primaryKeyColumn->getType());
 
-            if ($bundle !== NULL && isset($bundle[strtolower($identifier)])) {
+            if ($bundle !== NULL && isset($bundle[strtolower($identifier)]))
+            {
                 $caption = $bundle[strtolower($identifier)];
             }
 
             // create column
             $column = new dsPropelColumn($identifier, $columnType, $caption);
-            if ($primaryKeyColumn->isForeignKey()) {
+            if ($primaryKeyColumn->isForeignKey())
+            {
                 $relatedTable = $primaryKeyColumn->getRelation()->getName();
                 $column->setRelatedTable($relatedTable);
-            } else {
+            }
+            else
+            {
                 $column->setHide();
                 $column->setSearchable();
             }
@@ -421,26 +514,31 @@ class dsPropelDataProvider implements dsIDataProvider {
         // add rest of the columns
         $firstColumn = TRUE;
         $columns = $this->tableMap->getColumns();
-        foreach ($columns as $column) {
+        foreach ($columns as $column)
+        {
             // do not add lob (BLOB, LONGVARBINARY, VARBINARY) columns
             // prevent adding of primary keys again
-            if ($column->isLob() || $column->isPrimaryKey()) {
+            if ($column->isLob() || $column->isPrimaryKey())
+            {
                 continue;
             }
 
             $caption = $identifier = $column->getPhpName();
             $columnType = dsPropelTypeMapper::mapPropelType($column->getType());
 
-            if ($bundle !== NULL && isset($bundle[strtolower($identifier)])) {
+            if ($bundle !== NULL && isset($bundle[strtolower($identifier)]))
+            {
                 $caption = $bundle[strtolower($identifier)];
             }
 
             $modelCol = new dsPropelColumn($identifier, $columnType, $caption);
-            if ($firstColumn) {
+            if ($firstColumn)
+            {
                 $modelCol->setDefaultSearchColumn();
             }
 
-            if ($column->isForeignKey()) {
+            if ($column->isForeignKey())
+            {
                 $relatedTable = $column->getRelation()->getForeignTable()->getPhpName();
                 $modelCol->setRelatedTable($relatedTable);
             }
@@ -456,10 +554,13 @@ class dsPropelDataProvider implements dsIDataProvider {
      * @param string $columnIdentifier
      * 		The identifier of the column
      */
-    private function getColumnIndex($columnIdentifier) {
-        for ($i = 0, $cnt = count($this->columnModel); $i < $cnt; $i++) {
+    private function getColumnIndex($columnIdentifier)
+    {
+        for ($i = 0, $cnt = count($this->columnModel); $i < $cnt; $i++)
+        {
             $ident = $this->columnModel[$i]->getIdentifier();
-            if (strtolower($ident) === strtolower($columnIdentifier)) {
+            if (strtolower($ident) === strtolower($columnIdentifier))
+            {
                 return $i;
             }
         }
