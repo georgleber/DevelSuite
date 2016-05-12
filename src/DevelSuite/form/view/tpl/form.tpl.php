@@ -16,7 +16,7 @@
 
             function showResponse(data) {
                 if (data.form.valid) {
-                    formValid(<?php echo $this->callbackUrl; ?>);
+                    formValid('<?php echo $this->callbackUrl; ?>');
                 } else {
                     clear();
                     var form = $('#dsForm');
