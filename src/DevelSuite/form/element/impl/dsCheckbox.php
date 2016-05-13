@@ -116,7 +116,15 @@ class dsCheckbox extends dsASimpleElement {
      */
 
     protected function addLabel() {
-        $label = "<label class='label-checkbox' for='" . $this->name . "'>" . $this->caption;
+        $label = "<label class='label-checkbox'";
+
+        if (isset($this->group)) {
+            $label .= " for='" . $this->group->getName() . "[]'";
+        } else {
+            $label .= " for='" . $this->name . "'";
+        }
+
+        $label .= ">" . $this->caption;
 
         // set mandatory
         if ($this->mandatory) {

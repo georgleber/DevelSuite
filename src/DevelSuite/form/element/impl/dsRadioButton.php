@@ -123,7 +123,15 @@ class dsRadioButton extends dsASimpleElement {
      */
 
     protected function addLabel() {
-        $label = "<label class='label-radiobutton' for='" . $this->name . "'>" . $this->caption;
+        $label = "<label class='label-radiobutton'";
+
+        if (isset($this->group)) {
+            $label .= " for='" . $this->group->getName() . "[]'";
+        } else {
+            $label .= " for='" . $this->name . "'";
+        }
+
+        $label .= ">" . $this->caption;
 
         // set mandatory
         if ($this->mandatory) {
